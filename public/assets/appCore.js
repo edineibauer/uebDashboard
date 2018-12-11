@@ -48,7 +48,7 @@ window.onload = function () {
 
                 /** Instala os Services
                  * */
-                getJSON(HOME + "get/read/appFiles").then(g => {
+                getJSON(HOME + "get/appFiles").then(g => {
                     if (g && g.response === 1 && typeof g.data.content === 'object') {
                         g = g.data.content;
                         console.log(g);
