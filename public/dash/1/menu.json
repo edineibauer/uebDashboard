@@ -1,0 +1,9 @@
+[
+  {
+    "icon": "settings_ethernet",
+    "title": "DEV",
+    "action": "link",
+    "lib": "ui-dev",
+    "file": "UIDev"
+  }
+]
