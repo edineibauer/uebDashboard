@@ -2,11 +2,11 @@
 
 namespace Dashboard;
 
-use EntityUi\EntityCreateEntityDatabase;
+use EntityForm\EntityCreateEntityDatabase;
 use Helpers\Helper;
-use Conn\Read;
-use Entity\Entity;
-use Config\Config;
+use \ConnCrud\Read;
+use \Entity\Entity;
+use \Config\Config;
 use MatthiasMullie\Minify;
 
 class UpdateDashboard
@@ -36,7 +36,7 @@ class UpdateDashboard
     private function start(array $custom)
     {
         if (file_exists(PATH_HOME . "composer.lock")) {
-            $this->checkConfigJsonExist();
+            $this->createJsonConfigFileIfNotExist();
 
             if (!empty($custom)) {
 
@@ -57,10 +57,10 @@ class UpdateDashboard
                 //check if is the first time in the system to clear database
                 if (!file_exists(PATH_HOME . "entity/cache")) {
                     //nenhuma entidade, zera banco
-                    $sql = new \Conn\SqlCommand();
+                    $sql = new \ConnCrud\SqlCommand();
                     $sql->exeCommand("SHOW TABLES");
                     if ($sql->getResult()) {
-                        $sqlDelete = new \Conn\SqlCommand();
+                        $sqlDelete = new \ConnCrud\SqlCommand();
                         foreach ($sql->getResult() as $item) {
                             if (!empty($item['Tables_in_' . DATABASE]))
                                 $sqlDelete->exeCommand("DROP TABLE IF EXISTS " . $item['Tables_in_' . DATABASE]);
@@ -82,7 +82,7 @@ class UpdateDashboard
     /**
      * Cria arquivo de configurações json se não existir
      */
-    private function checkConfigJsonExist()
+    private function createJsonConfigFileIfNotExist()
     {
         if (!file_exists(PATH_HOME . "_config/config.json")) {
             $conf = file_get_contents(PATH_HOME . "_config/config.php");
@@ -176,6 +176,12 @@ class UpdateDashboard
         if (file_exists(PATH_HOME . "assetsPublic/fonts.min.css"))
             unlink(PATH_HOME . "assetsPublic/fonts.min.css");
 
+        if (file_exists(PATH_HOME . "assetsPublic/appCore.min.js"))
+            unlink(PATH_HOME . "assetsPublic/appCore.min.js");
+
+        if (file_exists(PATH_HOME . "assetsPublic/loadingScreen.min.js"))
+            unlink(PATH_HOME . "assetsPublic/loadingScreen.min.js");
+
         if (file_exists(PATH_HOME . "assetsPublic/view")) {
             foreach (Helper::listFolder(PATH_HOME . "assetsPublic/view") as $item)
                 unlink(PATH_HOME . "assetsPublic/view/{$item}");
@@ -204,6 +210,15 @@ class UpdateDashboard
         }
 
         $this->createCoreFont($f['font'], $f['icon'], 'fonts');
+        $this->createCoreImages();
+
+
+        $m = new Minify\JS(PATH_HOME . VENDOR . "config/public/assets/appCore.js");
+        $m->minify(PATH_HOME . "assetsPublic/appCore.min.js");
+
+        //copy loadingScreen to assetsPublic
+        $m = new Minify\JS(PATH_HOME . VENDOR . "config/public/assets/loadingScreen.js");
+        $m->minify(PATH_HOME . "assetsPublic/loadingScreen.min.js");
 
         $this->copyInstallTemplate();
         $this->copyCustomSystem();
@@ -218,8 +233,9 @@ class UpdateDashboard
         Config::writeFile("tim.php", file_get_contents(PATH_HOME . VENDOR . "config/public/installTemplates/tim.txt"));
         Config::writeFile("apiView.php", file_get_contents(PATH_HOME . VENDOR . "config/public/installTemplates/apiView.txt"));
         Config::writeFile("apiGet.php", file_get_contents(PATH_HOME . VENDOR . "config/public/installTemplates/apiGet.txt"));
+        Config::writeFile("apiGetPublic.php", file_get_contents(PATH_HOME . VENDOR . "config/public/installTemplates/apiGetPublic.txt"));
         Config::writeFile("apiSet.php", file_get_contents(PATH_HOME . VENDOR . "config/public/installTemplates/apiSet.txt"));
-        Config::writeFile("apiApi.php", file_get_contents(PATH_HOME . VENDOR . "config/public/installTemplates/apiApi.txt"));
+        Config::writeFile("apiRequest.php", file_get_contents(PATH_HOME . VENDOR . "config/public/installTemplates/apiRequest.txt"));
 
         //Bloqueios por .htaccess
         Config::writeFile("_config/.htaccess", "Deny from all");
@@ -367,6 +383,20 @@ class UpdateDashboard
         }
     }
 
+    /**
+     * Cria Imagens do sistema
+     */
+    private function createCoreImages()
+    {
+        copy(PATH_HOME . VENDOR . "config/public/assets/dino.png", PATH_HOME . "assetsPublic/img/dino.png");
+        copy(PATH_HOME . VENDOR . "config/public/assets/image-not-found.png", PATH_HOME . "assetsPublic/img/img.png");
+        copy(PATH_HOME . FAVICON, PATH_HOME . "assetsPublic/img/favicon.png");
+        copy((!empty(LOGO) ? PATH_HOME . LOGO : PATH_HOME . VENDOR . "config/public/assets/image-not-found.png"), PATH_HOME . "assetsPublic/img/logo.png");
+    }
+
+    /**
+     * Minifica todos os assets das bibliotecas
+    */
     private function createMinifyAssetsLib()
     {
         //Para cada arquivo css e js presente nas bibliotecas dentro da pasta assets, minifica quando não existe
@@ -462,50 +492,6 @@ class UpdateDashboard
     }
 
     /**
-     * @param string $path
-     * @param array $listAssets
-     * @param array $listData
-     * @param string $version
-     * @return array
-     */
-    private function checkCacheContent(string $path, array $listAssets, array $listData, string $version)
-    {
-        //templates mustache
-        if (file_exists(PATH_HOME . "{$path}tpl")) {
-            foreach (Helper::listFolder(PATH_HOME . "{$path}tpl") as $tpl) {
-                if (preg_match('/\.mst$/i', $tpl))
-                    $listAssets[] = HOME . "{$path}tpl/{$tpl}";
-            }
-        }
-
-        //assets
-        if (file_exists(PATH_HOME . "{$path}assets")) {
-            foreach (Helper::listFolder(PATH_HOME . "{$path}assets") as $asset) {
-                if (!preg_match('/\./i', $asset)) {
-                    foreach (Helper::listFolder(PATH_HOME . "{$path}assets/{$asset}") as $a) {
-                        if (!preg_match('/\.(js|css)$/i', $a) || preg_match('/\.min\.(js|css)$/i', $a))
-                            $listAssets[] = HOME . "{$path}assets/{$asset}/{$a}" . (preg_match('/\.(js|css)$/i', $a) ? "?v=" . $version : "");
-                    }
-                } elseif (!preg_match('/\.(js|css)$/i', $asset) || preg_match('/\.min\.(js|css)$/i', $asset)) {
-                    $listAssets[] = HOME . "{$path}assets/{$asset}" . (preg_match('/\.(js|css)$/i', $asset) ? "?v=" . $version : "");
-                }
-            }
-        }
-
-        //pages
-        if (file_exists(PATH_HOME . "{$path}view")) {
-            foreach (Helper::listFolder(PATH_HOME . "{$path}view") as $view) {
-                if (preg_match('/\.php$/i', $view)) {
-                    $listData[] = HOME . str_replace(['.php', 'index'], '', $view);
-                    $listData[] = HOME . "get/" . str_replace('.php', '', $view);
-                }
-            }
-        }
-
-        return [$listAssets, $listData];
-    }
-
-    /**
      * Create Manifest
      * @param array $dados
      */
@@ -520,7 +506,7 @@ class UpdateDashboard
         $themeColor = explode("!important", explode("color:", $theme)[1])[0];
         $faviconName = pathinfo($dados['favicon'], PATHINFO_FILENAME);
         $faviconExt = pathinfo($dados['favicon'], PATHINFO_EXTENSION);
-        $content = str_replace(['{$sitename}', '{$faviconName}', '{$faviconExt}', '{$theme}', '{$themeColor}'], [$dados['sitename'], $faviconName, $faviconExt, $themeBack, $themeColor], file_get_contents(PATH_HOME . VENDOR . "config/public/installTemplates/manifest.txt"));
+        $content = str_replace(['{$sitename}', '{$theme}', '{$themeColor}'], [$dados['sitename'], $themeBack, $themeColor], file_get_contents(PATH_HOME . VENDOR . "config/public/installTemplates/manifest.txt"));
 
         $fp = fopen(PATH_HOME . "manifest.json", "w");
         fwrite($fp, $content);
@@ -539,12 +525,13 @@ class UpdateDashboard
         Helper::createFolderIfNoExist(PATH_HOME . "uploads/site");
 
         $fav = \WideImage\WideImage::load(PATH_HOME . $dados['favicon']);
-        $fav->resize(256, 256, 'fill')->saveToFile(PATH_HOME . "uploads/site/{$name}-256.{$ext}");
-        $fav->resize(192, 192, 'fill')->saveToFile(PATH_HOME . "uploads/site/{$name}-192.{$ext}");
-        $fav->resize(152, 152, 'fill')->saveToFile(PATH_HOME . "uploads/site/{$name}-152.{$ext}");
-        $fav->resize(144, 144, 'fill')->saveToFile(PATH_HOME . "uploads/site/{$name}-144.{$ext}");
-        $fav->resize(128, 128, 'fill')->saveToFile(PATH_HOME . "uploads/site/{$name}-128.{$ext}");
-        $fav->resize(90, 90, 'fill')->saveToFile(PATH_HOME . "uploads/site/{$name}-90.{$ext}");
+        $fav->resize(256, 256, 'fill')->saveToFile(PATH_HOME . "assetsPublic/img/favicon-256.png");
+        $fav->resize(192, 192, 'fill')->saveToFile(PATH_HOME . "assetsPublic/img/favicon-192.png");
+        $fav->resize(152, 152, 'fill')->saveToFile(PATH_HOME . "assetsPublic/img/favicon-152.png");
+        $fav->resize(144, 144, 'fill')->saveToFile(PATH_HOME . "assetsPublic/img/favicon-144.png");
+        $fav->resize(128, 128, 'fill')->saveToFile(PATH_HOME . "assetsPublic/img/favicon-128.png");
+        $fav->resize(96, 96, 'fill')->saveToFile(PATH_HOME . "assetsPublic/img/favicon-96.png");
+        $fav->resize(48, 48, 'fill')->saveToFile(PATH_HOME . "assetsPublic/img/favicon-48.png");
     }
 
     /**
@@ -552,52 +539,12 @@ class UpdateDashboard
      */
     private function updateServiceWorker(array $dados)
     {
-        //Recria htacces para garantir que links estarão correto
-        Config::createHtaccess();
-
-        $listShell = [HOME . "assetsPublic/core.min.js?v=" . $dados['version'], HOME . "assetsPublic/core.min.css?v=" . $dados['version'], HOME . "assetsPublic/fonts.min.css?v=" . $dados['version']];
-        $listAssets = [];
-        $listData = [];
-
-        if (!empty($dados['logo'])) {
-            $listAssets[] = HOME . $dados['logo'];
-            $listAssets[] = HOME . 'image/' . $dados['logo'] . "&h=100";
-        }
-
-        if (!empty($dados['favicon'])) {
-            $listAssets[] = HOME . $dados['favicon'];
-            $listAssets[] = HOME . 'image/' . $dados['favicon'] . "&h=100";
-        }
-
-        foreach (Helper::listFolder(PATH_HOME . "assetsPublic/fonts") as $font) {
-            if (preg_match('/\.(ttf|woff|woff2)$/', $font))
-                $listShell[] = HOME . "assetsPublic/fonts/{$font}";
-        }
-
-        //Cache Content Link Control
-        list($listAssets, $listData) = $this->checkCacheContent("public/", $listAssets, $listData, $dados['version']);
-
-        //Cache Content from libs
-        $entidadesNot = Config::getEntityNotAllow();
-        foreach (Helper::listFolder(PATH_HOME . VENDOR) as $lib) {
-            if(!in_array($lib, $entidadesNot) && !empty(PATH_HOME . VENDOR . "{$lib}/public/view"))
-                list($listAssets, $listData) = $this->checkCacheContent(VENDOR . "{$lib}/public/", $listAssets, $listData, $dados['version']);
-        }
+        //copia service worker
+        $service = file_get_contents(PATH_HOME . VENDOR . "config/public/installTemplates/service-worker.txt");
+        $service = str_replace(["const VERSION = '';", "const HOME = '';"], ["const VERSION = '" . VERSION . "';", "const HOME = '" . HOME . "';"], $service);
 
         $f = fopen(PATH_HOME . "service-worker.js", "w");
-
-        $dadosService = json_decode(str_replace('{$home}', substr(HOME, 0, -1), file_get_contents(PATH_HOME . VENDOR . 'config/public/installTemplates/service-worker.json')), true);
-        $dadosService['filesShell'] = array_merge($dadosService['filesShell'], $listShell);
-        $dadosService['filesAssets'] = array_merge($dadosService['filesAssets'], $listAssets);
-        $dadosService['filesData'] = array_merge($dadosService['filesData'], $listData);
-
-        $content = file_get_contents(PATH_HOME . VENDOR . "config/public/installTemplates/service-worker.txt");
-        $content = str_replace("let filesShell = [];", "let filesShell = " . json_encode($dadosService['filesShell'], JSON_UNESCAPED_SLASHES) . ";", $content);
-        $content = str_replace("let filesAssets = [];", "let filesAssets = " . json_encode($dadosService['filesAssets'], JSON_UNESCAPED_SLASHES) . ";", $content);
-        $content = str_replace("let filesData = [];", "let filesData = " . json_encode($dadosService['filesData'], JSON_UNESCAPED_SLASHES) . ";", $content);
-        $content = str_replace("-1.0.0';", "-{$dados['version']}';", $content);
-
-        fwrite($f, $content);
+        fwrite($f, $service);
         fclose($f);
     }
 
