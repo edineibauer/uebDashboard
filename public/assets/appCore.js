@@ -43,21 +43,24 @@ function updateCache() {
         return getJSON(HOME + "get/appFiles").then(g => {
             if (g && g.response === 1 && typeof g.data.content === 'object') {
                 g = g.data.content;
-                return cache.addAll(g.core).then(d => {
+
+                caches.open('core-v' + VERSION).then(cache => {
+                    return cache.addAll(g.core)
+                }).then(d => {
                     caches.open('misc-v' + VERSION).then(cache => {
                         return cache.addAll(g.misc)
-                    }).then(d => {
-                        return caches.open('get-v' + VERSION).then(cache => {
-                            return cache.addAll(g.get)
-                        })
-                    }).then(d => {
-                        return caches.open('view-v' + VERSION).then(cache => {
-                            return cache.addAll(g.view)
-                        })
-                    }).then(d => {
-                        return caches.open('midia-v' + VERSION).then(cache => {
-                            return cache.addAll(g.midia)
-                        })
+                    })
+                }).then(d => {
+                    return caches.open('get-v' + VERSION).then(cache => {
+                        return cache.addAll(g.get)
+                    })
+                }).then(d => {
+                    return caches.open('view-v' + VERSION).then(cache => {
+                        return cache.addAll(g.view)
+                    })
+                }).then(d => {
+                    return caches.open('midia-v' + VERSION).then(cache => {
+                        return cache.addAll(g.midia)
                     })
                 })
             }
@@ -72,7 +75,7 @@ function updateCache() {
 window.onload = function () {
     caches.open('core-v' + VERSION).then(function (cache) {
         return cache.match("assetsPublic/appCore.min.js").then(response => {
-            if (!response || 1===1) {
+            if (!response || 1 === 1) {
                 return updateCache();
 
             } else {

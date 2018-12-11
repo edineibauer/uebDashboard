@@ -509,8 +509,6 @@ class UpdateDashboard
         $theme = explode("}", explode(".theme{", file_get_contents(PATH_HOME . "public/assets/theme.min.css"))[1])[0];
         $themeBack = explode("!important", explode("background-color:", $theme)[1])[0];
         $themeColor = explode("!important", explode("color:", $theme)[1])[0];
-        $faviconName = pathinfo($dados['favicon'], PATHINFO_FILENAME);
-        $faviconExt = pathinfo($dados['favicon'], PATHINFO_EXTENSION);
         $content = str_replace(['{$sitename}', '{$theme}', '{$themeColor}'], [$dados['sitename'], $themeBack, $themeColor], file_get_contents(PATH_HOME . VENDOR . "config/public/installTemplates/manifest.txt"));
 
         $fp = fopen(PATH_HOME . "manifest.json", "w");
