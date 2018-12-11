@@ -182,6 +182,9 @@ class UpdateDashboard
         if (file_exists(PATH_HOME . "assetsPublic/loadingScreen.min.js"))
             unlink(PATH_HOME . "assetsPublic/loadingScreen.min.js");
 
+        if (file_exists(PATH_HOME . "assetsPublic/loadingScreen.min.css"))
+            unlink(PATH_HOME . "assetsPublic/loadingScreen.min.css");
+
         if (file_exists(PATH_HOME . "assetsPublic/view")) {
             foreach (Helper::listFolder(PATH_HOME . "assetsPublic/view") as $item)
                 unlink(PATH_HOME . "assetsPublic/view/{$item}");
@@ -213,12 +216,14 @@ class UpdateDashboard
         $this->createCoreImages();
 
 
-        $m = new Minify\JS(PATH_HOME . VENDOR . "config/public/assets/appCore.js");
+        $m = new Minify\JS(PATH_HOME . VENDOR . "dashboard/public/assets/appCore.js");
         $m->minify(PATH_HOME . "assetsPublic/appCore.min.js");
 
         //copy loadingScreen to assetsPublic
-        $m = new Minify\JS(PATH_HOME . VENDOR . "config/public/assets/loadingScreen.js");
+        $m = new Minify\JS(PATH_HOME . VENDOR . "dashboard/public/assets/loadingScreen.js");
         $m->minify(PATH_HOME . "assetsPublic/loadingScreen.min.js");
+        $m = new Minify\CSS(PATH_HOME . VENDOR . "dashboard/public/assets/loadingScreen.css");
+        $m->minify(PATH_HOME . "assetsPublic/loadingScreen.min.css");
 
         $this->copyInstallTemplate();
         $this->copyCustomSystem();
