@@ -30,8 +30,6 @@ function updateCache() {
         loadingHtml: "<p>Carregando Recursos</p><div class='spinner'><div class='bounce1' style='background-color: " + THEMETEXT + "'></div><div class='bounce2' style='background-color: " + THEMETEXT + "'></div><div class='bounce3' style='background-color: " + THEMETEXT + "'></div></div>"
     });
 
-    console.log('start');
-
     return caches.keys().then(cacheNames => {
         return Promise.all(
             cacheNames.map(cacheName => {
@@ -39,7 +37,6 @@ function updateCache() {
             })
         );
     }).then(d => {
-        console.log('delete finish');
         return getJSON(HOME + "get/appFiles").then(g => {
             if (g && g.response === 1 && typeof g.data.content === 'object') {
                 g = g.data.content;
@@ -64,10 +61,8 @@ function updateCache() {
                     })
                 })
             }
-            console.log('load new cache');
         })
     }).then(d => {
-        console.log('finish');
         loading_screen.finish()
     });
 }
@@ -75,7 +70,7 @@ function updateCache() {
 window.onload = function () {
     caches.open('core-v' + VERSION).then(function (cache) {
         return cache.match("assetsPublic/appCore.min.js").then(response => {
-            if (!response || 1 === 1) {
+            if (!response) {
                 return updateCache();
 
             } else {
@@ -86,7 +81,6 @@ window.onload = function () {
             }
         })
     }).then(d => {
-        console.log('load assets');
         let scriptCore = document.createElement('script');
         scriptCore.src = HOME + "assetsPublic/core.min.js";
         document.head.appendChild(scriptCore);
