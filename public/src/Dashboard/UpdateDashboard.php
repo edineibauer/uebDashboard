@@ -2,11 +2,12 @@
 
 namespace Dashboard;
 
-use EntityForm\EntityCreateEntityDatabase;
+use EntityUi\EntityCreateEntityDatabase;
 use Helpers\Helper;
-use \ConnCrud\Read;
-use \Entity\Entity;
-use \Config\Config;
+use Conn\Read;
+use Conn\SqlCommand;
+use Entity\Entity;
+use Config\Config;
 use MatthiasMullie\Minify;
 
 class UpdateDashboard
@@ -57,10 +58,10 @@ class UpdateDashboard
                 //check if is the first time in the system to clear database
                 if (!file_exists(PATH_HOME . "entity/cache")) {
                     //nenhuma entidade, zera banco
-                    $sql = new \ConnCrud\SqlCommand();
+                    $sql = new SqlCommand();
                     $sql->exeCommand("SHOW TABLES");
                     if ($sql->getResult()) {
-                        $sqlDelete = new \ConnCrud\SqlCommand();
+                        $sqlDelete = new SqlCommand();
                         foreach ($sql->getResult() as $item) {
                             if (!empty($item['Tables_in_' . DATABASE]))
                                 $sqlDelete->exeCommand("DROP TABLE IF EXISTS " . $item['Tables_in_' . DATABASE]);
@@ -400,7 +401,7 @@ class UpdateDashboard
 
     /**
      * Minifica todos os assets das bibliotecas
-    */
+     */
     private function createMinifyAssetsLib()
     {
         //Para cada arquivo css e js presente nas bibliotecas dentro da pasta assets, minifica quando não existe
