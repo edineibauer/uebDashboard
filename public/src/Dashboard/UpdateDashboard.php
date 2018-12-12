@@ -488,7 +488,7 @@ class UpdateDashboard
     private function downloadAssets(string $url)
     {
         if (preg_match('/^http/i', $url)) {
-            $nameOnline = pathinfo($url, PATHINFO_FILENAME);
+            $nameOnline = explode('.', pathinfo($url, PATHINFO_FILENAME))[0];
             $extOnline = pathinfo($url, PATHINFO_EXTENSION);
 
             if (!file_exists(PATH_HOME . "assetsPublic/cache/{$nameOnline}.min.{$extOnline}") && Helper::isOnline($url)) {
@@ -547,7 +547,7 @@ class UpdateDashboard
             if (!empty($param['js'])) {
                 foreach ($param['js'] as $js) {
                     if (preg_match('/^http/i', $js)) {
-                        $nameOnline = pathinfo($js, PATHINFO_FILENAME);
+                        $nameOnline = explode('.', pathinfo($js, PATHINFO_FILENAME))[0];
                         $extOnline = pathinfo($js, PATHINFO_EXTENSION);
 
                         if ($extOnline === "js" && file_exists(PATH_HOME . "assetsPublic/cache/{$nameOnline}.min.js"))
@@ -568,26 +568,26 @@ class UpdateDashboard
                 }
             }
 
-            if (!empty($param['js'])) {
-                foreach ($param['js'] as $js) {
-                    if (preg_match('/^http/i', $js)) {
-                        $nameOnline = pathinfo($js, PATHINFO_FILENAME);
-                        $extOnline = pathinfo($js, PATHINFO_EXTENSION);
+            if (!empty($param['css'])) {
+                foreach ($param['css'] as $css) {
+                    if (preg_match('/^http/i', $css)) {
+                        $nameOnline = explode('.', pathinfo($css, PATHINFO_FILENAME))[0];
+                        $extOnline = pathinfo($css, PATHINFO_EXTENSION);
 
-                        if ($extOnline === "js" && file_exists(PATH_HOME . "assetsPublic/cache/{$nameOnline}.min.js"))
-                            $mjs->add(PATH_HOME . "assetsPublic/cache/{$nameOnline}.min.js");
+                        if ($extOnline === "css" && file_exists(PATH_HOME . "assetsPublic/cache/{$nameOnline}.min.css"))
+                            $mcss->add(PATH_HOME . "assetsPublic/cache/{$nameOnline}.min.css");
 
-                    } elseif (count(explode('.', $js)) === 1) {
+                    } elseif (count(explode('.', $css)) === 1) {
                         //busca da central
-                        $mjs->add(PATH_HOME . "assetsPublic/cache/{$js}.min.js");
+                        $mcss->add(PATH_HOME . "assetsPublic/cache/{$css}.min.css");
 
-                    } elseif (file_exists($js)) {
+                    } elseif (file_exists($css)) {
                         //busca do sistema
-                        $mjs->add($js);
+                        $mcss->add($css);
 
-                    } elseif (file_exists(PATH_HOME . $js)) {
+                    } elseif (file_exists(PATH_HOME . $css)) {
                         //busca do sistema
-                        $mjs->add(PATH_HOME . $js);
+                        $mcss->add(PATH_HOME . $css);
                     }
                 }
             }
@@ -616,6 +616,17 @@ class UpdateDashboard
     {
         Helper::createFolderIfNoExist(PATH_HOME . 'assetsPublic/cache');
         Helper::createFolderIfNoExist(PATH_HOME . 'assetsPublic/view');
+
+        //Remove todos os dados das pastas de assets
+        foreach (Helper::listFolder(PATH_HOME . "assetsPublic/cache") as $cache) {
+            if(!is_dir(PATH_HOME . "assetsPublic/cache/" . $cache))
+                unlink(PATH_HOME . "assetsPublic/cache/" . $cache);
+        }
+        foreach (Helper::listFolder(PATH_HOME . "assetsPublic/view") as $cache) {
+            if(!is_dir(PATH_HOME . "assetsPublic/view/" . $cache))
+                unlink(PATH_HOME . "assetsPublic/view/" . $cache);
+        }
+
         $vendors = Helper::listFolder(PATH_HOME . VENDOR);
         $this->createRepositorioCache($vendors);
         $this->downloadAssetsCache($vendors);
