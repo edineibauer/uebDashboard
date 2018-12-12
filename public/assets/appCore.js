@@ -67,7 +67,7 @@ function updateCache() {
 }
 
 window.onload = function () {
-    if (location.href !== HOME + "dashboardUpdateSystem" && location.href !== HOME + "dashboardUpdateSystem/force") {
+    if (location.href !== HOME + "updateSystem" && location.href !== HOME + "updateSystem/force") {
         caches.open('core-v' + VERSION).then(function (cache) {
             return cache.match("assetsPublic/appCore.min.js").then(response => {
                 if (!response)
