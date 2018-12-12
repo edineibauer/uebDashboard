@@ -17,7 +17,7 @@ foreach ($dados as $column => $value) {
 Config\Config::createConfig($config);
 
 if ((!empty($config['ssl']) && $config['ssl'] !== SSL) || (!empty($config['www']) && $config['www'] !== WWW)) {
-    new \Dashboard\UpdateDashboard(['manifest', 'assets', 'lib']);
+    new \Config\UpdateDashboard(['manifest', 'assets', 'lib']);
 } elseif ((!empty($config['sitename']) && $config['sitename'] !== SITENAME) || (!empty($config['favicon']) && $config['favicon'] !== FAVICON)) {
-    new \Dashboard\UpdateDashboard(['manifest']);
+    new \Config\UpdateDashboard(['manifest']);
 }
