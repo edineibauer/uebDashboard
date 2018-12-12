@@ -137,7 +137,7 @@ class UpdateDashboard
             $this->updateAssets();
             $this->createMinifyAssetsLib();
             $this->createManifest($dados);
-            $this->updateServiceWorker($dados);
+            $this->updateServiceWorker();
         } else {
 
             //atualizações personalizadas
@@ -150,7 +150,7 @@ class UpdateDashboard
 
             if (in_array('assets', $updates)) {
                 $this->updateAssets();
-                $this->updateServiceWorker($dados);
+                $this->updateServiceWorker();
             }
 
             if (in_array('lib', $updates))
@@ -158,7 +158,7 @@ class UpdateDashboard
 
             if (in_array('manifest', $updates)) {
                 $this->createManifest($dados);
-                $this->updateServiceWorker($dados);
+                $this->updateServiceWorker();
             }
         }
 
@@ -400,21 +400,241 @@ class UpdateDashboard
     }
 
     /**
+     * Retorna lista com todos os JS e CSS que são usadas na aplicação que estão sendo servidas pela central
+     * @param array $vendors
+     * @return array
+     */
+    private function getAllAssetsFromRepositorio(array $vendors): array
+    {
+        $lista = [];
+        foreach ($vendors as $lib) {
+            $path = PATH_HOME . VENDOR . $lib . "/public/";
+            if (file_exists($path . "view")) {
+                //para cada view
+                foreach (Helper::listFolder($path . "view") as $view) {
+                    if (preg_match('/.php$/i', $view)) {
+                        $nameView = str_replace('.php', '', $view);
+                        if (file_exists($path . "param/{$nameView}.json")) {
+
+                            $param = json_decode(file_get_contents($path . "param/{$nameView}.json"), true);
+                            if (!empty($param['js'])) {
+                                if (is_string($param['js']) && count(explode('.', $param['js'])) === 1 && !in_array($param['js'], $lista)) {
+                                    $lista[] = $param['js'];
+                                } elseif (is_array($param['js'])) {
+                                    foreach ($param['js'] as $js) {
+                                        if (count(explode('.', $js)) === 1 && !in_array($js, $lista))
+                                            $lista[] = $js;
+                                    }
+                                }
+                            }
+                            if (!empty($param['css'])) {
+                                if (is_string($param['css']) && count(explode('.', $param['css'])) === 1 && !in_array($param['css'], $lista)) {
+                                    $lista[] = $param['css'];
+                                } elseif (is_array($param['css'])) {
+                                    foreach ($param['css'] as $css) {
+                                        if (count(explode('.', $css)) === 1 && !in_array($css, $lista))
+                                            $lista[] = $css;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $lista;
+    }
+
+    /**
+     * @param array $vendors
+     * Cria cache dos assets requisitados pelas views
+     */
+    private function createRepositorioCache(array $vendors)
+    {
+        $listaRequestScripts = implode('/', $this->getAllAssetsFromRepositorio($vendors));
+        $data = json_decode(file_get_contents(REPOSITORIO . "app/library/{$listaRequestScripts}"), true);
+        $data = $data['response'] === 1 && !empty($data['data']) ? $data['data'] : [];
+
+        foreach ($data as $datum) {
+            foreach ($datum['arquivos'] as $file) {
+                if ($file['type'] === "text/javascript") {
+
+                    //remove old
+                    if (file_exists(PATH_HOME . "assetsPublic/cache/{$datum['nome']}.min.js"))
+                        unlink(PATH_HOME . "assetsPublic/cache/{$datum['nome']}.min.js");
+
+                    //minifica novo
+                    $minifier = new Minify\JS($file['content']);
+                    $minifier->minify(PATH_HOME . "assetsPublic/cache/{$datum['nome']}.min.js");
+
+                } elseif ($file['type'] === "text/css") {
+
+                    //remove old
+                    if (file_exists(PATH_HOME . "assetsPublic/cache/{$datum['nome']}.min.css"))
+                        unlink(PATH_HOME . "assetsPublic/cache/{$datum['nome']}.min.css");
+
+                    //minifica novo
+                    $minifier = new Minify\CSS($file['content']);
+                    $minifier->minify(PATH_HOME . "assetsPublic/cache/{$datum['nome']}.min.css");
+                }
+            }
+        }
+    }
+
+    /**
+     * @param string $url
+     */
+    private function downloadAssets(string $url)
+    {
+        if (preg_match('/^http/i', $url)) {
+            $nameOnline = pathinfo($url, PATHINFO_FILENAME);
+            $extOnline = pathinfo($url, PATHINFO_EXTENSION);
+
+            if (!file_exists(PATH_HOME . "assetsPublic/cache/{$nameOnline}.min.{$extOnline}") && Helper::isOnline($url)) {
+
+                //busca online
+                if ($extOnline === "js")
+                    $m = new Minify\JS(file_get_contents($url));
+                else
+                    $m = new Minify\CSS(file_get_contents($url));
+
+                $m->minify(PATH_HOME . "assetsPublic/cache/{$nameOnline}.min.{$extOnline}");
+            }
+        }
+    }
+
+    /**
+     * @param array $vendors
+     */
+    private function downloadAssetsCache(array $vendors)
+    {
+        foreach ($vendors as $lib) {
+            $path = PATH_HOME . VENDOR . $lib . "/public/";
+            if (file_exists($path . "view")) {
+                foreach (Helper::listFolder($path . "view") as $view) {
+                    if (preg_match('/.php$/i', $view)) {
+
+                        //para cada view
+                        $nameView = str_replace('.php', '', $view);
+                        if (file_exists($path . "param/{$nameView}.json")) {
+                            $param = json_decode(file_get_contents($path . "param/{$nameView}.json"), true);
+
+                            if (!empty($param['js']) || !empty($param['css'])) {
+                                $assets = array_unique(array_merge((!empty($param['js']) ? (is_string($param['js']) ? [$param['js']] : $param['js']) : []), (!empty($param['css']) ? (is_string($param['css']) ? [$param['css']] : $param['css']) : [])));
+
+                                foreach ($assets as $asset) {
+                                    if (is_string($asset))
+                                        $this->downloadAssets($asset);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private function createViewAssets(string $path, string $nameView)
+    {
+        $mjs = new Minify\JS("");
+        $mcss = new Minify\CSS("");
+
+        //verifica se existe parametros setados para esta view, se tiver, carrega os assets
+        if (file_exists($path . "param/{$nameView}.json")) {
+            $param = json_decode(file_get_contents($path . "param/{$nameView}.json"), true);
+
+            if (!empty($param['js'])) {
+                foreach ($param['js'] as $js) {
+                    if (preg_match('/^http/i', $js)) {
+                        $nameOnline = pathinfo($js, PATHINFO_FILENAME);
+                        $extOnline = pathinfo($js, PATHINFO_EXTENSION);
+
+                        if ($extOnline === "js" && file_exists(PATH_HOME . "assetsPublic/cache/{$nameOnline}.min.js"))
+                            $mjs->add(PATH_HOME . "assetsPublic/cache/{$nameOnline}.min.js");
+
+                    } elseif (count(explode('.', $js)) === 1) {
+                        //busca da central
+                        $mjs->add(PATH_HOME . "assetsPublic/cache/{$js}.min.js");
+
+                    } elseif (file_exists($js)) {
+                        //busca do sistema
+                        $mjs->add($js);
+
+                    } elseif (file_exists(PATH_HOME . $js)) {
+                        //busca do sistema
+                        $mjs->add(PATH_HOME . $js);
+                    }
+                }
+            }
+
+            if (!empty($param['js'])) {
+                foreach ($param['js'] as $js) {
+                    if (preg_match('/^http/i', $js)) {
+                        $nameOnline = pathinfo($js, PATHINFO_FILENAME);
+                        $extOnline = pathinfo($js, PATHINFO_EXTENSION);
+
+                        if ($extOnline === "js" && file_exists(PATH_HOME . "assetsPublic/cache/{$nameOnline}.min.js"))
+                            $mjs->add(PATH_HOME . "assetsPublic/cache/{$nameOnline}.min.js");
+
+                    } elseif (count(explode('.', $js)) === 1) {
+                        //busca da central
+                        $mjs->add(PATH_HOME . "assetsPublic/cache/{$js}.min.js");
+
+                    } elseif (file_exists($js)) {
+                        //busca do sistema
+                        $mjs->add($js);
+
+                    } elseif (file_exists(PATH_HOME . $js)) {
+                        //busca do sistema
+                        $mjs->add(PATH_HOME . $js);
+                    }
+                }
+            }
+        }
+
+        //JS da página
+        if (file_exists($path . "assets/{$nameView}.js"))
+            $mjs->add($path . "assets/{$nameView}.js");
+        elseif (file_exists($path . "assets/{$nameView}.min.js"))
+            $mjs->add($path . "assets/{$nameView}.min.js");
+
+        //CSS da página
+        if (file_exists($path . "assets/{$nameView}.css"))
+            $mcss->add($path . "assets/{$nameView}.css");
+        elseif (file_exists($path . "assets/{$nameView}.min.css"))
+            $mcss->add($path . "assets/{$nameView}.min.css");
+
+        $mjs->minify(PATH_HOME . "assetsPublic/view/{$nameView}.min.js");
+        $mcss->minify(PATH_HOME . "assetsPublic/view/{$nameView}.min.css");
+    }
+
+    /**
      * Minifica todos os assets das bibliotecas
      */
     private function createMinifyAssetsLib()
     {
-        //Para cada arquivo css e js presente nas bibliotecas dentro da pasta assets, minifica quando não existe
-        foreach (Helper::listFolder(PATH_HOME . VENDOR) as $lib) {
-            foreach (Helper::listFolder(PATH_HOME . VENDOR . $lib . "/public/assets") as $file) {
-                $ext = pathinfo($file, PATHINFO_EXTENSION);
-                $name = pathinfo($file, PATHINFO_FILENAME);
-                if (in_array($ext, ['css', 'js']) && !file_exists(PATH_HOME . VENDOR . $lib . "/public/assets/{$name}.min.{$ext}") && !preg_match('/\.min\.(css|js)$/i', $file)) {
-                    if ($ext === "js")
-                        $minifier = new Minify\JS(file_get_contents(PATH_HOME . VENDOR . $lib . "/public/assets/{$name}.js"));
-                    else
-                        $minifier = new Minify\CSS(file_get_contents(PATH_HOME . VENDOR . $lib . "/public/assets/{$name}.css"));
-                    $minifier->minify(PATH_HOME . VENDOR . $lib . "/public/assets/{$name}.min.{$ext}");
+        Helper::createFolderIfNoExist(PATH_HOME . 'assetsPublic/cache');
+        Helper::createFolderIfNoExist(PATH_HOME . 'assetsPublic/view');
+        $vendors = Helper::listFolder(PATH_HOME . VENDOR);
+        $this->createRepositorioCache($vendors);
+        $this->downloadAssetsCache($vendors);
+
+        foreach ($vendors as $lib) {
+            $path = PATH_HOME . VENDOR . $lib . "/public/";
+            if (file_exists($path . "view") && file_exists($path . "assets")) {
+
+                //para cada view
+                foreach (Helper::listFolder($path . "view") as $view) {
+
+                    //se for um arquivo php válido
+                    if (preg_match('/.php$/i', $view)) {
+
+                        $nameView = str_replace('.php', '', $view);
+
+                        $this->createViewAssets($path, $nameView);
+
+                    }
                 }
             }
         }
@@ -537,10 +757,7 @@ class UpdateDashboard
         $fav->resize(48, 48, 'fill')->saveToFile(PATH_HOME . "assetsPublic/img/favicon-48.png");
     }
 
-    /**
-     * @param array $dados
-     */
-    private function updateServiceWorker(array $dados)
+    private function updateServiceWorker()
     {
         //copia service worker
         $service = file_get_contents(PATH_HOME . VENDOR . "config/public/installTemplates/service-worker.txt");
