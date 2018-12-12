@@ -1,3 +1,6 @@
+if ('serviceWorker' in navigator)
+    navigator.serviceWorker.register(HOME + 'service-worker.js?v=' + VERSION);
+
 function getRequest(url) {
     return new Promise(function (resolve, reject) {
         var req = new XMLHttpRequest();
@@ -70,15 +73,10 @@ function updateCache() {
 window.onload = function () {
     caches.open('core-v' + VERSION).then(function (cache) {
         return cache.match("assetsPublic/appCore.min.js").then(response => {
-            if (!response) {
+            if (!response)
                 return updateCache();
 
-            } else {
-                if ('serviceWorker' in navigator)
-                    navigator.serviceWorker.register(HOME + 'service-worker.js?v=' + VERSION);
-
-                return response
-            }
+            return response;
         })
     }).then(d => {
         let scriptCore = document.createElement('script');
