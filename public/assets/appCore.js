@@ -1,5 +1,5 @@
 if ('serviceWorker' in navigator)
-    navigator.serviceWorker.register(HOME + 'service-worker.js?v=' + VERSION);
+    navigator.serviceWorker.register(HOME + 'service-worker.js');
 
 function getRequest(url) {
     return new Promise(function (resolve, reject) {
