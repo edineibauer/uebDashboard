@@ -1,7 +1,7 @@
 <?php
 if (empty($_SESSION['userlogin'])) {
     $data['response'] = 3;
-    $data['data'] = HOME . "login";
+    $data['data'] = HOME . "logout";
 } else {
     ob_start();
     ?>
