@@ -35,7 +35,7 @@ $(function () {
         if (action === "table") {
             requestDashboardEntity($(this).attr("data-entity"))
         } else if (action === 'form') {
-            post("form-crud", "api", {entity: attr}, function (data) {
+            post("form", "api", {entity: attr}, function (data) {
                 setDashboardContent(data)
             })
         } else if (action === 'page') {
