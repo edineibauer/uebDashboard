@@ -26,7 +26,7 @@ function requestDashboardEntity(entity) {
 
 function setDashboardContent(content) {
     if (typeof(content) === "string")
-        $("#dashboard").html(content)
+        $("#dashboard").html(content === "no-network" ? "Ops! Conexão Perdida" : content)
 }
 
 $(function () {
