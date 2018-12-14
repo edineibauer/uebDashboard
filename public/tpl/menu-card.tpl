@@ -1,4 +1,4 @@
-<{($action == "link")? "a href='{$file}' target='_blank'" : "div"} class="col padding-medium">
+<{($action == "link")? "a href='{$file}' " : "div"} class="col padding-medium">
     <div class="col align-center border padding-medium hover-text-theme color-grey-light opacity radius pointer hover-opacity-off menu-li"
          style="margin-bottom: 5px"
          data-action="{$action}"

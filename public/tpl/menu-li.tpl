@@ -1,4 +1,4 @@
-<{($action == "link")? "a href='{$file}' target='_blank'" : "div"}
+<{($action == "link")? "a href='{$file}' " : "div"}
 class='menu-li menu-dashboard-lista theme-hover bar-item button z-depth-0 padding-small'
 data-action="{$action}"
 {if $action == "table"}
