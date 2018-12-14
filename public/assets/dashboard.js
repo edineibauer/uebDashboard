@@ -25,11 +25,20 @@ function requestDashboardEntity(entity) {
 }
 
 function setDashboardContent(content) {
-    if (typeof(content) === "string")
+    if (typeof (content) === "string")
         $("#dashboard").html(content === "no-network" ? "Ops! Conexão Perdida" : content)
 }
 
 $(function () {
+    $("body").off("click", ".btn-editLogin").on("click", ".btn-editLogin", function () {
+        closeSidebar();
+        $(this).panel(themeDashboard("Editar Perfil", {lib: 'dashboard', file: 'edit/perfil'}, function (idOntab) {
+            data = formGetData($("#" + idOntab).find(".ontab-content").find(".form-crud"));
+            post('dashboard', 'edit/session', {dados: data}, function () {
+                location.reload()
+            })
+        }))
+    })
     $("#core-content, #core-applications").off("click", ".menu-li").on("click", ".menu-li", function () {
         let action = $(this).attr("data-action");
         if (action === "table") {

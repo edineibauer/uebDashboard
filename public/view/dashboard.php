@@ -17,7 +17,7 @@ if (empty($_SESSION['userlogin'])) {
 
             <div class="left">
                 <div class="col div-btn-editLogin">
-                    <button class="btn-editLogin left color-white z-depth-0 border hover-shadow radius padding-small color-grey-light margin-0">
+                    <button class="btn-editLogin left color-white z-depth-0 opacity hover-opacity-off border radius padding-small color-grey-light margin-0">
                         <i class="material-icons prefix padding-0 font-large">edit</i>
                     </button>
                 </div>
