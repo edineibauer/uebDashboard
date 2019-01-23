@@ -41,12 +41,11 @@ $(function () {
     })
     $("#core-content, #core-applications").off("click", ".menu-li").on("click", ".menu-li", function () {
         let action = $(this).attr("data-action");
+
         if (action === "table") {
-            requestDashboardEntity($(this).attr("data-entity"))
+            $("#dashboard").html("").grid($(this).attr("data-entity"));
         } else if (action === 'form') {
-            post("form", "api", {entity: attr}, function (data) {
-                setDashboardContent(data)
-            })
+            $("#dashboard").html("").form($(this).attr("data-entity"));
         } else if (action === 'page') {
             requestDashboardContent($(this).attr("data-atributo"))
         } else if (action === 'link') {
