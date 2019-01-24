@@ -123,14 +123,17 @@ class Menu
      */
     private function listEntity()
     {
-        $menuNotShow = Config::getMenuNotAllow();
-        foreach (Helper::listFolder(PATH_HOME . "entity/cache") as $item) {
-            if (preg_match('/\.json$/i', $item)) {
-                $entity = str_replace('.json', '', $item);
-                $me = Metadados::getInfo($entity);
-                $icon = !empty($me['icon']) ? $me['icon'] : "account_balance_wallet";
-                if (!isset($this->menu[$entity]) && !in_array($entity, $menuNotShow))
-                    $this->menu[$entity] = ["icon" => $icon, "title" => ucwords(trim(str_replace(['-', '_'], [' ', ' '], $entity))), "action" => "table", "entity" => $entity];
+        $permission = Config::getPermission();
+
+        if(!empty($permission[$_SESSION['userlogin']['setor']])) {
+            foreach ($permission[$_SESSION['userlogin']['setor']] as $entity => $dados) {
+                if(!empty($dados['menu']) && $dados['menu']) {
+                    $me = Metadados::getInfo($entity);
+                    $icon = !empty($me['icon']) ? $me['icon'] : "account_balance_wallet";
+                    if (!isset($this->menu[$entity]))
+                        $this->menu[$entity] = ["icon" => $icon, "title" => ucwords(trim(str_replace(['-', '_'], [' ', ' '], $entity))), "action" => "table", "entity" => $entity];
+
+                }
             }
         }
     }
