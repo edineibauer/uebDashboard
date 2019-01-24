@@ -9,7 +9,7 @@ if (empty($_SESSION['userlogin'])) {
         <div class="container row">
             <?php
             if (isset($_SESSION['userlogin']['imagem']) && !empty($_SESSION['userlogin']['imagem'])) {
-                echo '<div class="left"><img src="' . HOME . 'image/' . $_SESSION['userlogin']['imagem'] . '&w=100&h=100" width="72" height="72" style="margin-bottom:0!important; width: 72px;height: 72px" class="card margin-right"></div>';
+                echo '<div class="left"><img src="' . HOME . 'image/' . str_replace(HOME, '', $_SESSION['userlogin']['imagem']) . '&w=100&h=100" width="72" height="72" style="margin-bottom:0!important; width: 72px;height: 72px" class="card margin-right"></div>';
             } else {
                 echo '<div class="left"><i class="material-icons font-jumbo">people</i></div>';
             }
