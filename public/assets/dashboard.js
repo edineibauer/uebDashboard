@@ -24,22 +24,10 @@ function mainLoading() {
 }
 
 function requestDashboardContent(file) {
-    mainLoading();
     view(file, function (data) {
-        setDashboardContent(data.content)
+        if (typeof (data.content) === "string")
+            $("#dashboard").html(data.content === "no-network" ? "Ops! Conexão Perdida" : data.content)
     })
-}
-
-function requestDashboardEntity(entity) {
-    mainLoading();
-    post("table", "api", {entity: entity}, function (data) {
-        setDashboardContent(data)
-    })
-}
-
-function setDashboardContent(content) {
-    if (typeof (content) === "string")
-        $("#dashboard").html(content === "no-network" ? "Ops! Conexão Perdida" : content)
 }
 
 function menuDashboard() {
@@ -87,7 +75,6 @@ $(function () {
     $(".dashboard-nome").html(getCookie("nome"));
     menuDashboard();
 
-
     $("body").off("click", ".btn-editLogin").on("click", ".btn-editLogin", function () {
         closeSidebar();
         $(this).panel(themeDashboard("Editar Perfil", {lib: 'dashboard', file: 'edit/perfil'}, function (idOntab) {
@@ -99,6 +86,7 @@ $(function () {
     })
     $("#core-content, #core-applications").off("click", ".menu-li").on("click", ".menu-li", function () {
         let action = $(this).attr("data-action");
+        mainLoading();
 
         if (action === "table") {
             $("#dashboard").html("").grid($(this).attr("data-entity"));
@@ -106,7 +94,6 @@ $(function () {
             $("#dashboard").html("").form($(this).attr("data-entity"));
         } else if (action === 'page') {
             requestDashboardContent($(this).attr("data-atributo"))
-        } else if (action === 'link') {
         }
     }).off("click", ".close-dashboard-note").on("click", ".close-dashboard-note", function () {
         let $this = $(this);
