@@ -11,16 +11,8 @@ function mainLoading() {
 }
 
 function requestDashboardContent(file) {
-    mainLoading();
     view(file, function (data) {
         setDashboardContent(data.content)
-    })
-}
-
-function requestDashboardEntity(entity) {
-    mainLoading();
-    post("table", "api", {entity: entity}, function (data) {
-        setDashboardContent(data)
     })
 }
 
@@ -41,6 +33,7 @@ $(function () {
     })
     $("#core-content, #core-applications").off("click", ".menu-li").on("click", ".menu-li", function () {
         let action = $(this).attr("data-action");
+        mainLoading();
 
         if (action === "table") {
             $("#dashboard").html("").grid($(this).attr("data-entity"));
