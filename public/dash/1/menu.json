@@ -2,8 +2,13 @@
   {
     "icon": "settings_ethernet",
     "title": "DEV",
-    "action": "link",
+    "link": true,
+    "table": false,
+    "page": false,
+    "form": false,
     "lib": "ui-dev",
-    "file": "UIDev"
+    "file": "UIDev",
+    "entity": "",
+    "indice": 100
   }
 ]

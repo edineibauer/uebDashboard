@@ -1,0 +1,15 @@
+{{#link}}
+    <a href='{{file}}' class='menu-li menu-dashboard-lista theme-hover bar-item button z-depth-0 padding-small'
+       data-action="link">
+        <i class='material-icons left'>{{icon}}</i>
+        <span class='left padding-tiny padding-left'>{{title}}</span>
+    </a>
+{{/link}}
+{{^link}}
+    <div class='menu-li menu-dashboard-lista theme-hover bar-item button z-depth-0 padding-small'
+         data-action="{{#table}}table{{/table}}{{#form}}form{{/form}}{{#page}}page{{/page}}" data-entity="{{entity}}"
+         data-atributo="{{file}}" data-lib="{{lib}}">
+        <i class='material-icons left'>{{icon}}</i>
+        <span class='left padding-tiny padding-left'>{{title}}</span>
+    </div>
+{{/link}}

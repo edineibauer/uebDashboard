@@ -22,15 +22,11 @@ if (empty($_SESSION['userlogin'])) {
                     </button>
                 </div>
             </div>
-            <strong class="col padding-top no-select"><?= $_SESSION['userlogin']['email'] ?></strong><br>
+            <strong class="col padding-top no-select dashboard-nome"></strong><br>
 
         </div>
         <hr style="margin: 10px 0 0;border-top: solid 1px #ddd;">
-        <div class="bar-block">
-            <?php
-            require_once 'dashboardPages/menu.php';
-            ?>
-        </div>
+        <div class="bar-block" id="dashboard-menu"></div>
     </nav>
 
     <div class="main dashboard-main">

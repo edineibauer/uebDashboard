@@ -35,7 +35,7 @@ if (!$inc) {
             //Menu Entity Genérico
             if (!$inc) {
                 $menu = new \Dashboard\Menu();
-                echo $menu->getMenu();
+                $data['data'] = $menu->getMenu();
             }
         }
     }
