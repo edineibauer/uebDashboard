@@ -20,17 +20,11 @@ class Menu
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getMenu(): string
+    public function getMenu(): array
     {
-        $menu = "";
-        $tpl = new Template("dashboard");
-        $template = (count($this->menu) < 6 ? "menu-card" : "menu-li");
-        foreach ($this->menu as $m)
-            $menu .= $tpl->getShow($template, $m);
-
-        return $menu;
+        return $this->menu;
     }
 
     public function showMenu()
@@ -40,15 +34,8 @@ class Menu
 
     private function start()
     {
-        $this->geral();
-        $this->listEntity();
         $this->listRelationContent();
         $this->custom();
-    }
-
-    private function geral()
-    {
-        $this->menu['geralNotCopy'] = ["icon" => "timeline", "title" => "Dashboard", "action" => "page", "file" => "dashboardPages/panel", "lib" => "dashboard"];
     }
 
     private function listRelationContent()
@@ -82,8 +69,14 @@ class Menu
                         $this->menu[$metadado['relation']] = [
                             "icon" => "storage",
                             "title" => $metadado['nome'],
-                            "action" => "table",
-                            "entity" => $metadado['relation']
+                            "table" => true,
+                            "form" => false,
+                            "page" => false,
+                            "link" => false,
+                            "file" => "",
+                            "lib" => "",
+                            "entity" => $metadado['relation'],
+                            "indice" => (count($this->menu) + 1)
                         ];
 
                     } elseif ($metadado['format'] === 'list_mult') {
@@ -91,8 +84,14 @@ class Menu
                         $this->menu[$metadado['relation']] = [
                             "icon" => "storage",
                             "title" => $metadado['nome'],
-                            "action" => "table",
-                            "entity" => $metadado['relation']
+                            "table" => true,
+                            "form" => false,
+                            "page" => false,
+                            "link" => false,
+                            "file" => "",
+                            "lib" => "",
+                            "entity" => $metadado['relation'],
+                            "indice" => (count($this->menu) + 1)
                         ];
 
                     } elseif ($metadado['format'] === 'selecao_mult') {
@@ -100,8 +99,14 @@ class Menu
                         $this->menu[$metadado['relation']] = [
                             "icon" => "storage",
                             "title" => $metadado['nome'],
-                            "action" => "table",
-                            "entity" => $metadado['relation']
+                            "table" => true,
+                            "form" => false,
+                            "page" => false,
+                            "link" => false,
+                            "file" => "",
+                            "lib" => "",
+                            "entity" => $metadado['relation'],
+                            "indice" => (count($this->menu) + 1)
                         ];
 
                     } elseif ($metadado['format'] === 'extend') {
@@ -114,26 +119,6 @@ class Menu
             } else {
                 // multiplos linkamentos, se relaciona ocm a entidade (pode ser autor)
 
-            }
-        }
-    }
-
-    /**
-     * Opção para cada entidade
-     */
-    private function listEntity()
-    {
-        $permission = Config::getPermission();
-
-        if(!empty($permission[$_SESSION['userlogin']['setor']])) {
-            foreach ($permission[$_SESSION['userlogin']['setor']] as $entity => $dados) {
-                if(!empty($dados['menu']) && $dados['menu']) {
-                    $me = Metadados::getInfo($entity);
-                    $icon = !empty($me['icon']) ? $me['icon'] : "account_balance_wallet";
-                    if (!isset($this->menu[$entity]))
-                        $this->menu[$entity] = ["icon" => $icon, "title" => ucwords(trim(str_replace(['-', '_'], [' ', ' '], $entity))), "action" => "table", "entity" => $entity];
-
-                }
             }
         }
     }
@@ -170,9 +155,13 @@ class Menu
                 $this->menu[$name] = [
                     'lib' => Check::words(trim(strip_tags($menu['lib'])), 1),
                     'file' => Check::words(trim(strip_tags($menu['file'])), 1),
-                    'action' => $menu['action'] ?? "page",
+                    "table" => $menu['table'] ?? true,
+                    "form" => $menu['form'] ?? false,
+                    "page" => $menu['page'] ?? false,
+                    "link" => $menu['link'] ?? false,
                     'title' => ucwords(Check::words(trim(strip_tags($menu['title'])), 3)),
-                    'icon' => Check::words(trim(strip_tags($menu['icon'])), 1)
+                    'icon' => Check::words(trim(strip_tags($menu['icon'])), 1),
+                    "indice" => $menu['indice'] ?? (count($this->menu) + 1)
                 ];
             }
         }

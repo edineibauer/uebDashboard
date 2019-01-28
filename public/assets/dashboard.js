@@ -1,16 +1,3 @@
-//carrega menu
-dbLocal.exeRead("__menu", 1).then(menuLoad => {
-    if(isEmpty(menuLoad)) {
-        get("menu").then(m => {
-            dbLocal.clear("__menu").then(() => {
-                dbLocal.exeCreate("__menu", m).then(() => {
-                    menuDashboard();
-                });
-            })
-        });
-    }
-});
-
 function hide_sidebar_small() {
     if (screen.width < 993) {
         $("#myOverlay, #mySidebar").css("display", "none")
@@ -64,8 +51,9 @@ function menuDashboard() {
 
             //mostra o menu
             $("#dashboard-menu").html("");
+            let tpl = (menu.length < 5 ? templates['menu-card'] : templates['menu-li']);
             $.each(menu, function (i, m) {
-                $("#dashboard-menu").append(Mustache.render(templates['menu-li'], m));
+                $("#dashboard-menu").append(Mustache.render(tpl, m));
             })
         })
     });
