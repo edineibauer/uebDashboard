@@ -63,15 +63,6 @@ $(function () {
     $(".dashboard-nome").html(getCookie("nome"));
     menuDashboard();
 
-    $("body").off("click", ".btn-editLogin").on("click", ".btn-editLogin", function () {
-        closeSidebar();
-        $(this).panel(themeDashboard("Editar Perfil", {lib: 'dashboard', file: 'edit/perfil'}, function (idOntab) {
-            data = formGetData($("#" + idOntab).find(".ontab-content").find(".form-crud"));
-            post('dashboard', 'edit/session', {dados: data}, function () {
-                location.reload()
-            })
-        }))
-    })
     $("#core-content, #core-applications").off("click", ".menu-li").on("click", ".menu-li", function () {
         let action = $(this).attr("data-action");
         mainLoading();
@@ -79,7 +70,8 @@ $(function () {
         if (action === "table") {
             $("#dashboard").html("").grid($(this).attr("data-entity"));
         } else if (action === 'form') {
-            $("#dashboard").html("").form($(this).attr("data-entity"));
+            let id = !isNaN($(this).attr("data-atributo")) && $(this).attr("data-atributo") > 0 ? parseInt($(this).attr("data-atributo")) : null;
+            $("#dashboard").html("").form($(this).attr("data-entity"), id);
         } else if (action === 'page') {
             requestDashboardContent($(this).attr("data-atributo"))
         }
