@@ -98,7 +98,7 @@ $(function () {
     $(".dashboard-nome").html(getCookie("nome"));
     menuDashboard();
 
-    $("#core-content, #core-applications").off("click", ".menu-li").on("click", ".menu-li", function () {
+    $("body").off("click", ".menu-li").on("click", ".menu-li", function () {
         let action = $(this).attr("data-action");
         mainLoading();
 
@@ -110,7 +110,9 @@ $(function () {
         } else if (action === 'page') {
             requestDashboardContent($(this).attr("data-atributo"))
         }
-    }).off("click", ".close-dashboard-note").on("click", ".close-dashboard-note", function () {
+    });
+
+    $("#core-content, #core-applications").off("click", ".close-dashboard-note").on("click", ".close-dashboard-note", function () {
         let $this = $(this);
         post('dashboard', 'dash/delete', {id: $this.attr("id")}, function (data) {
             $this.closest("article").parent().remove()
