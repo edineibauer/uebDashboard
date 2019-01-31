@@ -1,22 +1,3 @@
-function hide_sidebar_small() {
-    if (screen.width < 993) {
-        $("#myOverlay, #mySidebar").css("display", "none")
-    }
-}
-
-function mainLoading() {
-    $(".main").loading();
-    hide_sidebar_small();
-    closeSidebar();
-}
-
-function requestDashboardContent(file) {
-    view(file, function (data) {
-        if (typeof (data.content) === "string")
-            $("#dashboard").html(data.content === "no-network" ? "Ops! Conexão Perdida" : data.content)
-    })
-}
-
 function menuDashboard() {
     let allow = dbLocal.exeRead("__allow", 1);
     let dicionarios = dbLocal.exeRead("__dicionario", 1);
@@ -98,19 +79,7 @@ $(function () {
     $(".dashboard-nome").html(getCookie("nome"));
     menuDashboard();
 
-    $("#core-content, #core-applications").off("click", ".menu-li").on("click", ".menu-li", function () {
-        let action = $(this).attr("data-action");
-        mainLoading();
-
-        if (action === "table") {
-            $("#dashboard").html("").grid($(this).attr("data-entity"));
-        } else if (action === 'form') {
-            let id = !isNaN($(this).attr("data-atributo")) && $(this).attr("data-atributo") > 0 ? parseInt($(this).attr("data-atributo")) : null;
-            $("#dashboard").html("").form($(this).attr("data-entity"), id);
-        } else if (action === 'page') {
-            requestDashboardContent($(this).attr("data-atributo"))
-        }
-    }).off("click", ".close-dashboard-note").on("click", ".close-dashboard-note", function () {
+    $("#core-content, #core-applications").off("click", ".close-dashboard-note").on("click", ".close-dashboard-note", function () {
         let $this = $(this);
         post('dashboard', 'dash/delete', {id: $this.attr("id")}, function (data) {
             $this.closest("article").parent().remove()
