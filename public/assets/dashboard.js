@@ -94,8 +94,18 @@ function menuDashboard() {
     });
 }
 
+function dashboardSidebarInfo() {
+    if(getCookie("imagem") === "") {
+        document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<div id='core-sidebar-perfil-img'><i class='material-icons'>people</i></div>";
+    } else {
+        document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<img src='" + decodeURIComponent(getCookie("imagem")) + "&h=80&w=80' height='60' width='60'>";
+    }
+    document.querySelector("#dashboard-sidebar-nome").innerHTML = getCookie("nome");
+    document.querySelector("#core-sidebar-edit").classList.remove("hide");
+}
+
 $(function () {
-    $("#core-sidebar-edit").removeClass("hide");
+    dashboardSidebarInfo();
     menuDashboard();
 
     $("body").off("click", ".menu-li").on("click", ".menu-li", function () {

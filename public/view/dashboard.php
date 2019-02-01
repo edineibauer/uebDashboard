@@ -4,15 +4,9 @@ ob_start();
     <nav class="sidebar z-depth-2 collapse color-gray-light no-select animate-left dashboard-nav space-header"
          id="mySidebar">
         <div class="container row padding-4" style="background-color: #e9e9e9">
-            <?php
-            if (isset($_SESSION['userlogin']['imagem']) && !empty($_SESSION['userlogin']['imagem'])) {
-                echo '<div class="col" style="height: 60px; width: 60px"><img src="' . HOME . 'image/' . str_replace(HOME, '', $_SESSION['userlogin']['imagem']) . '&w=80&h=80" width="60" height="60" style="width: 60px;height: 60px;" class="card margin-right"></div>';
-            } else {
-                echo '<div class="col" style="height: 60px; width: 60px"><i class="material-icons font-jumbo">people</i></div>';
-            }
-            ?>
+            <div id="dashboard-sidebar-imagem" class="col" style="height: 60px; width: 60px"></div>
             <div class="rest padding-left padding-bottom">
-                <strong class="col padding-top no-select dashboard-nome"></strong>
+                <strong class="col padding-top no-select" id="dashboard-sidebar-nome"></strong>
 
                 <div class="col">
                     <span class="left pointer menu-li padding-small color-gray-light opacity hover-opacity-off hover-shadow radius"
