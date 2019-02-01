@@ -95,6 +95,7 @@ function menuDashboard() {
 }
 
 $(function () {
+    $("#core-sidebar-edit").removeClass("hide");
     menuDashboard();
 
     $("body").off("click", ".menu-li").on("click", ".menu-li", function () {
