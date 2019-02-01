@@ -10,13 +10,6 @@ function mainLoading() {
     closeSidebar();
 }
 
-function requestDashboardContent(file) {
-    view(file, function (data) {
-        if (typeof (data.content) === "string")
-            $("#dashboard").html(data.content === "no-network" ? "Ops! Conexão Perdida" : data.content)
-    })
-}
-
 function menuDashboard() {
     let allow = dbLocal.exeRead("__allow", 1);
     let dicionarios = dbLocal.exeRead("__dicionario", 1);
@@ -138,7 +131,10 @@ $(function () {
             let id = !isNaN($(this).attr("data-atributo")) && $(this).attr("data-atributo") > 0 ? parseInt($(this).attr("data-atributo")) : null;
             $("#dashboard").html("").form($(this).attr("data-entity"), id);
         } else if (action === 'page') {
-            requestDashboardContent($(this).attr("data-atributo"))
+            view($(this).attr("data-atributo"), function (data) {
+                if (typeof (data.content) === "string")
+                    $("#dashboard").html(data.content === "no-network" ? "Ops! Conexão Perdida" : data.content)
+            });
         }
     });
 
