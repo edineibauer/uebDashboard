@@ -96,12 +96,33 @@ function menuDashboard() {
 
 function dashboardSidebarInfo() {
     if(getCookie("imagem") === "") {
-        document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<div id='core-sidebar-perfil-img'><i class='material-icons'>people</i></div>";
+        document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<i class='material-icons font-jumbo'>people</i>";
     } else {
         document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<img src='" + decodeURIComponent(getCookie("imagem")) + "&h=80&w=80' height='60' width='60'>";
     }
     document.querySelector("#dashboard-sidebar-nome").innerHTML = getCookie("nome");
-    document.querySelector("#core-sidebar-edit").classList.remove("hide");
+    let sidebar = document.querySelector("#core-sidebar-edit");
+    sidebar.classList.remove("hide");
+
+    sidebar.addEventListener("click", function () {
+        if (document.querySelector(".btn-edit-perfil") !== null) {
+            document.querySelector(".btn-edit-perfil").click();
+        } else {
+            mainLoading();
+            app.loadView(HOME + "dashboard");
+            let ee = setInterval(function () {
+                console.log('interval');
+                if (document.querySelector(".btn-edit-perfil") !== null) {
+                    toast("carregando perfil...", 1300, "toast-success");
+                    setTimeout(function () {
+                        document.querySelector(".btn-edit-perfil").click();
+
+                    }, 1000);
+                    clearInterval(ee);
+                }
+            },100);
+        }
+    });
 }
 
 $(function () {

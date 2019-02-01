@@ -9,7 +9,7 @@ ob_start();
                 <strong class="col padding-top no-select" id="dashboard-sidebar-nome"></strong>
 
                 <div class="col">
-                    <span class="left pointer menu-li padding-small color-gray-light opacity hover-opacity-off hover-shadow radius"
+                    <span class="btn-edit-perfil left pointer menu-li padding-small color-gray-light opacity hover-opacity-off hover-shadow radius"
                           data-action="form" data-entity="usuarios"
                           data-atributo="<?= $_SESSION['userlogin']['id'] ?>">
                         <i class="material-icons left font-large">edit</i>
