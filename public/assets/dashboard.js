@@ -95,7 +95,6 @@ function menuDashboard() {
 }
 
 $(function () {
-    $(".dashboard-nome").html(getCookie("nome"));
     menuDashboard();
 
     $("body").off("click", ".menu-li").on("click", ".menu-li", function () {
