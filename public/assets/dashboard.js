@@ -110,9 +110,9 @@ function dashboardSidebarInfo() {
         } else {
             mainLoading();
             app.loadView(HOME + "dashboard");
+            toast("carregando perfil...", 1300, "toast-success");
             let ee = setInterval(function () {
                 if (document.querySelector(".btn-edit-perfil") !== null) {
-                    toast("carregando perfil...", 1300, "toast-success");
                     setTimeout(function () {
                         document.querySelector(".btn-edit-perfil").click();
 
