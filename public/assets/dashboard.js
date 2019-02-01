@@ -111,7 +111,6 @@ function dashboardSidebarInfo() {
             mainLoading();
             app.loadView(HOME + "dashboard");
             let ee = setInterval(function () {
-                console.log('interval');
                 if (document.querySelector(".btn-edit-perfil") !== null) {
                     toast("carregando perfil...", 1300, "toast-success");
                     setTimeout(function () {
