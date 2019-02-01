@@ -95,6 +95,9 @@ function menuDashboard() {
 }
 
 $(function () {
+    if(getCookie("token") === "0")
+        window.location = HOME + "login";
+
     $(".dashboard-nome").html(getCookie("nome"));
     menuDashboard();
 
