@@ -22,7 +22,9 @@ ob_start();
     </nav>
 
     <div class="main dashboard-main">
-        <div id="dashboard" class="dashboard-tab container row"></div>
+        <div id="dashboard" class="dashboard-tab container row">
+            <?=include_once 'panel.php' ?>
+        </div>
     </div>
 
 <?php
