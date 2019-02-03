@@ -23,7 +23,7 @@ ob_start();
 
     <div class="main dashboard-main">
         <div id="dashboard" class="dashboard-tab container row">
-            <?=include_once 'panel.php' ?>
+            <?php include_once 'panel.php' ?>
         </div>
     </div>
 
