@@ -84,7 +84,7 @@ function dashboardSidebarInfo() {
     if (getCookie("imagem") === "") {
         document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<i class='material-icons font-jumbo'>people</i>"
     } else {
-        document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<img src='" + decodeURIComponent(getCookie("imagem")) + "&h=80&w=80' height='60' width='60'>"
+        document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<img src='" + decodeURIComponent(getCookie("imagem")) + "&h=120&w=120' height='60' width='60'>"
     }
     document.querySelector("#dashboard-sidebar-nome").innerHTML = getCookie("nome");
     let sidebar = document.querySelector("#core-sidebar-edit");
@@ -167,7 +167,7 @@ $(function () {
             $("#dashboard").html("").grid($(this).attr("data-entity"))
         } else if (action === 'form') {
             let id = !isNaN($(this).attr("data-atributo")) && $(this).attr("data-atributo") > 0 ? parseInt($(this).attr("data-atributo")) : null;
-            $("#dashboard").html("").form($(this).attr("data-entity"), id)
+            $("#dashboard").html("").form($(this).attr("data-entity"), id, typeof $(this).attr("data-fields") !== "undefined" ? JSON.parse($(this).attr("data-fields")) : "undefined")
         } else if (action === 'page') {
             let viewPage = $(this).attr("data-atributo");
             view(viewPage, function (data) {

@@ -10,7 +10,7 @@ ob_start();
 
                 <div class="col">
                     <span class="btn-edit-perfil left pointer menu-li padding-small color-gray-light opacity hover-opacity-off hover-shadow radius"
-                          data-action="form" data-entity="usuarios"
+                          data-action="form" data-entity="usuarios" data-fields='["nome", "nome_usuario", "imagem", "email", "password"]'
                           data-atributo="<?= $_SESSION['userlogin']['id'] ?>">
                         <i class="material-icons left font-large">edit</i>
                     </span>
