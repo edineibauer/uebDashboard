@@ -84,12 +84,11 @@ function dashboardSidebarInfo() {
     if (getCookie("imagem") === "") {
         document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<i class='material-icons font-jumbo'>people</i>"
     } else {
-        document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<img src='" + decodeURIComponent(getCookie("imagem")) + "&h=120&w=120' height='60' width='60'>"
+        document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<img src='" + decodeURIComponent(getCookie("imagem")) + "&h=80&w=80' height='60' width='60'>"
     }
-    document.querySelector("#dashboard-sidebar-nome").innerHTML = getCookie("nome");
-    let sidebar = document.querySelector("#core-sidebar-edit");
-    sidebar.classList.remove("hide");
-    sidebar.addEventListener("click", function () {
+    $("#dashboard-sidebar-nome").html(getCookie("nome"));
+    let $sidebar = $("#core-sidebar-edit");
+    $sidebar.removeClass("hide").off("click").on("click", function () {
         if (document.querySelector(".btn-edit-perfil") !== null) {
             document.querySelector(".btn-edit-perfil").click()
         } else {
@@ -105,7 +104,7 @@ function dashboardSidebarInfo() {
                 }
             }, 100)
         }
-    })
+    });
 }
 
 function dashboardPanelContent() {
