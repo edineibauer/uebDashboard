@@ -58,7 +58,7 @@ function menuDashboard() {
         }).then(() => {
             menu.sort(dynamicSort('indice'));
             $("#dashboard-menu").html("");
-            let tpl = (menu.length < 5 ? templates['menu-card'] : templates['menu-li']);
+            let tpl = (menu.length < 4 ? templates['menu-card'] : templates['menu-li']);
             $.each(menu, function (i, m) {
                 $("#dashboard-menu").append(Mustache.render(tpl, m))
             })
