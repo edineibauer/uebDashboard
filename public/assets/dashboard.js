@@ -112,43 +112,25 @@ function dashboardPanelContent() {
     let dicionarios = dbLocal.exeRead("__dicionario", 1);
     let info = dbLocal.exeRead("__info", 1);
     let templates = dbLocal.exeRead("__template", 1);
-    let dashboard =  dbLocal.exeRead("__dashboard", 1);
-    return Promise.all([allow, dicionarios, info, templates, dashboard]).then(r => {
+    let panel =  dbLocal.exeRead("__panel", 1);
+    return Promise.all([allow, dicionarios, info, templates, panel]).then(r => {
         allow = r[0][getCookie('setor')];
         dicionarios = r[1];
         info = r[2];
         templates = r[3];
-        dashboard = r[4];
+        panel = r[4];
         let menu = [];
         let indice = 1;
         let content = "";
 
-        if(typeof dashboard === "string") {
-            content = dashboard;
+        if(typeof panel === "string" && panel !== "") {
+            content = panel;
         } else {
 
-            $.each(dashboard, function (nome, dados) {
-                menu.push(dados)
-            });
-
-            $("#dashboard-menu").html("");
-            let tpl = (menu.length < 4 ? templates['menu-card'] : templates['menu-li']);
-            $.each(menu, function (i, m) {
-                $("#dashboard-menu").append(Mustache.render(tpl, m))
-            })
-            if (getCookie("setor") === "1" && getCookie("nivel") === "1") {
-                $("#dashboard-menu").append(Mustache.render(tpl, {
-                    "icon": "settings_ethernet",
-                    "title": "DEV",
-                    "link": !0,
-                    "table": !1,
-                    "page": !1,
-                    "form": !1,
-                    "lib": "ui-dev",
-                    "file": "UIDev",
-                    "entity": "",
-                    "indice": 100
-                }))
+            if(panel.constructor === Array && panel.length) {
+                $.each(panel, function (nome, dados) {
+                    menu.push(dados)
+                });
             }
 
             $.each(dicionarios, function (entity, meta) {
