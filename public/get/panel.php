@@ -1,5 +1,7 @@
 <?php
 
+use \Helpers\Helper;
+
 /**
  * @param string $dir
  * @return bool
