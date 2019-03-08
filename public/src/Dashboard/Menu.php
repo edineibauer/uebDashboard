@@ -128,17 +128,19 @@ class Menu
      */
     private function custom()
     {
+        $setor = !empty($_SESSION['userlogin']['setor']['entity']) ? $_SESSION['userlogin']['setor']['entity'] : "";
+
         if (file_exists(PATH_HOME . "public/dash/menu.json"))
             $this->addMenuJson(PATH_HOME . "public/dash/menu.json");
 
-        if (file_exists(PATH_HOME . "public/dash/{$_SESSION['userlogin']['setor']}/menu.json"))
-            $this->addMenuJson(PATH_HOME . "public/dash/{$_SESSION['userlogin']['setor']}/menu.json");
+        if (!empty($setor) && file_exists(PATH_HOME . "public/dash/{$setor}/menu.json"))
+            $this->addMenuJson(PATH_HOME . "public/dash/{$setor}/menu.json");
 
         foreach (Helper::listFolder(PATH_HOME . VENDOR) as $lib) {
             if (file_exists(PATH_HOME . VENDOR . "{$lib}/public/dash/menu.json"))
                 $this->addMenuJson(PATH_HOME . VENDOR . "{$lib}/public/dash/menu.json");
-            if (file_exists(PATH_HOME . VENDOR . "{$lib}/public/dash/{$_SESSION['userlogin']['setor']}/menu.json"))
-                $this->addMenuJson(PATH_HOME . VENDOR . "{$lib}/public/dash/{$_SESSION['userlogin']['setor']}/menu.json");
+            if (!empty($setor) && file_exists(PATH_HOME . VENDOR . "{$lib}/public/dash/{$setor}/menu.json"))
+                $this->addMenuJson(PATH_HOME . VENDOR . "{$lib}/public/dash/{$setor}/menu.json");
         }
     }
 

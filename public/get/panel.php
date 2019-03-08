@@ -16,13 +16,14 @@ function checkFolder(string $dir): bool
 }
 
 $inc = false;
+$setor = !empty($_SESSION['userlogin']['setor']['entity']) ? $_SESSION['userlogin']['setor']['entity'] : "";
 
 //Dashboard Personalizado
-$inc = checkFolder(PATH_HOME . "public/dash/{$_SESSION['userlogin']['setor']}/panel.php");
+$inc = !empty($setor) && checkFolder(PATH_HOME . "public/dash/{$setor}/panel.php");
 if (!$inc) {
     foreach (\Helpers\Helper::listFolder(PATH_HOME . VENDOR) as $lib) {
         if (!$inc)
-            $inc = checkFolder(PATH_HOME . VENDOR . "{$lib}/public/dash/{$_SESSION['userlogin']['setor']}/panel.php");
+            $inc = !empty($setor) && checkFolder(PATH_HOME . VENDOR . "{$lib}/public/dash/{$setor}/panel.php");
     }
 
     if (!$inc) {
@@ -68,14 +69,14 @@ if (!$inc) {
                 if (file_exists(PATH_HOME . "public/dash/panel.json"))
                     $lista = addMenuJson(PATH_HOME . "public/dash/panel.json", $lista);
 
-                if (file_exists(PATH_HOME . "public/dash/{$_SESSION['userlogin']['setor']}/panel.json"))
-                    $lista = addMenuJson(PATH_HOME . "public/dash/{$_SESSION['userlogin']['setor']}/panel.json", $lista);
+                if (!empty($setor) && file_exists(PATH_HOME . "public/dash/{$setor}/panel.json"))
+                    $lista = addMenuJson(PATH_HOME . "public/dash/{$setor}/panel.json", $lista);
 
                 foreach (Helper::listFolder(PATH_HOME . VENDOR) as $lib) {
                     if (file_exists(PATH_HOME . VENDOR . "{$lib}/public/dash/panel.json"))
                         $lista = addMenuJson(PATH_HOME . VENDOR . "{$lib}/public/dash/panel.json", $lista);
-                    if (file_exists(PATH_HOME . VENDOR . "{$lib}/public/dash/{$_SESSION['userlogin']['setor']}/panel.json"))
-                        $lista = addMenuJson(PATH_HOME . VENDOR . "{$lib}/public/dash/{$_SESSION['userlogin']['setor']}/panel.json", $lista);
+                    if (!empty($setor) && file_exists(PATH_HOME . VENDOR . "{$lib}/public/dash/{$setor}/panel.json"))
+                        $lista = addMenuJson(PATH_HOME . VENDOR . "{$lib}/public/dash/{$setor}/panel.json", $lista);
                 }
             }
         }
