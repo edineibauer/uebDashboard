@@ -14,7 +14,7 @@ function checkFolder(string $dir): bool
 }
 
 $inc = false;
-$setor = !empty($_SESSION['userlogin']['setor']['entity']) ? $_SESSION['userlogin']['setor']['entity'] : "";
+$setor = !empty($_SESSION['userlogin']) ? $_SESSION['userlogin']['setor'] : "0";
 
 //Menu Personalizado
 $inc = !empty($setor) && checkFolder(PATH_HOME . "public/dash/{$setor}/menu.php");

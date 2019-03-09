@@ -34,11 +34,11 @@ class Menu
 
     private function start()
     {
-        $this->listRelationContent();
+//        $this->listRelationContent();
         $this->custom();
     }
 
-    private function listRelationContent()
+    /*private function listRelationContent()
     {
         foreach (Helper::listFolder(PATH_HOME . "entity/cache") as $item) {
             if (preg_match('/\.json$/i', $item) && $item !== "login_attempt.json") {
@@ -52,8 +52,9 @@ class Menu
                 }
             }
         }
-    }
+    }*/
 
+    /*
     private function getMenuListRelationContent(string $entity, array $metadados, int $id)
     {
         $read = new Read();
@@ -121,14 +122,14 @@ class Menu
 
             }
         }
-    }
+    }*/
 
     /**
      * Verifica por Menus Extras para adicionar
      */
     private function custom()
     {
-        $setor = !empty($_SESSION['userlogin']['setor']['entity']) ? $_SESSION['userlogin']['setor']['entity'] : "";
+        $setor = !empty($_SESSION['userlogin']) ? $_SESSION['userlogin']['setor'] : "0";
 
         if (file_exists(PATH_HOME . "public/dash/menu.json"))
             $this->addMenuJson(PATH_HOME . "public/dash/menu.json");
