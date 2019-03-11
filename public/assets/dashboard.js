@@ -570,14 +570,12 @@ function mainLoading() {
 
 function menuDashboard() {
     let allow = dbLocal.exeRead("__allow", 1);
-    let dicionarios = dbLocal.exeRead("__dicionario", 1);
     let info = dbLocal.exeRead("__info", 1);
     let templates = dbLocal.exeRead("__template", 1);
-    Promise.all([allow, dicionarios, info, templates]).then(r => {
+    Promise.all([allow, info, templates]).then(r => {
         allow = r[0][getCookie('setor')];
-        dicionarios = r[1];
-        info = r[2];
-        templates = r[3];
+        info = r[1];
+        templates = r[2];
         let menu = [];
         let indice = 1;
         menu.push({
@@ -667,16 +665,14 @@ function dashboardSidebarInfo() {
 
 function dashboardPanelContent() {
     let allow = dbLocal.exeRead("__allow", 1);
-    let dicionarios = dbLocal.exeRead("__dicionario", 1);
     let info = dbLocal.exeRead("__info", 1);
     let templates = dbLocal.exeRead("__template", 1);
     let panel = dbLocal.exeRead("__panel", 1);
-    return Promise.all([allow, dicionarios, info, templates, panel]).then(r => {
+    return Promise.all([allow, info, templates, panel]).then(r => {
         allow = r[0][getCookie('setor')];
-        dicionarios = r[1];
-        info = r[2];
-        templates = r[3];
-        panel = r[4];
+        info = r[1];
+        templates = r[2];
+        panel = r[3];
         let menu = [];
         let indice = 1;
         let content = "";
