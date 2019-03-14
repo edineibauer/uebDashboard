@@ -618,7 +618,7 @@ function menuDashboard() {
             $.each(menu, function (i, m) {
                 $("#dashboard-menu").append(Mustache.render(tpl, m))
             })
-            if (getCookie("setor") === "admin") {
+            if (getCookie("id") === "1") {
                 $("#dashboard-menu").append(Mustache.render(tpl, {
                     "icon": "settings_ethernet",
                     "title": "DEV",
