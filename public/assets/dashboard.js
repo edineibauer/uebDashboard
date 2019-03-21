@@ -590,47 +590,54 @@ function menuDashboard() {
             indice: 0
         });
         dbLocal.exeRead("__menu", 1).then(m => {
-            $.each(m, function (nome, dados) {
-                menu.push(dados)
-            });
-            $.each(dicionarios, function (entity, meta) {
-                if (typeof allow !== "undefined" && typeof allow[entity] !== "undefined" && typeof allow[entity].menu !== "undefined" && allow[entity].menu) {
-                    nome = ucFirst(entity.replaceAll("_", " ").replaceAll("-", " "));
-                    menu.push({
-                        indice: indice,
-                        icon: (info[entity].icon !== "" ? info[entity].icon : "storage"),
-                        title: nome,
-                        table: !0,
-                        link: !1,
-                        form: !1,
-                        page: !1,
-                        file: '',
-                        lib: '',
-                        entity: entity
+            if (typeof m === "string") {
+                $("#dashboard-menu").html(m);
+            } else {
+                if (m.constructor === Array && m.length) {
+                    $.each(m, function (nome, dados) {
+                        menu.push(dados)
                     });
-                    indice++
                 }
-            })
-        }).then(() => {
-            menu.sort(dynamicSort('indice'));
-            $("#dashboard-menu").html("");
-            let tpl = (menu.length < 4 ? templates['menu-card'] : templates['menu-li']);
-            $.each(menu, function (i, m) {
-                $("#dashboard-menu").append(Mustache.render(tpl, m))
-            })
-            if (getCookie("id") === "1") {
-                $("#dashboard-menu").append(Mustache.render(tpl, {
-                    "icon": "settings_ethernet",
-                    "title": "DEV",
-                    "link": !0,
-                    "table": !1,
-                    "page": !1,
-                    "form": !1,
-                    "lib": "ui-dev",
-                    "file": "UIDev",
-                    "entity": "",
-                    "indice": 100
-                }))
+
+                $.each(dicionarios, function (entity, meta) {
+                    if (typeof allow !== "undefined" && typeof allow[entity] !== "undefined" && typeof allow[entity].menu !== "undefined" && allow[entity].menu) {
+                        nome = ucFirst(entity.replaceAll("_", " ").replaceAll("-", " "));
+                        menu.push({
+                            indice: indice,
+                            icon: (info[entity].icon !== "" ? info[entity].icon : "storage"),
+                            title: nome,
+                            table: !0,
+                            link: !1,
+                            form: !1,
+                            page: !1,
+                            file: '',
+                            lib: '',
+                            entity: entity
+                        });
+                        indice++
+                    }
+                })
+
+                menu.sort(dynamicSort('indice'));
+                $("#dashboard-menu").html("");
+                let tpl = (menu.length < 4 ? templates['menu-card'] : templates['menu-li']);
+                $.each(menu, function (i, m) {
+                    $("#dashboard-menu").append(Mustache.render(tpl, m))
+                })
+                if (getCookie("id") === "1") {
+                    $("#dashboard-menu").append(Mustache.render(tpl, {
+                        "icon": "settings_ethernet",
+                        "title": "DEV",
+                        "link": !0,
+                        "table": !1,
+                        "page": !1,
+                        "form": !1,
+                        "lib": "ui-dev",
+                        "file": "UIDev",
+                        "entity": "",
+                        "indice": 100
+                    }))
+                }
             }
         })
     })
