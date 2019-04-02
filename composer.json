@@ -16,6 +16,7 @@
     "ueb/table": "*",
     "ueb/form": "*",
     "ueb/entity-ui": "*",
+    "ueb/report": "*",
     "smottt/wideimage": "^1.1",
     "ext-json": "*"
   },
