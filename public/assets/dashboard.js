@@ -741,7 +741,15 @@ $(function () {
             let viewPage = $(this).attr("data-atributo");
             view(viewPage, function (data) {
                 if (typeof (data.content) === "string") {
-                    $("#dashboard").html(data.content === "no-network" ? "Ops! Conexão Perdida" : data.content);
+                    if(data.content === "no-network") {
+                        $("#dashboard").html("Ops! Conexão Perdida");
+                    } else {
+                        $("#dashboard").html(data.content);
+                        if (data.js.length)
+                            $.cachedScript(data.js);
+                        if(data.css.length)
+                            $("#core-style").prepend(data.css);
+                    }
                     if (viewPage === "panel")
                         dashboardPanel()
                 }
