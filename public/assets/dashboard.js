@@ -676,9 +676,12 @@ function dashboardPanelContent() {
     let templates = dbLocal.exeRead("__template", 1);
     let panel = dbLocal.exeRead("__panel", 1);
     let syncCheck = [];
-    $.each(dicionarios, function(entity, meta) {
-        syncCheck.push(dbLocal.exeRead("sync_" + entity));
-    });
+
+    if(!AUTOSYNC && navigator.onLine) {
+        $.each(dicionarios, function (entity, meta) {
+            syncCheck.push(dbLocal.exeRead("sync_" + entity))
+        });
+    }
 
     return Promise.all([allow, info, templates, panel].concat(syncCheck)).then(r => {
         allow = r[0][getCookie('setor')];
@@ -720,10 +723,12 @@ function dashboardPanelContent() {
             })
         }
 
-        for(let i = 4; i < 100; i++) {
-            if(typeof r[i] !== "undefined" && r[i].length) {
-                content += '<button class="col btn padding-large theme radius btn-panel-sync" onclick="syncDataBtn()">sincronizar</button>';
-                i = 100;
+        if(!AUTOSYNC && navigator.onLine) {
+            for (let i = 4; i < 100; i++) {
+                if (typeof r[i] !== "undefined" && r[i].length) {
+                    content += '<button class="col btn padding-large theme radius btn-panel-sync" onclick="syncDataBtn()">sincronizar</button>';
+                    i = 100
+                }
             }
         }
 
