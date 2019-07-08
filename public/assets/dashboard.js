@@ -675,7 +675,12 @@ function dashboardPanelContent() {
     let info = dbLocal.exeRead("__info", 1);
     let templates = dbLocal.exeRead("__template", 1);
     let panel = dbLocal.exeRead("__panel", 1);
-    return Promise.all([allow, info, templates, panel]).then(r => {
+    let syncCheck = [];
+    $.each(dicionarios, function(entity, meta) {
+        syncCheck.push(dbLocal.exeRead("sync_" + entity));
+    });
+
+    return Promise.all([allow, info, templates, panel].concat(syncCheck)).then(r => {
         allow = r[0][getCookie('setor')];
         info = r[1];
         templates = r[2];
@@ -714,6 +719,14 @@ function dashboardPanelContent() {
                 content += Mustache.render(templates.card, m)
             })
         }
+
+        for(let i = 4; i < 100; i++) {
+            if(typeof r[i] !== "undefined" && r[i].length) {
+                content += '<button class="col btn padding-large theme radius btn-panel-sync" onclick="syncDataBtn()">sincronizar</button>';
+                i = 100;
+            }
+        }
+
         return content
     })
 }
