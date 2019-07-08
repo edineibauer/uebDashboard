@@ -616,7 +616,7 @@ function menuDashboard() {
                         });
                         indice++
                     }
-                })
+                });
 
                 menu.sort(dynamicSort('indice'));
                 $("#dashboard-menu").html("");
@@ -671,69 +671,68 @@ function dashboardSidebarInfo() {
 }
 
 function dashboardPanelContent() {
-    let allow = dbLocal.exeRead("__allow", 1);
-    let info = dbLocal.exeRead("__info", 1);
-    let templates = dbLocal.exeRead("__template", 1);
-    let panel = dbLocal.exeRead("__panel", 1);
-    let syncCheck = [];
+    return dbLocal.exeRead('__dicionario', 1).then( d => {
 
-    if(!AUTOSYNC && navigator.onLine) {
-        $.each(dicionarios, function (entity, meta) {
-            syncCheck.push(dbLocal.exeRead("sync_" + entity))
-        });
-    }
-
-    return Promise.all([allow, info, templates, panel].concat(syncCheck)).then(r => {
-        allow = r[0][getCookie('setor')];
-        info = r[1];
-        templates = r[2];
-        panel = r[3];
-        let menu = [];
-        let indice = 1;
-        let content = "";
-        if (typeof panel === "string" && panel !== "") {
-            content = panel
-        } else {
-            if (panel.constructor === Array && panel.length) {
-                $.each(panel, function (nome, dados) {
-                    menu.push(dados)
-                })
-            }
-            $.each(dicionarios, function (entity, meta) {
-                if (typeof allow !== "undefined" && typeof allow[entity] !== "undefined" && typeof allow[entity].menu !== "undefined" && allow[entity].menu) {
-                    nome = ucFirst(entity.replaceAll("_", " ").replaceAll("-", " "));
-                    menu.push({
-                        indice: indice,
-                        icon: (info[entity].icon !== "" ? info[entity].icon : "storage"),
-                        title: nome,
-                        table: !0,
-                        link: !1,
-                        form: !1,
-                        page: !1,
-                        file: '',
-                        lib: '',
-                        entity: entity
-                    });
-                    indice++
-                }
-            });
-            menu.sort(dynamicSort('indice'));
-            $.each(menu, function (i, m) {
-                content += Mustache.render(templates.card, m)
+        let syncCheck = [];
+        syncCheck.push(dbLocal.exeRead("__allow", 1));
+        syncCheck.push(dbLocal.exeRead("__info", 1));
+        syncCheck.push(dbLocal.exeRead("__template", 1));
+        syncCheck.push(dbLocal.exeRead("__panel", 1));
+        if (!AUTOSYNC && navigator.onLine) {
+            $.each(d, function (entity, meta) {
+                syncCheck.push(dbLocal.exeRead("sync_" + entity));
             })
         }
-
-        if(!AUTOSYNC && navigator.onLine) {
-            for (let i = 4; i < 100; i++) {
-                if (typeof r[i] !== "undefined" && r[i].length) {
-                    content += '<button class="col btn padding-large theme radius btn-panel-sync" onclick="syncDataBtn()">sincronizar</button>';
-                    i = 100
+        return Promise.all(syncCheck).then(r => {
+            allow = r[0][getCookie('setor')];
+            info = r[1];
+            templates = r[2];
+            panel = r[3];
+            let menu = [];
+            let indice = 1;
+            let content = "";
+            if (typeof panel === "string" && panel !== "") {
+                content = panel
+            } else {
+                if (panel.constructor === Array && panel.length) {
+                    $.each(panel, function (nome, dados) {
+                        menu.push(dados)
+                    })
+                }
+                $.each(d, function (entity, meta) {
+                    if (typeof allow !== "undefined" && typeof allow[entity] !== "undefined" && typeof allow[entity].menu !== "undefined" && allow[entity].menu) {
+                        nome = ucFirst(entity.replaceAll("_", " ").replaceAll("-", " "));
+                        menu.push({
+                            indice: indice,
+                            icon: (info[entity].icon !== "" ? info[entity].icon : "storage"),
+                            title: nome,
+                            table: !0,
+                            link: !1,
+                            form: !1,
+                            page: !1,
+                            file: '',
+                            lib: '',
+                            entity: entity
+                        });
+                        indice++
+                    }
+                });
+                menu.sort(dynamicSort('indice'));
+                $.each(menu, function (i, m) {
+                    content += Mustache.render(templates.card, m)
+                })
+            }
+            if (!AUTOSYNC && navigator.onLine) {
+                for (let i = 4; i < 100; i++) {
+                    if (typeof r[i] !== "undefined" && r[i].length) {
+                        content += '<button class="col btn padding-large theme radius btn-panel-sync" onclick="syncDataBtn()">sincronizar</button>';
+                        i = 100
+                    }
                 }
             }
-        }
-
-        return content
-    })
+            return content
+        })
+    });
 }
 
 function dashboardPanel() {
