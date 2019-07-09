@@ -678,7 +678,7 @@ function dashboardPanelContent() {
         syncCheck.push(dbLocal.exeRead("__info", 1));
         syncCheck.push(dbLocal.exeRead("__template", 1));
         syncCheck.push(dbLocal.exeRead("__panel", 1));
-        if (!AUTOSYNC && navigator.onLine) {
+        if (navigator.onLine) {
             $.each(d, function (entity, meta) {
                 syncCheck.push(dbLocal.exeRead("sync_" + entity));
             })
@@ -722,7 +722,7 @@ function dashboardPanelContent() {
                     content += Mustache.render(templates.card, m)
                 })
             }
-            if (!AUTOSYNC && navigator.onLine) {
+            if (navigator.onLine) {
                 for (let i = 4; i < 100; i++) {
                     if (typeof r[i] !== "undefined" && r[i].length) {
                         content += '<button class="col btn padding-large theme radius btn-panel-sync" onclick="syncDataBtn()">sincronizar</button>';
