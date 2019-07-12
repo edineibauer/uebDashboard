@@ -12,8 +12,9 @@ class Note
      * @param string $titulo
      * @param string $descricao
      * @param int $autor
+     * @param int $copia
      */
-    public static function create(string $titulo, string $descricao, int $autor) {
+    public static function create(string $titulo, string $descricao, int $autor, int $copia = 0) {
         $create = new Create();
         $read = new Read();
 
@@ -26,7 +27,13 @@ class Note
         ];
 
         $read->exeRead("dashboard_note", "WHERE titulo = '{$titulo}' AND autor = :a", "a={$autor}");
-        if(!$read->getResult())
+        if(!$read->getResult()) {
             $create->exeCreate("dashboard_note", $notify);
+            if($copia !== 0) {
+                $notify['titulo'] = "[CÓPIA] " . $notify['titulo'];
+                $notify['autor'] = $_SESSION['userlogin']['id'];
+                $create->exeCreate("dashboard_note", $notify);
+            }
+        }
     }
 }
