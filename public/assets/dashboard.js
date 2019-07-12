@@ -670,6 +670,12 @@ function dashboardSidebarInfo() {
     })
 }
 
+
+function closeNote(id) {
+    $(".dashboard-note[rel='" + id + "']").remove();
+    db.exeDelete("dashboard_note", parseInt(id));
+}
+
 function dashboardPanelContent() {
     return dbLocal.exeRead('__dicionario', 1).then( d => {
 
@@ -678,6 +684,7 @@ function dashboardPanelContent() {
         syncCheck.push(dbLocal.exeRead("__info", 1));
         syncCheck.push(dbLocal.exeRead("__template", 1));
         syncCheck.push(dbLocal.exeRead("__panel", 1));
+        syncCheck.push(dbLocal.exeRead("dashboard_note"));
         if (navigator.onLine) {
             $.each(d, function (entity, meta) {
                 syncCheck.push(dbLocal.exeRead("sync_" + entity));
@@ -691,6 +698,12 @@ function dashboardPanelContent() {
             let menu = [];
             let indice = 1;
             let content = "";
+
+            $.each(r[4], function (i, e) {
+                if(e.autor == USER.id)
+                    content += Mustache.render(templates.note, e)
+            });
+
             if (typeof panel === "string" && panel !== "") {
                 content = panel
             } else {
