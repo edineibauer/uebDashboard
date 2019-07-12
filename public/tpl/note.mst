@@ -1,7 +1,7 @@
-<div class="card left padding-0 hover-text-theme color-grey-light hover-shadow dashboard-note" rel="{{id}}" style="width: 400px; max-width: 98%; margin: 1%;min-height: 242px;">
+<div class="card left padding-0 hover-text-theme color-white hover-shadow dashboard-note" rel="{{id}}" style="width: 400px; max-width: 48%; margin: 1%;min-height: 242px">
     <i class='material-icons font-xlarge right opacity hover-opacity-off padding-medium pointer' onclick="closeNote({{id}})">close</i>
-    <div class='col align-center padding-large color-white'>
-        <h4 class="padding-0 font-bold color-text-gray-dark">{{titulo}}</h4>
-        <p class='col'>{{descricao}}</p>
+    <div class='col align-center padding-large'>
+        <h4 class="padding-0 font-bold color-text-gray-dark">{{{titulo}}}</h4>
+        <p class='col'>{{{descricao}}}</p>
     </div>
 </div>
