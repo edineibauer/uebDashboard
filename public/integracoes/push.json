@@ -1,14 +1,14 @@
-dashboard_note{
-  "nome": "Spark Post",
-  "link": "https://www.sparkpost.com/",
+{
+  "nome": "Push Notification",
+  "link": "https://web-push-codelab.glitch.me/",
   "constantes": {
-    "Email": {
+    "Public Key": {
       "input": "text",
-      "column": "email"
+      "column": "push_public_key"
     },
-    "Key": {
+    "Private Key": {
       "input": "text",
-      "column": "emailkey"
+      "column": "push_private_key"
     }
   }
 }
