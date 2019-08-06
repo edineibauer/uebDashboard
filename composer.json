@@ -18,6 +18,7 @@
     "ueb/entity-ui": "*",
     "ueb/report": "*",
     "smottt/wideimage": "^1.1",
+    "minishlink/web-push": "*",
     "ext-json": "*"
   },
   "autoload": {
