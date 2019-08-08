@@ -763,7 +763,7 @@ $(function () {
         let action = $(this).attr("data-action");
         mainLoading();
         if (action === "table") {
-            history.pushState(null, null, "#listagem");
+            history.pushState(null, null, "dashboard");
             $("#dashboard").html("").grid($(this).attr("data-entity"))
         } else if (action === 'form') {
             let id = !isNaN($(this).attr("data-atributo")) && $(this).attr("data-atributo") > 0 ? parseInt($(this).attr("data-atributo")) : null;
