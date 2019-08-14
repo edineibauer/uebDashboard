@@ -578,17 +578,6 @@ function menuDashboard() {
         templates = r[2];
         let menu = [];
         let indice = 1;
-        menu.push({
-            icon: "timeline",
-            title: "Dashboard",
-            table: !1,
-            link: !1,
-            form: !1,
-            page: !0,
-            file: "panel",
-            lib: "dashboard",
-            indice: 0
-        });
         dbLocal.exeRead("__menu", 1).then(m => {
             if (typeof m === "string") {
                 $("#dashboard-menu").html(m);
@@ -623,21 +612,7 @@ function menuDashboard() {
                 let tpl = (menu.length < 4 ? templates['menu-card'] : templates['menu-li']);
                 $.each(menu, function (i, m) {
                     $("#dashboard-menu").append(Mustache.render(tpl, m))
-                })
-                if (getCookie("id") === "1") {
-                    $("#dashboard-menu").append(Mustache.render(tpl, {
-                        "icon": "settings_ethernet",
-                        "title": "DEV",
-                        "link": !0,
-                        "table": !1,
-                        "page": !1,
-                        "form": !1,
-                        "lib": "ui-dev",
-                        "file": "UIDev",
-                        "entity": "",
-                        "indice": 100
-                    }))
-                }
+                });
             }
         })
     })
