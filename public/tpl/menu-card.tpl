@@ -1,5 +1,5 @@
-<{($action == "link")? "a href='{$file}' " : "div"} class="col padding-medium">
-    <div class="col align-center border padding-medium hover-text-theme color-grey-light opacity radius pointer hover-opacity-off menu-li"
+<{($action == "link")? "a href='{$file}' " : "div"} class="card left padding-0 hover-text-theme color-grey-light pointer hover-shadow" style="width: 200px; max-width: 48%; margin: 1%">
+    <div class="col align-center padding-large menu-li color-white"
          style="margin-bottom: 5px"
          data-action="{$action}"
          {if $action == "table"}
