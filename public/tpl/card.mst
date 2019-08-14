@@ -1,10 +1,10 @@
-<div class="card left padding-0 hover-text-theme color-grey-light pointer hover-shadow" style="width: 200px; max-width: 48%; margin: 1%">
+<div class="card left hover-text-theme color-grey-light pointer hover-shadow" style="width: 200px; max-width: 48%; margin: 1%;padding-bottom: 5px;">
     {{#link}}
         <a href='{{file}}'
            class='col align-center padding-large menu-li color-white'
            data-action="link">
             <i class='material-icons font-xxxlarge'>{{icon}}</i>
-            <span class='font-large col'>{{title}}</span>
+            <span class='font-large col overflow-hidden' style="height: 27px;">{{title}}</span>
         </a>
     {{/link}}
     {{^link}}
@@ -13,7 +13,7 @@
              data-entity="{{entity}}"
              data-atributo="{{file}}" data-lib="{{lib}}">
             <i class='material-icons font-xxxlarge'>{{icon}}</i>
-            <span class='font-large col'>{{title}}</span>
+            <span class='font-large col overflow-hidden' style="height: 27px;">{{title}}</span>
         </div>
     {{/link}}
 </div>
