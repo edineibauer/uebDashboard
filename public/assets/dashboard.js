@@ -660,11 +660,7 @@ function dashboardPanelContent() {
         syncCheck.push(dbLocal.exeRead("__template", 1));
         syncCheck.push(dbLocal.exeRead("__panel", 1));
         syncCheck.push(dbLocal.exeRead("dashboard_note"));
-        if (navigator.onLine) {
-            $.each(d, function (entity, meta) {
-                syncCheck.push(dbLocal.exeRead("sync_" + entity));
-            })
-        }
+
         return Promise.all(syncCheck).then(r => {
             allow = r[0][getCookie('setor')];
             info = r[1];
@@ -710,14 +706,7 @@ function dashboardPanelContent() {
                     content += Mustache.render(templates.card, m)
                 })
             }
-            if (navigator.onLine) {
-                for (let i = 4; i < 100; i++) {
-                    if (typeof r[i] !== "undefined" && r[i].length) {
-                        content += '<button class="z-depth-2 col btn padding-large color-white btn-panel-sync" onclick="syncDataBtn()">sincronizar</button>';
-                        i = 100
-                    }
-                }
-            }
+
             return content
         })
     });

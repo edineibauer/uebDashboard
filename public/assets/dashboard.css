@@ -22,15 +22,6 @@ html {
     height: 34px
 }
 
-.btn-panel-sync {
-    width: 98%;
-    margin: 1% 1% 20px 1%;
-    min-height: 55px;
-    max-width: 98%;
-    border-bottom: solid 5px #eee;
-    border-radius: 2px;
-}
-
 .dashboard-main {
     margin-left: 200px
 }
