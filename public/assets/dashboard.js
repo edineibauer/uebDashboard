@@ -713,7 +713,7 @@ function dashboardPanelContent() {
             if (navigator.onLine) {
                 for (let i = 4; i < 100; i++) {
                     if (typeof r[i] !== "undefined" && r[i].length) {
-                        content += '<button class="col btn padding-large theme radius btn-panel-sync" onclick="syncDataBtn()">sincronizar</button>';
+                        content += '<button class="z-depth-2 col btn padding-large color-white btn-panel-sync" onclick="syncDataBtn()">sincronizar</button>';
                         i = 100
                     }
                 }
