@@ -725,6 +725,11 @@ $(function () {
     menuDashboard();
     $("body").off("click", ".menu-li").on("click", ".menu-li", function () {
         let action = $(this).attr("data-action");
+
+        lastPositionScroll = 0;
+        sentidoScrollDown = !1;
+        $("#core-header").css({"position": "fixed", "top": 0});
+
         mainLoading();
         if (action === "table") {
             history.pushState(null, null, "dashboard");
