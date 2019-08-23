@@ -730,6 +730,7 @@ $(function () {
         sentidoScrollDown = !1;
         $("#core-header").css({"position": "fixed", "top": 0});
 
+        downloadEntityData();
         mainLoading();
         if (action === "table") {
             history.pushState(null, null, "dashboard");
