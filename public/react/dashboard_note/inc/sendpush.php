@@ -15,9 +15,9 @@ if ($read->getResult()) {
                 [
                     "title" => $dados['titulo'],
                     "body" => $dados['descricao'] ?? "",
-                    "badge" => HOME + FAVICON,
+                    "badge" => HOME.FAVICON,
                     "data" => $dados['url'] ?? "",
-                    "icon" => $dados['imagem'] ?? "",
+                    "icon" => $dados['imagem'] ?? HOME.FAVICON,
                     "imagem" => $dados['background'] ?? ""
                 ]
             )
