@@ -11,12 +11,29 @@ if ($read->getResult()) {
     foreach ($read->getResult() as $item) {
         $notifications[] = [
             'subscription' => Subscription::create(json_decode($item['subscription'], !0)),
-            'payload' => '{msg:"' . $dados['titulo'] .'"}',
+            'payload' => json_encode(
+                [
+                    "title" => $dados['titulo'],
+                    "body" => $dados['descricao'] ?? "",
+                    "badge" => HOME + FAVICON,
+                    "data" => $dados['url'] ?? "",
+                    "icon" => $dados['imagem'] ?? "",
+                    "imagem" => $dados['background'] ?? ""
+                ]
+            )
         ];
     }
 }
 
-$webPush = new WebPush();
+$auth = array(
+    'VAPID' => array(
+        'subject' => HOME,
+        'publicKey' => PUSH_PUBLIC_KEY, // don't forget that your public key also lives in app.js
+        'privateKey' => PUSH_PRIVATE_KEY, // in the real world, this would be in a secret file
+    ),
+);
+
+$webPush = new WebPush($auth);
 
 // send multiple notifications with payload
 foreach ($notifications as $notification) {
