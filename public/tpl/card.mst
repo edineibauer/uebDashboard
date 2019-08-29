@@ -1,19 +1,19 @@
 <div class="card left hover-text-theme color-grey-light pointer hover-shadow" style="width: 200px; max-width: 48%; margin: 1%;padding-bottom: 5px;">
     {{#link}}
-        <a href='{{file}}'
-           class='col align-center padding-large menu-li color-white'
+        <a href='{{file}}' style="padding: 10px 5px;"
+           class='col align-center menu-li color-white'
            data-action="link">
-            <i class='material-icons font-xxxlarge'>{{icon}}</i>
-            <span class='font-large col overflow-hidden' style="height: 27px;">{{title}}</span>
+            <i class='material-icons font-xxxlarge' style="color: #555555">{{icon}}</i>
+            <span class='col overflow-hidden' style="height: 40px;line-height: 18px;padding-top: 5px;color: #555555;">{{title}}</span>
         </a>
     {{/link}}
     {{^link}}
-        <div class='col align-center padding-large menu-li color-white'
+        <div class='col align-center menu-li color-white' style="padding: 10px 5px;"
              data-action="{{#table}}table{{/table}}{{#form}}form{{/form}}{{#page}}page{{/page}}"
              data-entity="{{entity}}"
              data-atributo="{{file}}" data-lib="{{lib}}">
-            <i class='material-icons font-xxxlarge'>{{icon}}</i>
-            <span class='font-large col overflow-hidden' style="height: 27px;">{{title}}</span>
+            <i class='material-icons font-xxxlarge' style="color: #555555">{{icon}}</i>
+            <span class='col overflow-hidden' style="height: 40px;line-height: 18px;padding-top: 5px;color: #555555;">{{title}}</span>
         </div>
     {{/link}}
 </div>
