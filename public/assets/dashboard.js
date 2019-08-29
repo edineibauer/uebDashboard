@@ -735,18 +735,19 @@ $(function () {
         mainLoading();
         if (action === "table") {
             history.pushState(null, null, "dashboard");
-            $("#dashboard").html("").grid($(this).attr("data-entity"))
+            animateForward("#dashboard").grid($(this).attr("data-entity"));
         } else if (action === 'form') {
             let id = !isNaN($(this).attr("data-atributo")) && $(this).attr("data-atributo") > 0 ? parseInt($(this).attr("data-atributo")) : null;
-            $("#dashboard").html("").form($(this).attr("data-entity"), id, typeof $(this).attr("data-fields") !== "undefined" ? JSON.parse($(this).attr("data-fields")) : "undefined")
+            animateForward("#dashboard").html("").form($(this).attr("data-entity"), id, typeof $(this).attr("data-fields") !== "undefined" ? JSON.parse($(this).attr("data-fields")) : "undefined")
         } else if (action === 'page') {
             let viewPage = $(this).attr("data-atributo");
+            let $newPage = animateForward();
             view(viewPage, function (data) {
                 if (typeof (data.content) === "string") {
                     if(data.content === "no-network") {
-                        $("#dashboard").html("Ops! Conexão Perdida");
+                        $newPage.html("Ops! Conexão Perdida");
                     } else {
-                        $("#dashboard").html(data.content);
+                        $newPage.html(data.content);
                         if (data.js.length)
                             $.cachedScript(data.js);
                         if(data.css.length)
