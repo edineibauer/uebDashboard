@@ -563,7 +563,6 @@ function hide_sidebar_small() {
 }
 
 function mainLoading() {
-    $(".main").loading();
     hide_sidebar_small();
     closeSidebar()
 }
@@ -726,38 +725,22 @@ $(function () {
     $("body").off("click", ".menu-li").on("click", ".menu-li", function () {
         let action = $(this).attr("data-action");
 
-        lastPositionScroll = 0;
-        sentidoScrollDown = !1;
-        $("#core-header").css({"position": "fixed", "top": 0});
-
+        clearHeaderScrollPosition();
         checkUpdate();
         downloadEntityData();
         mainLoading();
+
         if (action === "table") {
-            history.pushState(null, null, "dashboard");
-            animateForward("#dashboard").grid($(this).attr("data-entity"));
+            pageTransition($(this).attr("data-entity"), 'grid', 'forward', "#dashboard");
+
         } else if (action === 'form') {
+            // let fields = (typeof $(this).attr("data-fields") !== "undefined" ? JSON.parse($(this).attr("data-fields")) : "undefined");
             let id = !isNaN($(this).attr("data-atributo")) && $(this).attr("data-atributo") > 0 ? parseInt($(this).attr("data-atributo")) : null;
-            animateForward("#dashboard").html("").form($(this).attr("data-entity"), id, typeof $(this).attr("data-fields") !== "undefined" ? JSON.parse($(this).attr("data-fields")) : "undefined")
+            pageTransition($(this).attr("data-entity"), 'form', 'forward', "#dashboard", id);
+
         } else if (action === 'page') {
-            let viewPage = $(this).attr("data-atributo");
-            let animation = $(this).attr("data-animation") || "forward";
-            let $newPage = window["animate" + ucFirst(animation)]("#dashboard");
-            view(viewPage, function (data) {
-                if (typeof (data.content) === "string") {
-                    if(data.content === "no-network") {
-                        $newPage.html("Ops! Conexão Perdida");
-                    } else {
-                        $newPage.html(data.content);
-                        if (data.js.length)
-                            $.cachedScript(data.js);
-                        if(data.css.length)
-                            $("#core-style").prepend(data.css);
-                    }
-                    if (viewPage === "panel")
-                        dashboardPanel()
-                }
-            })
+
+            pageTransition($(this).attr("data-atributo"), 'route', 'forward', "#core-content");
         }
     });
     $("#app, #core-applications").off("click", ".close-dashboard-note").on("click", ".close-dashboard-note", function () {
