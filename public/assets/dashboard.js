@@ -741,7 +741,8 @@ $(function () {
             animateForward("#dashboard").html("").form($(this).attr("data-entity"), id, typeof $(this).attr("data-fields") !== "undefined" ? JSON.parse($(this).attr("data-fields")) : "undefined")
         } else if (action === 'page') {
             let viewPage = $(this).attr("data-atributo");
-            let $newPage = animateForward("#dashboard");
+            let animation = $(this).attr("data-animation") || "forward";
+            let $newPage = window["animate" + ucFirst(animation)]("#dashboard");
             view(viewPage, function (data) {
                 if (typeof (data.content) === "string") {
                     if(data.content === "no-network") {
