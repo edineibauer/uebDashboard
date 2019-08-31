@@ -22,6 +22,11 @@ html {
     height: 34px
 }
 
+#dashboard-menu {
+    width: 188px;
+    overflow: hidden;
+}
+
 .dashboard-main {
     margin-left: 200px
 }
