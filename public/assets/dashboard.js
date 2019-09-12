@@ -727,7 +727,6 @@ $(function () {
 
         clearHeaderScrollPosition();
         checkUpdate();
-        downloadEntityData();
         mainLoading();
 
         if (action === "table") {
