@@ -567,54 +567,64 @@ function mainLoading() {
     closeSidebar()
 }
 
-function menuDashboard() {
-    let allow = dbLocal.exeRead("__allow", 1);
-    let info = dbLocal.exeRead("__info", 1);
-    let templates = dbLocal.exeRead("__template", 1);
-    Promise.all([allow, info, templates]).then(r => {
-        allow = r[0][getCookie('setor')];
-        info = r[1];
-        templates = r[2];
-        let menu = [];
-        let indice = 1;
-        dbLocal.exeRead("__menu", 1).then(m => {
-            if (typeof m === "string") {
-                $("#dashboard-menu").html(m);
-            } else {
-                if (m.constructor === Array && m.length) {
-                    $.each(m, function (nome, dados) {
-                        menu.push(dados)
+function menuDashboard(count) {
+    count = typeof count === "undefined" ? 0 : count;
+    if (isEmpty(dicionarios)) {
+        if (count > 5)
+            return;
+
+        setTimeout(function () {
+            menuDashboard(count + 1);
+        }, 500);
+    } else {
+        let allow = dbLocal.exeRead("__allow", 1);
+        let info = dbLocal.exeRead("__info", 1);
+        let templates = dbLocal.exeRead("__template", 1);
+        Promise.all([allow, info, templates]).then(r => {
+            allow = r[0][getCookie('setor')];
+            info = r[1];
+            templates = r[2];
+            let menu = [];
+            let indice = 1;
+            dbLocal.exeRead("__menu", 1).then(m => {
+                if (typeof m === "string") {
+                    $("#dashboard-menu").html(m);
+                } else {
+                    if (m.constructor === Array && m.length) {
+                        $.each(m, function (nome, dados) {
+                            menu.push(dados)
+                        });
+                    }
+
+                    $.each(dicionarios, function (entity, meta) {
+                        if (typeof allow !== "undefined" && typeof allow[entity] !== "undefined" && typeof allow[entity].menu !== "undefined" && allow[entity].menu) {
+                            nome = ucFirst(entity.replaceAll("_", " ").replaceAll("-", " "));
+                            menu.push({
+                                indice: indice,
+                                icon: (info[entity].icon !== "" ? info[entity].icon : "storage"),
+                                title: nome,
+                                table: !0,
+                                link: !1,
+                                form: !1,
+                                page: !1,
+                                file: '',
+                                lib: '',
+                                entity: entity
+                            });
+                            indice++
+                        }
+                    });
+
+                    menu.sort(dynamicSort('indice'));
+                    $("#dashboard-menu").html("");
+                    let tpl = (menu.length < 4 ? templates['menu-card'] : templates['menu-li']);
+                    $.each(menu, function (i, m) {
+                        $("#dashboard-menu").append(Mustache.render(tpl, m))
                     });
                 }
-
-                $.each(dicionarios, function (entity, meta) {
-                    if (typeof allow !== "undefined" && typeof allow[entity] !== "undefined" && typeof allow[entity].menu !== "undefined" && allow[entity].menu) {
-                        nome = ucFirst(entity.replaceAll("_", " ").replaceAll("-", " "));
-                        menu.push({
-                            indice: indice,
-                            icon: (info[entity].icon !== "" ? info[entity].icon : "storage"),
-                            title: nome,
-                            table: !0,
-                            link: !1,
-                            form: !1,
-                            page: !1,
-                            file: '',
-                            lib: '',
-                            entity: entity
-                        });
-                        indice++
-                    }
-                });
-
-                menu.sort(dynamicSort('indice'));
-                $("#dashboard-menu").html("");
-                let tpl = (menu.length < 4 ? templates['menu-card'] : templates['menu-li']);
-                $.each(menu, function (i, m) {
-                    $("#dashboard-menu").append(Mustache.render(tpl, m))
-                });
-            }
+            })
         })
-    })
+    }
 }
 
 function dashboardSidebarInfo() {
@@ -651,7 +661,7 @@ function closeNote(id) {
 }
 
 function dashboardPanelContent() {
-    return dbLocal.exeRead('__dicionario', 1).then( d => {
+    return dbLocal.exeRead('__dicionario', 1).then(d => {
 
         let syncCheck = [];
         syncCheck.push(dbLocal.exeRead("__allow", 1));
@@ -670,7 +680,7 @@ function dashboardPanelContent() {
             let content = "";
 
             $.each(r[4], function (i, e) {
-                if(e.autor == USER.id)
+                if (e.autor == USER.id)
                     content += Mustache.render(templates.note, e)
             });
 
