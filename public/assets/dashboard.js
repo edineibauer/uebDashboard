@@ -732,7 +732,7 @@ $(function () {
     dashboardSidebarInfo();
     dashboardPanel();
     menuDashboard();
-    $("body").off("click", ".menu-li").on("click", ".menu-li:not(.not-menu-li)", function () {
+    $("body").off("click", ".menu-li:not(.not-menu-li)").on("click", ".menu-li:not(.not-menu-li)", function () {
         let action = $(this).attr("data-action");
 
         clearHeaderScrollPosition();
