@@ -131,11 +131,10 @@ class Menu
     {
         $setor = !empty($_SESSION['userlogin']) ? $_SESSION['userlogin']['setor'] : "0";
 
-        if (file_exists(PATH_HOME . "public/dash/menu.json"))
-            $this->addMenuJson(PATH_HOME . "public/dash/menu.json");
-
         if (!empty($setor) && file_exists(PATH_HOME . "public/dash/{$setor}/menu.json"))
             $this->addMenuJson(PATH_HOME . "public/dash/{$setor}/menu.json");
+        elseif (file_exists(PATH_HOME . "public/dash/menu.json"))
+            $this->addMenuJson(PATH_HOME . "public/dash/menu.json");
 
         foreach (Helper::listFolder(PATH_HOME . VENDOR) as $lib) {
             if (file_exists(PATH_HOME . VENDOR . "{$lib}/public/dash/menu.json"))
