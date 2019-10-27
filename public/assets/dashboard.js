@@ -589,7 +589,7 @@ function menuDashboard(count) {
 
             $.each(dicionarios, function (entity, meta) {
                 if (typeof allow !== "undefined" && typeof allow[entity] !== "undefined" && typeof allow[entity].menu !== "undefined" && allow[entity].menu) {
-                    nome = ucFirst(entity.replaceAll("_", " ").replaceAll("-", " "));
+                    nome = ucFirst(replaceAll(replaceAll(entity, "_", " "), "-", " "));
                     menu.push({
                         indice: indice,
                         icon: (info[entity].icon !== "" ? info[entity].icon : "storage"),
@@ -683,7 +683,7 @@ function dashboardPanelContent() {
                 }
                 $.each(d, function (entity, meta) {
                     if (typeof allow !== "undefined" && typeof allow[entity] !== "undefined" && typeof allow[entity].menu !== "undefined" && allow[entity].menu) {
-                        nome = ucFirst(entity.replaceAll("_", " ").replaceAll("-", " "));
+                        nome = ucFirst(replaceAll(replaceAll(entity, "_", " "), "-", " "));
                         menu.push({
                             indice: indice,
                             icon: (info[entity].icon !== "" ? info[entity].icon : "storage"),
@@ -740,7 +740,13 @@ $(function () {
 
             pageTransition($(this).attr("data-atributo"), 'route', 'forward', "#core-content");
         }
+    }).off("click", ".btn-edit-perfil").on("click", ".btn-edit-perfil", function () {
+        if(history.state.route !== "usuarios" || history.state.type !== "form") {
+            let entity = USER.setorData === "" ? "usuarios" : USER.setorData;
+            pageTransition(entity, 'form', 'forward', "#dashboard", USER);
+        }
     });
+
     $("#app, #core-applications").off("click", ".close-dashboard-note").on("click", ".close-dashboard-note", function () {
         let $this = $(this);
         post('dashboard', 'dash/delete', {id: $this.attr("id")}, function (data) {
