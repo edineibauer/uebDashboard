@@ -617,10 +617,10 @@ function menuDashboard(count) {
 }
 
 function dashboardSidebarInfo() {
-    if (getCookie("imagem") === "") {
+    if (localStorage.imagem === "") {
         document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<i class='material-icons font-jumbo'>people</i>"
     } else {
-        document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<img src='" + decodeURIComponent(getCookie("imagem")) + "&h=80&w=80' height='60' width='60'>"
+        document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<img src='" + decodeURIComponent(JSON.parse(localStorage.imagem)[0]['urls'][100]) + "' height='60' width='60'>"
     }
     $("#dashboard-sidebar-nome").html(getCookie("nome"));
     let $sidebar = $("#core-sidebar-edit");
