@@ -711,7 +711,9 @@ function dashboardPanelContent() {
 }
 
 function dashboardPanel() {
-    document.querySelector(".panel-name").innerHTML = getCookie("nome");
+    if($(".panel-name").length)
+        $(".panel-name").html(getCookie("nome"));
+
     dashboardPanelContent().then(content => {
         $(".dashboard-panel").html(content)
     })
