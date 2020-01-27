@@ -87,7 +87,7 @@ function dashboardSidebarInfo() {
 
 function closeNote(id) {
     $(".dashboard-note[rel='" + id + "']").remove();
-    db.exeDelete("dashboard_note", parseInt(id));
+    db.exeDelete("notifications", parseInt(id));
 }
 
 function dashboardPanelContent() {
@@ -98,7 +98,7 @@ function dashboardPanelContent() {
         syncCheck.push(dbLocal.exeRead("__info", 1));
         syncCheck.push(dbLocal.exeRead("__template", 1));
         syncCheck.push(dbLocal.exeRead("__panel", 1));
-        syncCheck.push(dbLocal.exeRead("dashboard_note"));
+        syncCheck.push(dbLocal.exeRead("notifications"));
 
         return Promise.all(syncCheck).then(r => {
             allow = r[0][getCookie('setor')];
@@ -110,7 +110,7 @@ function dashboardPanelContent() {
             let content = "";
 
             $.each(r[4], function (i, e) {
-                if (e.autor == USER.id)
+                if (e.usuario == USER.id)
                     content += Mustache.render(templates.note, e)
             });
 

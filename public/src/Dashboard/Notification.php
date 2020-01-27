@@ -5,16 +5,16 @@ namespace Dashboard;
 use Conn\Create;
 use Conn\Read;
 
-class Note
+class Notification
 {
     /**
      * Cria notificações para a Dashboard
      * @param string $titulo
      * @param string $descricao
-     * @param int $autor
+     * @param int $usuario
      * @param int $copia
      */
-    public static function create(string $titulo, string $descricao, int $autor, int $copia = 0) {
+    public static function create(string $titulo, string $descricao, int $usuario, int $copia = 0) {
         $create = new Create();
         $read = new Read();
 
@@ -23,16 +23,16 @@ class Note
             "descricao" => $descricao,
             "data" => date("Y-m-d H:i:s"),
             "status" => 1,
-            "autor" => $autor
+            "usuario" => $usuario
         ];
 
-        $read->exeRead("dashboard_note", "WHERE titulo = '{$titulo}' AND autor = :a", "a={$autor}");
+        $read->exeRead("notifications", "WHERE titulo = '{$titulo}' AND usuario = :a", "a={$usuario}");
         if(!$read->getResult()) {
-            $create->exeCreate("dashboard_note", $notify);
+            $create->exeCreate("notifications", $notify);
             if($copia !== 0) {
                 $notify['titulo'] = "[CÓPIA] " . $notify['titulo'];
-                $notify['autor'] = $_SESSION['userlogin']['id'];
-                $create->exeCreate("dashboard_note", $notify);
+                $notify['usuario'] = $_SESSION['userlogin']['id'];
+                $create->exeCreate("notifications", $notify);
             }
         }
     }

@@ -6,7 +6,7 @@ use Minishlink\WebPush\Subscription;
 
 $notifications = [];
 $read = new Read();
-$read->exeRead("dashboard_push", "WHERE autor = :au", "au={$_SESSION['userlogin']['id']}");
+$read->exeRead("push_notifications", "WHERE usuario = :au", "au={$_SESSION['userlogin']['id']}");
 if ($read->getResult()) {
     foreach ($read->getResult() as $item) {
         $notifications[] = [
