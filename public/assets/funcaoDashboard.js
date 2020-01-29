@@ -59,7 +59,7 @@ function menuDashboard(count) {
 }
 
 function dashboardSidebarInfo() {
-    if (USER.imagem === "" || USER.imagem === "null") {
+    if (USER.imagem === "" || USER.imagem === "null" && isEmpty(USER.imagem)) {
         document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<i class='material-icons font-jumbo'>people</i>"
     } else {
         document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<img src='" + decodeURIComponent(JSON.parse(USER.imagem)['urls'][100]) + "' height='60' width='60'>"
