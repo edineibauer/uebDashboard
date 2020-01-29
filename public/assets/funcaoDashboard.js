@@ -23,7 +23,7 @@ function menuDashboard(count) {
         let info = dbLocal.exeRead("__info", 1);
         let templates = dbLocal.exeRead("__template", 1);
         Promise.all([allow, info, templates]).then(r => {
-            allow = r[0][getCookie('setor')];
+            allow = r[0][USER.setor];
             info = r[1];
             templates = r[2];
             let menu = [];
@@ -64,7 +64,7 @@ function dashboardSidebarInfo() {
     } else {
         document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<img src='" + decodeURIComponent(JSON.parse(USER.imagem)['urls'][100]) + "' height='60' width='60'>"
     }
-    $("#dashboard-sidebar-nome").html(getCookie("nome"));
+    $("#dashboard-sidebar-nome").html(USER.nome);
     let $sidebar = $("#core-sidebar-edit");
     $sidebar.removeClass("hide").off("click").on("click", function () {
         if (document.querySelector(".btn-edit-perfil") !== null) {
@@ -101,7 +101,7 @@ function dashboardPanelContent() {
         syncCheck.push(dbLocal.exeRead("notifications"));
 
         return Promise.all(syncCheck).then(r => {
-            allow = r[0][getCookie('setor')];
+            allow = r[0][USER.setor];
             info = r[1];
             templates = r[2];
             panel = r[3];
@@ -153,7 +153,7 @@ function dashboardPanelContent() {
 
 function dashboardPanel() {
     if($(".panel-name").length)
-        $(".panel-name").html(getCookie("nome"));
+        $(".panel-name").html(USER.nome);
 
     dashboardPanelContent().then(content => {
         $(".dashboard-panel").html(content)
