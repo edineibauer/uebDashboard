@@ -59,10 +59,10 @@ function menuDashboard(count) {
 }
 
 function dashboardSidebarInfo() {
-    if (localStorage.imagem === "" || localStorage.imagem === "null") {
+    if (USER.imagem === "" || USER.imagem === "null") {
         document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<i class='material-icons font-jumbo'>people</i>"
     } else {
-        document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<img src='" + decodeURIComponent(JSON.parse(localStorage.imagem)['urls'][100]) + "' height='60' width='60'>"
+        document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<img src='" + decodeURIComponent(JSON.parse(USER.imagem)['urls'][100]) + "' height='60' width='60'>"
     }
     $("#dashboard-sidebar-nome").html(getCookie("nome"));
     let $sidebar = $("#core-sidebar-edit");
