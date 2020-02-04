@@ -59,11 +59,12 @@ function menuDashboard(count) {
 }
 
 function dashboardSidebarInfo() {
-    if (USER.imagem === "" || USER.imagem === "null" && isEmpty(USER.imagem)) {
+    if (isEmpty(USER.imagem) || USER.imagem === "null") {
         document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<i class='material-icons font-jumbo'>people</i>"
     } else {
-        document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<img src='" + decodeURIComponent(JSON.parse(USER.imagem)['urls'][100]) + "' height='60' width='60'>"
+        document.querySelector("#dashboard-sidebar-imagem").innerHTML = (isJson(USER.imagem) ? "<img src='" + decodeURIComponent(JSON.parse(USER.imagem)['urls'][100]) + "' height='60' width='60'>" : USER.imagem);
     }
+
     $("#dashboard-sidebar-nome").html(USER.nome);
     let $sidebar = $("#core-sidebar-edit");
     $sidebar.removeClass("hide").off("click").on("click", function () {
