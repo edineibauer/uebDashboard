@@ -60,9 +60,18 @@ function menuDashboard(count) {
 
 function dashboardSidebarInfo() {
     if (isEmpty(USER.imagem) || USER.imagem === "null") {
-        document.querySelector("#dashboard-sidebar-imagem").innerHTML = "<i class='material-icons font-jumbo'>people</i>"
+        $("#dashboard-sidebar-imagem").html("<i class='material-icons font-jumbo'>people</i>");
     } else {
-        document.querySelector("#dashboard-sidebar-imagem").innerHTML = (isJson(USER.imagem) ? "<img src='" + decodeURIComponent(JSON.parse(USER.imagem)['urls'][100]) + "' height='60' width='60'>" : USER.imagem);
+        let imagem = "";
+        if(typeof USER.imagem === "string") {
+            if(isJson(USER.imagem))
+                imagem = decodeURIComponent(JSON.parse(USER.imagem)['urls'][100]);
+            else
+                imagem = USER.imagem;
+        } else if(typeof USER.imagem === "object" && typeof USER.imagem.url === "string") {
+            imagem = USER.imagem.urls[100];
+        }
+        $("#dashboard-sidebar-imagem").html("<img src='" + imagem + "' title='" + USER.nome + "' alt='imagem do usuário " + USER.nome + "' width='60' height='60' style='width: 60px;height: 60px' />");
     }
 
     $("#dashboard-sidebar-nome").html(USER.nome);
