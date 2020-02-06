@@ -16,7 +16,7 @@
     <div class="bar-block" id="dashboard-menu"></div>
 </nav>
 
-<div class="main dashboard-main">
+<div class="main dashboard-main animate-left">
     <div id="dashboard" class="dashboard-tab container row">
         <?php include_once 'panel.php' ?>
     </div>
