@@ -1,14 +1,14 @@
-<div class="card no-select left hover-text-theme color-grey-light pointer hover-shadow" style="width: 200px; max-width: 48%; margin: 1%;padding-bottom: 5px;">
+<div class="card radius no-select left hover-text-theme color-grey-light pointer hover-shadow" style="width: 200px; max-width: 48%; margin: 1%;padding-bottom: 5px;">
     {{#link}}
         <a href='{{file}}' style="padding: 10px 5px;"
-           class='col align-center menu-li color-white'
+           class='col radius align-center menu-li color-white'
            data-action="link">
             <i class='material-icons font-xxxlarge' style="color: #555555">{{icon}}</i>
             <span class='col overflow-hidden' style="height: 40px;line-height: 18px;padding-top: 5px;color: #555555;">{{title}}</span>
         </a>
     {{/link}}
     {{^link}}
-        <div class='col align-center menu-li color-white' style="padding: 10px 5px;"
+        <div class='col radius align-center menu-li color-white' style="padding: 10px 5px;"
              data-action="{{#table}}table{{/table}}{{#form}}form{{/form}}{{#page}}page{{/page}}"
              data-entity="{{entity}}"
              data-atributo="{{file}}" data-lib="{{lib}}">
