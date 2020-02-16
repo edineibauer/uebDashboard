@@ -172,7 +172,7 @@ class Notification
 
             $create = new Create();
             $create->exeCreate("notifications", $notify);
-            if ($copia !== 0) {
+            if ($copia) {
                 $notify['titulo'] = "[CÓPIA] " . $notify['titulo'];
                 $notify['usuario'] = $_SESSION['userlogin']['id'];
                 $create->exeCreate("notifications", $notify);
