@@ -13,6 +13,6 @@
             </h2>
         </div>
     </header>
-    <div class="col s12 m8 padding-small dashboard-panel"></div>
-    <div class="col s12 m4 padding-small dashboard-note"></div>
+    <div class="col s12 m9 padding-small dashboard-panel"></div>
+    <div class="col s12 m3 padding-small dashboard-note"></div>
 </div>
