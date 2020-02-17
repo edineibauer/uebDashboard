@@ -108,7 +108,6 @@ function dashboardPanelContent() {
         syncCheck.push(dbLocal.exeRead("__info", 1));
         syncCheck.push(dbLocal.exeRead("__template", 1));
         syncCheck.push(dbLocal.exeRead("__panel", 1));
-        syncCheck.push(dbLocal.exeRead("notifications"));
 
         return Promise.all(syncCheck).then(r => {
             allow = r[0];
@@ -118,11 +117,6 @@ function dashboardPanelContent() {
             let menu = [];
             let indice = 1;
             let content = "";
-
-            $.each(r[4], function (i, e) {
-                if (e.usuario == USER.id)
-                    content += Mustache.render(templates.note, e)
-            });
 
             if (typeof panel === "string" && panel !== "") {
                 content = panel
@@ -167,7 +161,21 @@ function dashboardPanel() {
 
     dashboardPanelContent().then(content => {
         $(".dashboard-panel").html(content)
-    })
+    });
+
+    dbLocal.exeRead("notifications").then(n => {
+        if(!isEmpty(n)) {
+            getTemplates().then(templates => {
+                let note = "";
+                $.each(n, function (i, e) {
+                    if (parseInt(e.usuario) === parseInt(USER.id))
+                        note += Mustache.render(templates.note, e)
+                });
+
+                $(".dashboard-note").html(note)
+            });
+        }
+    });
 }
 
 $(function () {
