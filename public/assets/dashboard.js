@@ -10,7 +10,7 @@ function getRelevant(entity, dados) {
 
 function getGraficoData(grafico) {
     if(typeof graficoData[grafico.entity] !== "undefined") {
-        if (dicionarios[grafico.entity][grafico.x].key === "relation") {
+        if (typeof dicionarios[grafico.entity] !== "undefined" && typeof dicionarios[grafico.entity][grafico.x] !== "undefined" && dicionarios[grafico.entity][grafico.x].key === "relation") {
             for (let e in graficoData[grafico.entity]) {
                 let id = parseInt(graficoData[grafico.entity][e][grafico.x]);
                 if(!isNaN(id)) {
@@ -60,8 +60,13 @@ function showGrafico(graficos, i) {
             g.setMaximo(grafico.maximo);
             g.setLabelY(grafico.labely);
             g.setLabelX(grafico.labelx);
+            g.setMinimoY(grafico.minimoY);
+            g.setMaximoY(grafico.maximoY);
+            g.setMinimoX(grafico.minimoX);
+            g.setMaximoX(grafico.maximoX);
             g.toogleLegendShow();
             g.setData(graficoData[grafico.entity]);
+            g.setCornerRounded(grafico.corner);
             g.show();
 
             return showGrafico(graficos, (i+1))
@@ -71,6 +76,7 @@ function showGrafico(graficos, i) {
 
 $(function () {
     getGraficos().then(graficos => {
+        graficos = orderBy(graficos, "posicao").reverse();
         dbLocal.exeRead("__relevant", 1).then(relev => {
             relevant = relev;
             showGrafico(graficos, 0);
