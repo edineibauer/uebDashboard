@@ -1,6 +1,6 @@
 <div class="col relative">
     <header class="container s-padding-small">
-        <h5 class="padding-32 s-padding-12 s-padding-tiny">
+        <h5 class="left padding-32 s-padding-12 s-padding-tiny">
             <b>
                 <i class="material-icons left padding-right">dashboard</i>
                 <span class="left">Meu Painel</span>
