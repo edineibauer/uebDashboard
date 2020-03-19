@@ -65,7 +65,7 @@ function dashboardSidebarInfo() {
         let imagem = "";
         if(typeof USER.imagem === "string") {
             if(isJson(USER.imagem))
-                imagem = decodeURIComponent(JSON.parse(USER.imagem)['urls'][100]);
+                imagem = decodeURIComponent(JSON.parse(USER.imagem)[0]['urls'][100]);
             else
                 imagem = USER.imagem;
         } else if(typeof USER.imagem === "object" && typeof USER.imagem.url === "string") {
