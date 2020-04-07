@@ -21,7 +21,7 @@ function menuDashboard(count) {
     } else {
         let allow = dbLocal.exeRead("__allow", 1);
         let info = dbLocal.exeRead("__info", 1);
-        let templates = dbLocal.exeRead("__template", 1);
+        let templates = getTemplates();
         Promise.all([allow, info, templates]).then(r => {
             allow = r[0];
             info = r[1];
@@ -106,7 +106,7 @@ function dashboardPanelContent() {
         let syncCheck = [];
         syncCheck.push(dbLocal.exeRead("__allow", 1));
         syncCheck.push(dbLocal.exeRead("__info", 1));
-        syncCheck.push(dbLocal.exeRead("__template", 1));
+        syncCheck.push(getTemplates());
         syncCheck.push(dbLocal.exeRead("__panel", 1));
 
         return Promise.all(syncCheck).then(r => {

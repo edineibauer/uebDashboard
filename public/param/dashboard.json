@@ -1,6 +1,6 @@
 {
   "title": "Dashboard",
-  "js": ["funcaoDashboard"],
+  "js": ["funcaoDashboard", "appCoreDashboard"],
   "css": ["w3"],
   "!setor": "0"
 }
