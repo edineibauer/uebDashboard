@@ -18,7 +18,7 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
                         "body" => $dados['descricao'] ?? "",
                         "badge" => HOME . "assetsPublic/img/favicon.png?v=" . VERSION,
                         "data" => $dados['url'] ?? "",
-                        "icon" => $dados['imagem'] ?? HOME.FAVICON,
+                        "icon" => $dados['imagem'] ?? HOME . "assetsPublic/img/favicon.png?v=" . VERSION,
                         "imagem" => $dados['background'] ?? ""
                     ]
                 )
