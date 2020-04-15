@@ -1,6 +1,6 @@
 <?php
 
-$id = $link->getParam()[0];
+$id = (int) $link->getVariaveis()[0];
 
 if (is_numeric($id)) {
     $up = new \Conn\Update();
