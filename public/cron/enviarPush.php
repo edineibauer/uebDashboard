@@ -30,27 +30,29 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
              */
             if (!isset($inscricao[$item['usuario']])) {
                 $read->exeRead("push_notifications", "WHERE usuario = :au ORDER BY id DESC LIMIT 1", "au={$item['usuario']}");
-                $inscricao[$item['usuario']] = $read->getResult()[0] ?? [];
+                $inscricao[$item['usuario']] = $read->getResult() ?? [];
             }
 
             /**
              * Monta o array com as informações para o push
              */
             if(!empty($inscricao[$item['usuario']]) && !empty($pushs[$item['notificacao']])) {
-                $notifications[] = [
-                    'subscription' => Subscription::create(json_decode($inscricao[$item['usuario']]['subscription'], !0)),
-                    'payload' => json_encode(
-                        [
-                            "id" => $item['id'],
-                            "title" => $pushs[$item['notificacao']]['titulo'],
-                            "body" => $pushs[$item['notificacao']]['descricao'] ?? "",
-                            "badge" => HOME . "assetsPublic/img/favicon.png?v=" . VERSION,
-                            "data" => $pushs[$item['notificacao']]['url'] ?? "",
-                            "icon" => $pushs[$item['notificacao']]['imagem'] ?? HOME . "assetsPublic/img/favicon.png?v=" . VERSION,
-                            "imagem" => $pushs[$item['notificacao']]['background'] ?? ""
-                        ]
-                    )
-                ];
+                foreach ($inscricao[$item['usuario']] as $insc) {
+                    $notifications[] = [
+                        'subscription' => Subscription::create(json_decode($insc['subscription'], !0)),
+                        'payload' => json_encode(
+                            [
+                                "id" => $item['id'],
+                                "title" => $pushs[$item['notificacao']]['titulo'],
+                                "body" => $pushs[$item['notificacao']]['descricao'] ?? "",
+                                "badge" => HOME . "assetsPublic/img/favicon.png?v=" . VERSION,
+                                "data" => $pushs[$item['notificacao']]['url'] ?? "",
+                                "icon" => $pushs[$item['notificacao']]['imagem'] ?? HOME . "assetsPublic/img/favicon.png?v=" . VERSION,
+                                "imagem" => $pushs[$item['notificacao']]['background'] ?? ""
+                            ]
+                        )
+                    ];
+                }
 
                 /**
                  * Atualia status informando que o push foi enviado
