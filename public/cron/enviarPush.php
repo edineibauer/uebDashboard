@@ -29,7 +29,7 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
              * Lê inscrições
              */
             if (!isset($inscricao[$item['usuario']])) {
-                $read->exeRead("push_notifications", "WHERE usuario = :au ORDER BY id DESC LIMIT 1", "au={$item['usuario']}");
+                $read->exeRead("push_notifications", "WHERE usuario = :au", "au={$item['usuario']}");
                 $inscricao[$item['usuario']] = $read->getResult() ?? [];
             }
 
