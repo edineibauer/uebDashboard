@@ -126,17 +126,20 @@ class Notification
             $note = $read->getResult()[0]['id'];
         }
 
-        if(is_numeric($note) && $note > 0) {
+        if (is_numeric($note) && $note > 0) {
 
             /**
              * Single send
              */
             if (is_numeric($usuarios)) {
-                $create->exeCreate("notifications_report", [
-                    "usuario" => $usuarios,
-                    "notificacao" => $note,
-                    "data_de_envio" => date("Y-m-d H:i:s")
-                ]);
+                $read->exeRead("notifications_report", "WHERE usuario = :u && notificacao = :n", "u={$usuarios}&n={$note}");
+                if (!$read->getResult()) {
+                    $create->exeCreate("notifications_report", [
+                        "usuario" => $usuarios,
+                        "notificacao" => $note,
+                        "data_de_envio" => date("Y-m-d H:i:s")
+                    ]);
+                }
 
                 /**
                  * Mult send
@@ -144,11 +147,14 @@ class Notification
             } elseif (is_array($usuarios)) {
                 foreach ($usuarios as $usuario) {
                     if (is_numeric($usuario)) {
-                        $create->exeCreate("notifications_report", [
-                            "usuario" => $usuario,
-                            "notificacao" => $note,
-                            "data_de_envio" => date("Y-m-d H:i:s")
-                        ]);
+                        $read->exeRead("notifications_report", "WHERE usuario = :u && notificacao = :n", "u={$usuario}&n={$note}");
+                        if (!$read->getResult()) {
+                            $create->exeCreate("notifications_report", [
+                                "usuario" => $usuario,
+                                "notificacao" => $note,
+                                "data_de_envio" => date("Y-m-d H:i:s")
+                            ]);
+                        }
                     }
                 }
             }
@@ -180,7 +186,7 @@ class Notification
             if ($create->getResult()) {
                 $note = $create->getResult();
 
-                if($this->usuarios !== 0) {
+                if ($this->usuarios !== 0) {
                     /**
                      * Single send
                      */
