@@ -10,7 +10,7 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
      * Lê as notificações pendêntes
      */
     $read = new Read();
-    $read->exeRead("notifications_report", "WHERE data_de_envio > NOW() AND (enviou = 0 || enviou IS NULL)");
+    $read->exeRead("notifications_report", "WHERE data_de_envio < NOW() AND (enviou = 0 || enviou IS NULL)");
     if ($read->getResult()) {
         $pushs = [];
         $inscricao = [];
