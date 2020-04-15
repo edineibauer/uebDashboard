@@ -113,36 +113,42 @@ class Notification
             "status" => 1
         ];
 
+        $create = new Create();
         $read = new Read();
+
+        $note = 0;
         $read->exeRead("notifications", "WHERE titulo = '{$titulo}' AND descricao = :d", "d={$descricao}");
         if (!$read->getResult()) {
-            $create = new Create();
             $create->exeCreate("notifications", $notify);
-            if ($create->getResult()) {
+            if ($create->getResult())
                 $note = $create->getResult();
+        } else {
+            $note = $read->getResult()[0]['id'];
+        }
+
+        if(is_numeric($note) && $note > 0) {
+
+            /**
+             * Single send
+             */
+            if (is_numeric($usuarios)) {
+                $create->exeCreate("notifications_report", [
+                    "usuario" => $usuarios,
+                    "notificacao" => $note,
+                    "data_de_envio" => date("Y-m-d H:i:s")
+                ]);
 
                 /**
-                 * Single send
+                 * Mult send
                  */
-                if (is_numeric($usuarios)) {
-                    $create->exeCreate("notifications_report", [
-                        "usuario" => $usuarios,
-                        "notificacao" => $note,
-                        "data_de_envio" => date("Y-m-d H:i:s")
-                    ]);
-
-                    /**
-                     * Mult send
-                     */
-                } elseif(is_array($usuarios)) {
-                    foreach ($usuarios as $usuario) {
-                        if(is_numeric($usuario)) {
-                            $create->exeCreate("notifications_report", [
-                                "usuario" => $usuario,
-                                "notificacao" => $note,
-                                "data_de_envio" => date("Y-m-d H:i:s")
-                            ]);
-                        }
+            } elseif (is_array($usuarios)) {
+                foreach ($usuarios as $usuario) {
+                    if (is_numeric($usuario)) {
+                        $create->exeCreate("notifications_report", [
+                            "usuario" => $usuario,
+                            "notificacao" => $note,
+                            "data_de_envio" => date("Y-m-d H:i:s")
+                        ]);
                     }
                 }
             }
