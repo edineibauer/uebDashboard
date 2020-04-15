@@ -41,6 +41,7 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
                     'subscription' => Subscription::create(json_decode($inscricao[$item['usuario']]['subscription'], !0)),
                     'payload' => json_encode(
                         [
+                            "id" => $item['id'],
                             "title" => $pushs[$item['notificacao']]['titulo'],
                             "body" => $pushs[$item['notificacao']]['descricao'] ?? "",
                             "badge" => HOME . "assetsPublic/img/favicon.png?v=" . VERSION,
