@@ -11,56 +11,7 @@ class Notification
     private $descricao = "";
     private $url = HOME;
     private $imagem = HOME . "assetsPublic/img/favicon.png?v=" . VERSION;
-    private $usuario = 0;
-    private $copia = !1;
-
-    /**
-     * @return string
-     */
-    public function getTitulo(): string
-    {
-        return $this->titulo;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescricao(): string
-    {
-        return $this->descricao;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUrl(): string
-    {
-        return $this->url;
-    }
-
-    /**
-     * @return string
-     */
-    public function getImagem(): string
-    {
-        return $this->imagem;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUsuario(): int
-    {
-        return $this->usuario;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getCopia(): bool
-    {
-        return $this->copia;
-    }
+    private $usuarios = 0;
 
     /**
      * @param string $titulo
@@ -95,53 +46,105 @@ class Notification
     }
 
     /**
-     * @param int $usuario
+     * @param int|array $usuarios
      */
-    public function setUsuario(int $usuario)
+    public function setUsuarios($usuarios)
     {
-        $this->usuario = $usuario;
+        $this->usuarios = $usuarios;
     }
 
     /**
-     * @param bool $copia
+     * @return string
      */
-    public function setCopia(bool $copia)
+    public function getTitulo(): string
     {
-        $this->copia = $copia;
+        return $this->titulo;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescricao(): string
+    {
+        return $this->descricao;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImagem(): string
+    {
+        return $this->imagem;
+    }
+
+    /**
+     * @return int|array
+     */
+    public function getUsuarios()
+    {
+        return $this->usuarios;
     }
 
     public function enviar()
     {
-        $this->createNotification($this->titulo, $this->descricao, $this->url, $this->imagem, $this->usuario, $this->copia);
+        $this->createNotification($this->titulo, $this->descricao, $this->url, $this->imagem);
     }
 
     /**
      * Função statica e rápida para criar notificações para a Dashboard
      * @param string $titulo
      * @param string $descricao
-     * @param int $usuario
-     * @param int $copia
+     * @param int|array $usuarios
      */
-    public static function create(string $titulo, string $descricao, int $usuario, int $copia = 0)
+    public static function create(string $titulo, string $descricao, $usuarios)
     {
-        $create = new Create();
-        $read = new Read();
-
         $notify = [
             "titulo" => $titulo,
             "descricao" => $descricao,
             "data" => date("Y-m-d H:i:s"),
-            "status" => 1,
-            "usuario" => $usuario
+            "status" => 1
         ];
 
-        $read->exeRead("notifications", "WHERE titulo = '{$titulo}' AND usuario = :a", "a={$usuario}");
+        $read = new Read();
+        $read->exeRead("notifications", "WHERE titulo = '{$titulo}' AND descricao = :d", "d={$descricao}");
         if (!$read->getResult()) {
+            $create = new Create();
             $create->exeCreate("notifications", $notify);
-            if ($copia !== 0) {
-                $notify['titulo'] = "[CÓPIA] " . $notify['titulo'];
-                $notify['usuario'] = $_SESSION['userlogin']['id'];
-                $create->exeCreate("notifications", $notify);
+            if ($create->getResult()) {
+                $note = $create->getResult();
+
+                /**
+                 * Single send
+                 */
+                if (is_numeric($usuarios)) {
+                    $create->exeCreate("notifications_report", [
+                        "usuario" => $usuarios,
+                        "notificacao" => $note,
+                        "data_de_envio" => date("Y-m-d H:i:s")
+                    ]);
+
+                    /**
+                     * Mult send
+                     */
+                } elseif(is_array($usuarios)) {
+                    foreach ($usuarios as $usuario) {
+                        if(is_numeric($usuario)) {
+                            $create->exeCreate("notifications_report", [
+                                "usuario" => $usuario,
+                                "notificacao" => $note,
+                                "data_de_envio" => date("Y-m-d H:i:s")
+                            ]);
+                        }
+                    }
+                }
             }
         }
     }
@@ -151,10 +154,8 @@ class Notification
      * @param string $descricao
      * @param string $url
      * @param string $imagem
-     * @param int $usuario
-     * @param bool $copia
      */
-    private function createNotification(string $titulo, string $descricao, string $url, string $imagem, int $usuario, bool $copia)
+    private function createNotification(string $titulo, string $descricao, string $url, string $imagem)
     {
         $notify = [
             "titulo" => $titulo,
@@ -162,20 +163,43 @@ class Notification
             "data" => date("Y-m-d H:i:s"),
             "status" => 1,
             "url" => $url,
-            "imagem" => $imagem,
-            "usuario" => $usuario
+            "imagem" => $imagem
         ];
 
         $read = new Read();
-        $read->exeRead("notifications", "WHERE titulo = '{$titulo}' AND usuario = :a", "a={$usuario}");
+        $read->exeRead("notifications", "WHERE titulo = '{$titulo}' AND descricao = :d", "d={$descricao}");
         if (!$read->getResult()) {
-
             $create = new Create();
             $create->exeCreate("notifications", $notify);
-            if ($copia) {
-                $notify['titulo'] = "[CÓPIA] " . $notify['titulo'];
-                $notify['usuario'] = $_SESSION['userlogin']['id'];
-                $create->exeCreate("notifications", $notify);
+            if ($create->getResult()) {
+                $note = $create->getResult();
+
+                if($this->usuarios !== 0) {
+                    /**
+                     * Single send
+                     */
+                    if (is_numeric($this->usuarios)) {
+                        $create->exeCreate("notifications_report", [
+                            "usuario" => $this->usuarios,
+                            "notificacao" => $note,
+                            "data_de_envio" => date("Y-m-d H:i:s")
+                        ]);
+
+                        /**
+                         * Mult send
+                         */
+                    } elseif (is_array($this->usuarios)) {
+                        foreach ($this->usuarios as $usuario) {
+                            if (is_numeric($usuario)) {
+                                $create->exeCreate("notifications_report", [
+                                    "usuario" => $usuario,
+                                    "notificacao" => $note,
+                                    "data_de_envio" => date("Y-m-d H:i:s")
+                                ]);
+                            }
+                        }
+                    }
+                }
             }
         }
     }
