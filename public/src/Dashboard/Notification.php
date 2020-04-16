@@ -9,7 +9,7 @@ class Notification
 {
     private $titulo = "";
     private $descricao = "";
-    private $url = HOME;
+    private $url = "";
     private $imagem = HOME . "assetsPublic/img/favicon.png?v=" . VERSION;
     private $usuarios = 0;
 
