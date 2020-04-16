@@ -84,20 +84,14 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
          * Check sent results
          * @var MessageSentReport $report
          */
-        /*foreach ($webPush->flush() as $report) {
+        foreach ($webPush->flush() as $report) {
             $endpoint = $report->getRequest()->getUri()->__toString();
 
-            if ($report->isSuccess()) {
-                $up = new \Conn\Update();
-                $sql = new \Conn\SqlCommand("UPDATE " . PRE . "notifications SET enviou = 1 WHERE id = {}");
-                $sql->exeCommand("");
-            }
-
-            if ($report->isSuccess()) {
+            /*if ($report->isSuccess()) {
                 echo "[v] Message sent successfully for subscription {$endpoint}.";
             } else {
                 echo "[x] Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
-            }
-        }*/
+            }*/
+        }
     }
 }
