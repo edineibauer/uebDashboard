@@ -9,12 +9,15 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
     /**
      * Lê as notificações pendêntes
      */
+    $up = new \Conn\Update();
     $read = new Read();
+
     $read->exeRead("notifications_report", "WHERE data_de_envio < NOW() AND (enviou = 0 || enviou IS NULL)");
     if ($read->getResult()) {
         $pushs = [];
         $inscricao = [];
         $notifications = [];
+        $totalEnvios = [];
 
         foreach ($read->getResult() as $item) {
             /**
@@ -57,9 +60,17 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
                 /**
                  * Atualia status informando que o push foi enviado
                  */
-                $up = new \Conn\Update();
                 $up->exeUpdate("notifications_report", ["enviou" => 1], "WHERE id = :ud", "ud={$item['id']}");
+                $totalEnvios[$item['enviar_mensagem_id']] = (!isset($totalEnvios[$item['enviar_mensagem_id']]) ? 0 : $totalEnvios[$item['enviar_mensagem_id']] + 1);
             }
+        }
+
+        /**
+         * Atualiza total de envios para as mensagem caso tenha
+         */
+        if(!empty($totalEnvios)) {
+            foreach ($totalEnvios as $idMensagem => $total)
+                $up->exeUpdate("enviar_mensagem", ["total_de_envios" => $total], "WHERE id = :ud", "ud={$idMensagem}");
         }
 
         /**
