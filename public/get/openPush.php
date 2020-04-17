@@ -11,7 +11,11 @@ if (is_numeric($id)) {
         $up = new \Conn\Update();
         $up->exeUpdate("notifications_report", ["abriu" => 1], "WHERE id = :id", "id={$id}");
 
-        $sql = new \Conn\SqlCommand();
-        $sql->exeCommand("UPDATE " . PRE . "enviar_mensagem SET total_de_conversao = (total_de_conversao + 1), taxa_de_conversao = (((total_de_conversao+1)*100)/total_de_entrega) WHERE id = '" . $notificacao['enviar_mensagem_id'] . "'");
+        $read->exeRead("enviar_mensagem", "WHERE id = :eid", "eid={$notificacao['enviar_mensagem_id']}");
+        if($read->getResult()) {
+            $m = $read->getResult()[0];
+            $nTotal = $m['total_de_conversao'] + 1;
+            $up->exeUpdate("enviar_mensagem", ["total_de_conversao" => $nTotal, "taxa_de_conversao" => (($nTotal * 100) / $m['total_de_entrega'])], "WHERE id = :eid", "eid={$notificacao['enviar_mensagem_id']}");
+        }
     }
 }
