@@ -61,7 +61,7 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
                  * Atualia status informando que o push foi enviado
                  */
                 $up->exeUpdate("notifications_report", ["enviou" => 1], "WHERE id = :ud", "ud={$item['id']}");
-                $totalEnvios[$item['enviar_mensagem_id']] = (!isset($totalEnvios[$item['enviar_mensagem_id']]) ? 0 : $totalEnvios[$item['enviar_mensagem_id']] + 1);
+                $totalEnvios[$item['enviar_mensagem_id']] = (!isset($totalEnvios[$item['enviar_mensagem_id']]) ? 1 : $totalEnvios[$item['enviar_mensagem_id']] + 1);
             }
         }
 
