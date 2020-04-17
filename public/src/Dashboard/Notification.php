@@ -12,6 +12,7 @@ class Notification
     private $url = "";
     private $imagem = HOME . "assetsPublic/img/favicon.png?v=" . VERSION;
     private $usuarios = 0;
+    private $enviarMensagemAssociation = null;
 
     /**
      * @param string $titulo
@@ -54,6 +55,14 @@ class Notification
     }
 
     /**
+     * @param int $enviarMensagemAssociation
+     */
+    public function setEnviarMensagemAssociation(int $enviarMensagemAssociation)
+    {
+        $this->enviarMensagemAssociation = $enviarMensagemAssociation;
+    }
+
+    /**
      * @return string
      */
     public function getTitulo(): string
@@ -93,9 +102,17 @@ class Notification
         return $this->usuarios;
     }
 
+    /**
+     * @return int
+     */
+    public function getEnviarMensagemAssociation(): int
+    {
+        return $this->enviarMensagemAssociation;
+    }
+
     public function enviar()
     {
-        $this->createNotification($this->titulo, $this->descricao, $this->url, $this->imagem);
+        $this->createNotification();
     }
 
     /**
@@ -162,24 +179,21 @@ class Notification
     }
 
     /**
-     * @param string $titulo
-     * @param string $descricao
-     * @param string $url
-     * @param string $imagem
+     * Cria a notificação
      */
-    private function createNotification(string $titulo, string $descricao, string $url, string $imagem)
+    private function createNotification()
     {
         $notify = [
-            "titulo" => $titulo,
-            "descricao" => $descricao,
+            "titulo" => $this->titulo,
+            "descricao" => $this->descricao,
             "data" => date("Y-m-d H:i:s"),
             "status" => 1,
-            "url" => $url,
-            "imagem" => $imagem
+            "url" => $this->url,
+            "imagem" => $this->imagem
         ];
 
         $read = new Read();
-        $read->exeRead("notifications", "WHERE titulo = '{$titulo}' AND descricao = :d", "d={$descricao}");
+        $read->exeRead("notifications", "WHERE titulo = '{$this->titulo}' AND descricao = :d", "d={$this->descricao}");
         if (!$read->getResult()) {
             $create = new Create();
             $create->exeCreate("notifications", $notify);
@@ -194,6 +208,7 @@ class Notification
                         $create->exeCreate("notifications_report", [
                             "usuario" => $this->usuarios,
                             "notificacao" => $note,
+                            "enviar_mensagem_id" => $this->enviarMensagemAssociation,
                             "data_de_envio" => date("Y-m-d H:i:s")
                         ]);
 
@@ -206,6 +221,7 @@ class Notification
                                 $create->exeCreate("notifications_report", [
                                     "usuario" => $usuario,
                                     "notificacao" => $note,
+                                    "enviar_mensagem_id" => $this->enviarMensagemAssociation,
                                     "data_de_envio" => date("Y-m-d H:i:s")
                                 ]);
                             }
