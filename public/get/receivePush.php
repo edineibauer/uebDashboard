@@ -15,7 +15,7 @@ if (is_numeric($id)) {
         if($read->getResult()) {
             $m = $read->getResult()[0];
             $nTotal = $m['total_de_entrega'] + 1;
-            $up->exeUpdate("enviar_mensagem", ["total_de_entrega" => $nTotal, "taxa_de_entrega" => (($nTotal * 100) / $m['total_de_envios'])], "WHERE id = :eid", "eid={$notificacao['enviar_mensagem_id']}");
+            $up->exeUpdate("enviar_mensagem", ["total_de_entrega" => $nTotal, "taxa_de_entrega" => ((($nTotal * 100) / $m['total_de_envios'])*100)], "WHERE id = :eid", "eid={$notificacao['enviar_mensagem_id']}");
         }
     }
 }
