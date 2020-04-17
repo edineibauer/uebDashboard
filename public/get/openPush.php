@@ -12,6 +12,6 @@ if (is_numeric($id)) {
         $up->exeUpdate("notifications_report", ["abriu" => 1], "WHERE id = :id", "id={$id}");
 
         $sql = new \Conn\SqlCommand();
-        $sql->exeCommand("UPDATE " . PRE . "enviar_mensagem SET total_de_conversao = total_de_conversao + 1 WHERE id = '" . $notificacao['enviar_mensagem_id'] . "'");
+        $sql->exeCommand("UPDATE " . PRE . "enviar_mensagem SET total_de_conversao = (total_de_conversao + 1), taxa_de_conversao = (((total_de_conversao+1)*100)/total_de_entrega) WHERE id = '" . $notificacao['enviar_mensagem_id'] . "'");
     }
 }
