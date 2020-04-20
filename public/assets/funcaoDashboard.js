@@ -95,9 +95,9 @@ function dashboardSidebarInfo() {
     })
 }
 
-function closeNote(id) {
-    $(".dashboard-note[rel='" + id + "']").remove();
-    db.exeDelete("notifications", parseInt(id));
+async function closeNote(id) {
+    $(".notification-card[rel='" + id + "']").remove();
+    return db.exeDelete("notifications_report", id);
 }
 
 function dashboardPanelContent() {
@@ -155,6 +155,53 @@ function dashboardPanelContent() {
     });
 }
 
+const DB = {
+    exeRead: async (entity, id) => {
+        return db.exeRead(entity, id);
+    },
+    exeCreate: async (entity, dados, async) => {
+        return db.exeCreate(entity, dados, async);
+    },
+    exeDelete: async (entity, id) => {
+        return db.exeDelete(entity, id);
+    }
+};
+
+const DBLOCAL = {
+    exeRead: async (entity, id) => {
+        return dbLocal.exeRead(entity, id);
+    },
+    exeCreate: async (entity, dados) => {
+        return dbLocal.exeCreate(entity, dados);
+    },
+    exeUpdate: async (entity, dados, id) => {
+        return dbLocal.exeUpdate(entity, dados, id);
+    },
+    exeDelete: async (entity, id) => {
+        return dbLocal.exeDelete(entity, id);
+    }
+};
+
+
+async function getNotifications() {
+    let myNotifications = [];
+    let notifications = await DB.exeRead("notifications_report");
+
+    if (!isEmpty(notifications)) {
+        for (let i in notifications) {
+            if (notifications[i].usuario == USER.id) {
+                await DB.exeRead("notifications", notifications[i].notificacao).then(notify => {
+                    notify.data = moment(notifications[i].data_de_envio).calendar().toLowerCase();
+                    notifications[i].notificacaoData = notify;
+                    myNotifications.push(notifications[i]);
+                });
+            }
+        }
+    }
+
+    return myNotifications;
+}
+
 function dashboardPanel() {
     if($(".panel-name").length)
         $(".panel-name").html(USER.nome);
@@ -163,19 +210,12 @@ function dashboardPanel() {
         $(".dashboard-panel").html(content)
     });
 
-    dbLocal.exeRead("notifications").then(n => {
-        if(!isEmpty(n)) {
-            getTemplates().then(templates => {
-                let note = "";
-                $.each(n, function (i, e) {
-                    if (parseInt(e.usuario) === parseInt(USER.id))
-                        note += Mustache.render(templates.note, e)
-                });
-
-                $(".dashboard-note").html(note)
-            });
-        }
-    });
+    let myNotifications = await getNotifications();
+    if (isEmpty(myNotifications)) {
+        $(".dashboard-note").htmlTemplate('notificacoesEmpty');
+    } else {
+        $(".dashboard-note").htmlTemplate('note', {notificacoes: myNotifications});
+    }
 }
 
 $(function () {
