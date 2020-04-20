@@ -63,12 +63,12 @@ function dashboardSidebarInfo() {
         $("#dashboard-sidebar-imagem").html("<i class='material-icons font-jumbo'>people</i>");
     } else {
         let imagem = "";
-        if(typeof USER.imagem === "string") {
-            if(isJson(USER.imagem))
+        if (typeof USER.imagem === "string") {
+            if (isJson(USER.imagem))
                 imagem = decodeURIComponent(JSON.parse(USER.imagem)[0]['urls'][100]);
             else
                 imagem = USER.imagem;
-        } else if(typeof USER.imagem === "object" && typeof USER.imagem.url === "string") {
+        } else if (typeof USER.imagem === "object" && typeof USER.imagem.url === "string") {
             imagem = USER.imagem.urls[100];
         }
         $("#dashboard-sidebar-imagem").html("<img src='" + imagem + "' title='" + USER.nome + "' alt='imagem do usuário " + USER.nome + "' width='60' height='60' style='width: 60px;height: 60px' />");
@@ -155,46 +155,17 @@ function dashboardPanelContent() {
     });
 }
 
-const DB = {
-    exeRead: async (entity, id) => {
-        return db.exeRead(entity, id);
-    },
-    exeCreate: async (entity, dados, async) => {
-        return db.exeCreate(entity, dados, async);
-    },
-    exeDelete: async (entity, id) => {
-        return db.exeDelete(entity, id);
-    }
-};
-
-const DBLOCAL = {
-    exeRead: async (entity, id) => {
-        return dbLocal.exeRead(entity, id);
-    },
-    exeCreate: async (entity, dados) => {
-        return dbLocal.exeCreate(entity, dados);
-    },
-    exeUpdate: async (entity, dados, id) => {
-        return dbLocal.exeUpdate(entity, dados, id);
-    },
-    exeDelete: async (entity, id) => {
-        return dbLocal.exeDelete(entity, id);
-    }
-};
-
-
 async function getNotifications() {
     let myNotifications = [];
-    let notifications = await DB.exeRead("notifications_report");
+    let notifications = await db.exeRead("notifications_report");
 
     if (!isEmpty(notifications)) {
         for (let i in notifications) {
             if (notifications[i].usuario == USER.id) {
-                await DB.exeRead("notifications", notifications[i].notificacao).then(notify => {
-                    notify.data = moment(notifications[i].data_de_envio).calendar().toLowerCase();
-                    notifications[i].notificacaoData = notify;
-                    myNotifications.push(notifications[i]);
-                });
+                let notify = await db.exeRead("notifications", notifications[i].notificacao);
+                notify.data = moment(notifications[i].data_de_envio).calendar().toLowerCase();
+                notifications[i].notificacaoData = notify;
+                myNotifications.push(notifications[i]);
             }
         }
     }
@@ -203,7 +174,7 @@ async function getNotifications() {
 }
 
 function dashboardPanel() {
-    if($(".panel-name").length)
+    if ($(".panel-name").length)
         $(".panel-name").html(USER.nome);
 
     dashboardPanelContent().then(content => {
@@ -242,7 +213,7 @@ $(function () {
             pageTransition($(this).attr("data-atributo"), 'route', 'forward', "#core-content");
         }
     }).off("click", ".btn-edit-perfil").on("click", ".btn-edit-perfil", function () {
-        if(history.state.route !== "usuarios" || history.state.type !== "form") {
+        if (history.state.route !== "usuarios" || history.state.type !== "form") {
             let entity = USER.setorData === "" ? "usuarios" : USER.setorData;
             pageTransition(entity, 'form', 'forward', "#dashboard", USER);
         }
