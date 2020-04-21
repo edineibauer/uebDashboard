@@ -95,11 +95,6 @@ function dashboardSidebarInfo() {
     })
 }
 
-async function closeNote(id) {
-    $(".notification-card[rel='" + id + "']").remove();
-    return db.exeDelete("notifications_report", id);
-}
-
 function dashboardPanelContent() {
     return dbLocal.exeRead('__dicionario', 1).then(d => {
 
@@ -155,7 +150,7 @@ function dashboardPanelContent() {
     });
 }
 
-function dashboardPanel() {
+async function dashboardPanel() {
     if ($(".panel-name").length)
         $(".panel-name").html(USER.nome);
 
