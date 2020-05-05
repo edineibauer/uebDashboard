@@ -15,8 +15,17 @@ if($read->getResult()) {
         $entityIsMySetor = ($setor !== "admin" && (isset($permissoes[$setor][$item['entidade']]['read']) && !$permissoes[$setor][$item['entidade']]['read']) && $setor !== "0" && $item['entidade'] === $setor);
         if ($setor === "admin" || (isset($permissoes[$setor][$item['entidade']]['read']) || $permissoes[$setor][$item['entidade']]['read']) || $entityIsMySetor) {
 
+            $dic = \Entity\Metadados::getDicionario($item['entidade']);
+            $format = "";
+            foreach($dic as $d) {
+                if($d['column'] === $item['ordem']) {
+                    $format = $d['format'];
+                    break;
+                }
+            }
+
             $report = new \Report\Report($item, 1, $link->getVariaveis()[0] ?? 0);
-            $data['data'][] = ['data' => $report->getResult()[0][$item['ordem']], 'titulo' => $item['nome']];
+            $data['data'][] = ['data' => $report->getResult()[0][$item['ordem']], 'titulo' => $item['nome'], 'format' => $format];
         }
     }
 }

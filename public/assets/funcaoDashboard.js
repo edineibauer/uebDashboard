@@ -154,7 +154,7 @@ async function dashboardCardRelatorios() {
     let tpl = await getTemplates();
     let cards = await get("relatorios_cards");
     for(let i in cards)
-        cards[i].data = maskData($("<div><div class='cc td-percent'><div class='td-value'>" + cards[i].data + "</div></div></div>")).find(".td-value").html();
+        cards[i].data = maskData($("<div><div class='cc td-" + cards[i].format + "'><div class='td-value'>" + cards[i].data + "</div></div></div>")).find(".td-value").html();
 
     return Mustache.render(tpl.relatorios_card, {cards: cards});
 }
