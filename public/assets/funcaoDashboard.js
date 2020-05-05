@@ -95,7 +95,7 @@ function dashboardSidebarInfo() {
     })
 }
 
-function dashboardPanelContent() {
+async function dashboardPanelContent() {
     return dbLocal.exeRead('__dicionario', 1).then(d => {
 
         let syncCheck = [];
@@ -150,13 +150,20 @@ function dashboardPanelContent() {
     });
 }
 
+async function dashboardCardRelatorios() {
+    let tpl = await getTemplates();
+    let cards = await get("relatorios_cards");
+    for(let i in cards)
+        cards[i].data = maskData($("<div><div class='cc td-percent'><div class='td-value'>" + cards[i].data + "</div></div></div>")).find(".td-value").html();
+
+    return Mustache.render(tpl.relatorios_card, {cards: cards});
+}
+
 async function dashboardPanel() {
     if ($(".panel-name").length)
         $(".panel-name").html(USER.nome);
 
-    dashboardPanelContent().then(content => {
-        $(".dashboard-panel").html(content)
-    });
+    $(".dashboard-panel").append(await dashboardCardRelatorios() + await dashboardPanelContent());
 
     let myNotifications = await getNotifications();
     if (isEmpty(myNotifications)) {
