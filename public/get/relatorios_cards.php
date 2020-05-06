@@ -61,7 +61,7 @@ if($read->getResult()) {
                 $icon = $item['icone'];
             }
 
-            $data['data'][] = ['data' => $valor, 'titulo' => $item['nome'], 'format' => $format, "icon" => $icon, "cor_de_fundo" => $item['cor_de_fundo'], "cor_do_texto" => $item['cor_do_texto']];
+            $data['data'][] = ['id' => $item['id'], 'data' => $valor, 'titulo' => $item['nome'], 'format' => $format, "icon" => $icon, "cor_de_fundo" => $item['cor_de_fundo'], "cor_do_texto" => $item['cor_do_texto']];
         }
     }
 }
