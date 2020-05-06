@@ -14,6 +14,7 @@ if($read->getResult()) {
         $usuarios = empty($item['usuarios']) ? [] : json_decode($item['usuarios'], !0);
         if (empty($usuarios) || (is_array($usuarios) && in_array($setor, $item['usuarios']))) {
 
+            $report = new \Report\Report($item, 1, $link->getVariaveis()[0] ?? 0);
             $entidadeIcon = $item['entidade'];
             $dic = \Entity\Metadados::getDicionario($item['entidade']);
             $format = "";
@@ -56,7 +57,6 @@ if($read->getResult()) {
             $info = \Entity\Metadados::getInfo($entidadeIcon);
             $icon = !empty($info['icon']) ? $info['icon'] : "show_chart";
 
-            $report = new \Report\Report($item, 1, $link->getVariaveis()[0] ?? 0);
             $data['data'][] = ['data' => $valor, 'titulo' => $item['nome'], 'format' => $format, "icon" => $icon];
         }
     }
