@@ -6,10 +6,10 @@
                 <span class="left">Meu Painel</span>
             </b>
         </h5>
-        <div class="right s-hide" style="padding-top: 30px">
+        <div class="right s-hide" style="padding-top: 30px;margin-right: calc(12% - 95px);">
             <h2 class="col color-text-gray padding-0">
                 <i class="material-icons left padding-small">notification_important</i>
-                <div class="left font-large padding-small">Suas notificações</div>
+                <div class="left font-large padding-small" >Suas notificações</div>
             </h2>
         </div>
     </header>
