@@ -8,24 +8,56 @@ $read->exeRead("relatorios_card");
 if($read->getResult()) {
 
     $setor = !empty($_SESSION['userlogin']) ? $_SESSION['userlogin']['setor'] : "0";
-    $permissoes = Config::getPermission();
 
     foreach ($read->getResult() as $item) {
 
-        $entityIsMySetor = ($setor !== "admin" && (isset($permissoes[$setor][$item['entidade']]['read']) && !$permissoes[$setor][$item['entidade']]['read']) && $setor !== "0" && $item['entidade'] === $setor);
-        if ($setor === "admin" || (isset($permissoes[$setor][$item['entidade']]['read']) || $permissoes[$setor][$item['entidade']]['read']) || $entityIsMySetor) {
+        $usuarios = empty($item['usuarios']) ? [] : json_decode($item['usuarios'], !0);
+        if (empty($usuarios) || (is_array($usuarios) && in_array($setor, $item['usuarios']))) {
 
+            $entidadeIcon = $item['entidade'];
             $dic = \Entity\Metadados::getDicionario($item['entidade']);
             $format = "";
+            $valor = $report->getResult()[0][$item['ordem']];
+
             foreach($dic as $d) {
                 if($d['column'] === $item['ordem']) {
+                    if($d['key'] === "relation") {
+
+                        /**
+                         * Se for um campo relacional, então busca valor do campo relacional
+                         */
+                        $entidadeIcon = $d['relation'];
+                        $dic = new \Entity\Dicionario($d['relation']);
+                        $relevant = $dic->getRelevant()->getColumn();
+
+                        $result = [];
+                        if($d['type'] === "json" && $d['group'] === "one"){
+                            $result = json_decode($report->getResult()[0][$item['ordem']], !0);
+
+                        } elseif ($d['type'] === "int"){
+                            $read->exeRead($d['relation'], "WHERE id = :id", "id={$report->getResult()[0][$item['ordem']]}");
+                            $result = ($read->getResult() ? $read->getResult()[0] : []);
+                        }
+
+                        $valor = $result[$relevant];
+                    }
+
+                    /**
+                     * Obtém o format do campo para aplicar mask no valor
+                     */
                     $format = $d['format'];
                     break;
                 }
             }
 
+            /**
+             * Icone
+             */
+            $info = \Entity\Metadados::getInfo($entidadeIcon);
+            $icon = !empty($info['icon']) ? $info['icon'] : "show_chart";
+
             $report = new \Report\Report($item, 1, $link->getVariaveis()[0] ?? 0);
-            $data['data'][] = ['data' => $report->getResult()[0][$item['ordem']], 'titulo' => $item['nome'], 'format' => $format];
+            $data['data'][] = ['data' => $valor, 'titulo' => $item['nome'], 'format' => $format, "icon" => $icon];
         }
     }
 }
