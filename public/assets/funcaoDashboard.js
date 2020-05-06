@@ -157,7 +157,7 @@ function destruct() {
 }
 
 async function updateRelatiosCardInfo() {
-    let cards = await get("relatorios_cards");
+    let cards = await get("relatorios_cards_value");
     for(let card of cards)
         $(".relatorios_card[rel='" + card.id + "']").find(".relatorios_card_value").html(maskData($("<div><div class='cc td-" + card.format + "'><div class='td-value'>" + card.data + "</div></div></div>")).find(".td-value").html());
 }
