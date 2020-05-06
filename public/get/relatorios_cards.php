@@ -12,7 +12,7 @@ if($read->getResult()) {
     foreach ($read->getResult() as $item) {
 
         $usuarios = empty($item['usuarios']) ? [] : json_decode($item['usuarios'], !0);
-        if (empty($usuarios) || (is_array($usuarios) && in_array($setor, $item['usuarios']))) {
+        if (empty($usuarios) || (is_array($usuarios) && in_array($setor, $usuarios))) {
 
             $report = new \Report\Report($item, 1, $link->getVariaveis()[0] ?? 0);
             $entidadeIcon = $item['entidade'];
