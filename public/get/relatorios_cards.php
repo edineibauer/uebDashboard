@@ -54,10 +54,14 @@ if($read->getResult()) {
             /**
              * Icone
              */
-            $info = \Entity\Metadados::getInfo($entidadeIcon);
-            $icon = !empty($info['icon']) ? $info['icon'] : "show_chart";
+            if(empty($item['icone'])) {
+                $info = \Entity\Metadados::getInfo($entidadeIcon);
+                $icon = !empty($info['icon']) ? $info['icon'] : "show_chart";
+            } else {
+                $icon = $item['icone'];
+            }
 
-            $data['data'][] = ['data' => $valor, 'titulo' => $item['nome'], 'format' => $format, "icon" => $icon];
+            $data['data'][] = ['data' => $valor, 'titulo' => $item['nome'], 'format' => $format, "icon" => $icon, "cor_de_fundo" => $item['cor_de_fundo'], "cor_do_texto" => $item['cor_do_texto']];
         }
     }
 }
