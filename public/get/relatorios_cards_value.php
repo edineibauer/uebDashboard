@@ -16,6 +16,7 @@ if($read->getResult()) {
 
             $report = new \Report\Report($item, 1, $link->getVariaveis()[0] ?? 0);
             $valor = $report->getResult()[0][$item['ordem']];
+            $format = "";
 
             $dic = \Entity\Metadados::getDicionario($item['entidade']);
             foreach($dic as $d) {
@@ -40,10 +41,14 @@ if($read->getResult()) {
                         $valor = $result[$relevant];
                     }
 
+                    /**
+                     * Obtém o format do campo para aplicar mask no valor
+                     */
+                    $format = $d['format'];
                     break;
                 }
             }
-            $data['data'][] = ['id' => $item['id'], 'data' => $valor];
+            $data['data'][] = ['id' => $item['id'], 'data' => $valor, 'format' => $format];
         }
     }
 }
