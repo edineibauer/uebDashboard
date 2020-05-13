@@ -37,6 +37,7 @@
     "report_table",
     "report_table_content",
     "filter_badge",
+    "filter_group",
     "grid_content",
     "grid",
     "graficos_list",
