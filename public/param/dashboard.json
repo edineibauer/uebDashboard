@@ -2,5 +2,7 @@
   "title": "Dashboard",
   "js": ["reportRead", "funcaoDashboard", "appCoreDashboard"],
   "css": ["w3"],
-  "!setor": "0"
+  "!setor": "0",
+  "offline": true,
+  "templates": ["card", "menu-card", "menu-li", "relatorios_card"]
 }
