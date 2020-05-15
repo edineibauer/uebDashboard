@@ -4,7 +4,7 @@ $id = (int)$link->getVariaveis()[0];
 
 if (is_numeric($id)) {
     $read = new \Conn\Read();
-    $read->exeRead("notifications_report", "WHERE id = :id && recebeu != 1", "id={$id}");
+    $read->exeRead("notifications_report", "WHERE id = :id && (recebeu IS NULL || recebeu = 0)", "id={$id}");
     if ($read->getResult()) {
         $notificacao = $read->getResult()[0];
 
