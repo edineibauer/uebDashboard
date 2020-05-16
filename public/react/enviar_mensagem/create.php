@@ -149,7 +149,6 @@ if (!empty($mensagem['enviar_para_relatorios'])) {
                                     }
                                 }
 
-
                                 foreach ($usuarios as $usuario) {
                                     if (!empty($emails[$usuario])) {
                                         $emailSend = new \Email\Email();
