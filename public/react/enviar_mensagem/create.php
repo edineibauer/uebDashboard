@@ -40,11 +40,18 @@ if (!empty($mensagem['enviar_para_relatorios'])) {
                      */
                     $email = "";
                     if (in_array("2", $mensagem['canais'])) {
-                        $dicionarioCliente = ($isReportCliente ? $dicionario : \Entity\Metadados::getDicionario($mensagem['enviar_para']));
-                        foreach ($dicionarioCliente as $dic) {
+                        foreach ($dicionario as $dic) {
                             if ($dic['format'] === "email") {
                                 $email = $dic['column'];
                                 break;
+                            }
+                        }
+                        if($email === "") {
+                            foreach (\Entity\Metadados::getDicionario($mensagem['enviar_para']) as $dic) {
+                                if ($dic['format'] === "email") {
+                                    $email = $dic['column'];
+                                    break;
+                                }
                             }
                         }
                     }
@@ -129,26 +136,6 @@ if (!empty($mensagem['enviar_para_relatorios'])) {
                              * Email notification
                              */
                             if (in_array("2", $mensagem['canais'])) {
-
-                                /**
-                                 * Encontra email
-                                 */
-                                $email = "";
-                                if (in_array("2", $mensagem['canais'])) {
-                                    if ($isReportCliente) {
-                                        $dicionarioCliente = $dicionario;
-                                    } else {
-                                        $dicionarioCliente = \Entity\Metadados::getDicionario($mensagem['enviar_para']);
-                                    }
-
-                                    foreach ($dicionarioCliente as $dic) {
-                                        if ($dic['format'] === "email") {
-                                            $email = $dic['column'];
-                                            break;
-                                        }
-                                    }
-                                }
-
                                 foreach ($usuarios as $usuario) {
                                     if (!empty($emails[$usuario])) {
                                         $emailSend = new \Email\Email();
