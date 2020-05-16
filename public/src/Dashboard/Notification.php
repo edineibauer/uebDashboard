@@ -183,6 +183,9 @@ class Notification
      */
     private function createNotification()
     {
+        $read = new Read();
+        $create = new Create();
+        $note = 0;
         $notify = [
             "titulo" => $this->titulo,
             "descricao" => $this->descricao,
@@ -192,39 +195,40 @@ class Notification
             "imagem" => $this->imagem
         ];
 
-        $read = new Read();
         $read->exeRead("notifications", "WHERE titulo = '{$this->titulo}' AND descricao = :d", "d={$this->descricao}");
         if (!$read->getResult()) {
-            $create = new Create();
             $create->exeCreate("notifications", $notify);
-            if ($create->getResult()) {
+            if ($create->getResult())
                 $note = $create->getResult();
+        } else {
+            $note = $read->getResult()[0]['id'];
+        }
 
-                if ($this->usuarios !== 0) {
+        if (is_numeric($note) && $note > 0) {
+            if ($this->usuarios !== 0) {
+                /**
+                 * Single send
+                 */
+                if (is_numeric($this->usuarios)) {
+                    $create->exeCreate("notifications_report", [
+                        "usuario" => $this->usuarios,
+                        "notificacao" => $note,
+                        "enviar_mensagem_id" => $this->enviarMensagemAssociation,
+                        "data_de_envio" => date("Y-m-d H:i:s")
+                    ]);
+
                     /**
-                     * Single send
+                     * Mult send
                      */
-                    if (is_numeric($this->usuarios)) {
-                        $create->exeCreate("notifications_report", [
-                            "usuario" => $this->usuarios,
-                            "notificacao" => $note,
-                            "enviar_mensagem_id" => $this->enviarMensagemAssociation,
-                            "data_de_envio" => date("Y-m-d H:i:s")
-                        ]);
-
-                        /**
-                         * Mult send
-                         */
-                    } elseif (is_array($this->usuarios)) {
-                        foreach ($this->usuarios as $usuario) {
-                            if (is_numeric($usuario)) {
-                                $create->exeCreate("notifications_report", [
-                                    "usuario" => $usuario,
-                                    "notificacao" => $note,
-                                    "enviar_mensagem_id" => $this->enviarMensagemAssociation,
-                                    "data_de_envio" => date("Y-m-d H:i:s")
-                                ]);
-                            }
+                } elseif (is_array($this->usuarios)) {
+                    foreach ($this->usuarios as $usuario) {
+                        if (is_numeric($usuario)) {
+                            $create->exeCreate("notifications_report", [
+                                "usuario" => $usuario,
+                                "notificacao" => $note,
+                                "enviar_mensagem_id" => $this->enviarMensagemAssociation,
+                                "data_de_envio" => date("Y-m-d H:i:s")
+                            ]);
                         }
                     }
                 }
