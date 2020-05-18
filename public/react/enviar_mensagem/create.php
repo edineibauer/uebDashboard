@@ -129,14 +129,13 @@ if (!empty($mensagem['enviar_para_relatorios'])) {
                              * Email notification
                              */
                             if (in_array("2", $mensagem['canais'])) {
-                                foreach ($usuarios as $usuario) {
-                                    if (!empty($emails[$usuario])) {
-                                        $emailSend = new \Email\Email();
-                                        $emailSend->setAssunto($mensagem['assunto']);
-                                        $emailSend->setMensagem($mensagem['descricao']);
-                                        $emailSend->setDestinatarioEmail($emails[$usuario]);
-                                        $emailSend->enviar();
-                                    }
+                                foreach ($emails as $email) {
+                                    $emailEnvio = new \Email\EmailEnvio();
+                                    $emailEnvio->setAssunto($mensagem['assunto']);
+                                    $emailEnvio->setMensagem($mensagem['descricao']);
+                                    $emailEnvio->setDataEnvio($mensagem['data_de_envio']);
+                                    $emailEnvio->setDestinatarioEmail($email);
+                                    $emailEnvio->enviar();
                                 }
                             }
                         }
