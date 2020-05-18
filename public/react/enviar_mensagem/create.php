@@ -18,13 +18,13 @@ if (!empty($mensagem['enviar_para_relatorios'])) {
             if (!empty($report->getResult())) {
                 foreach ($report->getResult() as $result) {
                     $dicionario = \Entity\Metadados::getDicionario($reportData['entidade']);
-                    $isReportCliente = $reportData['entidade'] === $mensagem['enviar_para'];
+                    $isIdUsuarioInReport = $reportData['entidade'] === $mensagem['enviar_para'];
 
                     /**
                      * Encontra a coluna
                      */
                     $column = "";
-                    if ($isReportCliente) {
+                    if ($isIdUsuarioInReport) {
                         $column = "usuarios_id";
                     } else {
                         foreach ($dicionario as $item) {
@@ -46,7 +46,7 @@ if (!empty($mensagem['enviar_para_relatorios'])) {
                                 break;
                             }
                         }
-                        if($email === "") {
+                        if ($email === "") {
                             foreach (\Entity\Metadados::getDicionario($mensagem['enviar_para']) as $dic) {
                                 if ($dic['format'] === "email") {
                                     $email = $dic['column'];
@@ -59,46 +59,39 @@ if (!empty($mensagem['enviar_para_relatorios'])) {
                     if (!empty($column)) {
                         $sql = new \Conn\SqlCommand();
                         if ($report->getResult()) {
-                            if(!$isReportCliente) {
+
+                            /**
+                             * Obtém lista de ids
+                             */
+                            $ids = [];
+                            foreach ($report->getResult() as $r) {
+                                $ids[] = (int)$r[$column];
+
+                                //email
+                                if ($isIdUsuarioInReport && $email !== "" && !empty($r[$email]) && !in_array($r[$email], $emails))
+                                    $emails[(int) $r[$column]] = $r[$email];
+                            }
+
+                            if (!empty($ids)) {
 
                                 /**
-                                 * Obtém lista de ids
-                                 * se tiver email, obtém lista de email
+                                 * Convert lista de ids de setor em lista de ids de usuário
                                  */
-                                $ids = [];
-                                foreach ($report->getResult() as $r) {
-                                    $ids[] = (int) $r[$column];
+                                if (!$isIdUsuarioInReport) {
+                                    $sql->exeCommand("SELECT usuarios_id" . ($email !== "" ? ", {$email}" : "") . " FROM " . PRE . $mensagem['enviar_para'] . " WHERE id IN (" . implode(',', $ids) . ")");
+                                    if ($sql->getResult()) {
+                                        foreach ($sql->getResult() as $item) {
+                                            if (!in_array($item['usuarios_id'], $usuarios))
+                                                $usuarios[] = (int) $item['usuarios_id'];
 
-                                    //email
-                                    if(!empty($email) && !empty($r[$email]) && !in_array($r[$email], $emails))
-                                        $emails[] = $r[$email];
-                                }
-
-                                /**
-                                 * Busca ids de usuário com a lista de ids de setor
-                                 */
-                                $sql->exeCommand("SELECT usuarios_id FROM ". PRE . $mensagem['enviar_para'] . " WHERE id IN (" . implode(',', $ids) . ")");
-                                if($sql->getResult()) {
-                                    foreach ($sql->getResult() as $item) {
-                                        if(!in_array($item['usuarios_id'], $usuarios))
-                                            $usuarios[] = (int) $item['usuarios_id'];
-
-                                        //email
-                                        if(!empty($email) && !empty($item[$email]) && !in_array($item[$email], $emails))
-                                            $emails[] = $item[$email];
+                                            //email
+                                            if ($email !== "" && !empty($item[$email]) && !in_array($item[$email], $emails))
+                                                $emails[$item['usuarios_id']] = $item[$email];
+                                        }
                                     }
-                                }
 
-                            } else {
-
-                                foreach ($report->getResult() as $result) {
-                                    if (!in_array($result[$column], $usuarios)) {
-                                        $usuarios[] = $result[$column];
-
-                                        //email
-                                        if (!empty($email) && !empty($result[$email]))
-                                            $emails[$result[$column]] = $result[$email];
-                                    }
+                                } else {
+                                    $usuarios = $ids;
                                 }
                             }
                         }
