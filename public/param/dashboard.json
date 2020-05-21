@@ -7,6 +7,7 @@
   "templates": [
     "menuLi",
     "menuCard",
+    "card",
     "allow-entity-menu",
     "allow-list-entity",
     "allow-user-table",
