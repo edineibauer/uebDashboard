@@ -1,6 +1,7 @@
 /**
  * Faz request para ler report
  * @param entity
+ * @param search
  * @param filter
  * @param aggroup
  * @param soma
@@ -11,7 +12,7 @@
  * @param offset
  * @returns {Promise<unknown>}
  */
-async function reportRead(entity, filter, aggroup, soma, media, order, reverse, limit, offset) {
+async function reportRead(entity, search, filter, aggroup, soma, media, order, reverse, limit, offset) {
     order = typeof order === "string" ? order : "id";
     reverse = (typeof reverse !== "undefined" ? (reverse ? !0 : !1) : !1);
     limit = parseInt(typeof limit === "number" ? limit : (localStorage.limitGrid ? localStorage.limitGrid : 15));
@@ -32,6 +33,7 @@ async function reportRead(entity, filter, aggroup, soma, media, order, reverse, 
                 lib: "report",
                 file: "read/report",
                 entity: entity,
+                search: search,
                 filter: filter,
                 order: order,
                 reverse: reverse,

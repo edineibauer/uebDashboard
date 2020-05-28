@@ -227,7 +227,7 @@ async function getGraficoData(grafico) {
          * busca os dados, adiciona na 'graficoData' e retorna novamente para esta função.
          */
         return db.exeRead("relatorios", grafico.report).then($this => {
-            return reportRead($this.entidade, $this.regras, $this.agrupamento, (!isEmpty($this.soma)? JSON.parse($this.soma) : []), (!isEmpty($this.media)? JSON.parse($this.media) : []), $this.ordem, $this.decrescente, 99999999, 0).then(dados => {
+            return reportRead($this.entidade, $this.search, $this.regras, $this.agrupamento, (!isEmpty($this.soma)? JSON.parse($this.soma) : []), (!isEmpty($this.media)? JSON.parse($this.media) : []), $this.ordem, $this.decrescente, 99999999, 0).then(dados => {
                 graficoData[grafico.entity] = dados.data;
                 return getGraficoData(grafico);
             })
