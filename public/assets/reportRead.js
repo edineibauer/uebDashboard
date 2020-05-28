@@ -47,7 +47,7 @@ async function reportRead(entity, search, filter, aggroup, soma, media, order, r
                 if (dados.response === 1)
                     resolve({data: dados.data.data, length: dados.data.total});
             },
-            error: () => resolve(readOffline(data, filter, order, reverse, limit, offset)),
+            error: () => resolve(readOffline(data, search, filter, order, reverse, limit, offset)),
             dataType: "json"
         })
     })
