@@ -55,6 +55,10 @@
     background: #aaa;
 }
 
+.relatorios_card_value {
+    line-break: anywhere;
+}
+
 .dash-version {
     position: fixed;
     top: 52px;
