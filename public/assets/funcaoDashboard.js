@@ -98,9 +98,64 @@ function dashboardSidebarInfo() {
 }
 
 async function dashboardPanelContent() {
-    return dbLocal.exeRead("__panel", 1).then(panel => {
-        return (typeof panel === "string" ? panel : "");
-    })
+    if(window.innerWidth > 990) {
+        return dbLocal.exeRead("__panel", 1).then(panel => {
+            return (typeof panel === "string" ? panel : "");
+        });
+    } else {
+        return dbLocal.exeRead('__dicionario', 1).then(d => {
+
+            let syncCheck = [];
+            syncCheck.push(dbLocal.exeRead("__allow", 1));
+            syncCheck.push(dbLocal.exeRead("__info", 1));
+            syncCheck.push(getTemplates());
+            syncCheck.push(dbLocal.exeRead("__panel", 1));
+
+            return Promise.all(syncCheck).then(r => {
+                allow = r[0];
+                info = r[1];
+                templates = r[2];
+                panel = r[3];
+                let menu = [];
+                let indice = 1;
+                let content = "";
+
+                if (typeof panel === "string" && panel !== "") {
+                    content = panel
+                } else {
+                    if (panel.constructor === Array && panel.length) {
+                        $.each(panel, function (nome, dados) {
+                            menu.push(dados)
+                        })
+                    }
+                    $.each(d, function (entity, meta) {
+                        if (typeof allow !== "undefined" && typeof allow[entity] !== "undefined" && typeof allow[entity].menu !== "undefined" && allow[entity].menu) {
+                            nome = ucFirst(replaceAll(replaceAll(entity, "_", " "), "-", " "));
+                            menu.push({
+                                indice: indice,
+                                icon: (info[entity].icon !== "" ? info[entity].icon : "storage"),
+                                title: nome,
+                                table: !0,
+                                link: !1,
+                                form: !1,
+                                page: !1,
+                                file: '',
+                                lib: '',
+                                entity: entity
+                            });
+                            indice++
+                        }
+                    });
+                    menu.sort(dynamicSort('indice'));
+                    $.each(menu, function (i, m) {
+                        content += Mustache.render(templates.card, m)
+                    })
+                }
+
+                return content
+            })
+        });
+    }
 }
 
 function destruct() {
