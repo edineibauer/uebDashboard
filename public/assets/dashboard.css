@@ -24,15 +24,17 @@
 }
 
 #dashboard-menu {
-    width: 190px;
-    overflow: hidden;
+    width: 200px;
+    overflow-x: hidden;
+    max-height: calc(100vh - 150px);
+    overflow-y: auto;
 }
 
 .dashboard-main {
     margin-left: 200px
 }
 
-.dashboard-nav::-webkit-scrollbar {
+.dashboard-nav::-webkit-scrollbar, #dashboard-menu::-webkit-scrollbar {
     width: 5px;
 }
 
@@ -40,18 +42,19 @@
     width: 10px;
 }
 
-::-webkit-scrollbar-track {
+::-webkit-scrollbar-track, #dashboard-menu::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
 
-::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb, #dashboard-menu::-webkit-scrollbar-thumb {
     background: #bbb;
 }
 
-::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover, #dashboard-menu::-webkit-scrollbar-thumb:hover {
     background: #999;
 }
-::-webkit-scrollbar-button {
+
+::-webkit-scrollbar-button, #dashboard-menu::-webkit-scrollbar-button {
     background: #aaa;
 }
 
