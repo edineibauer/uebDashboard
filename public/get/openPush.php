@@ -1,6 +1,6 @@
 <?php
 
-$id = (int)$link->getVariaveis()[0];
+$id = (int)$variaveis[0];
 
 if (is_numeric($id)) {
     $read = new \Conn\Read();
