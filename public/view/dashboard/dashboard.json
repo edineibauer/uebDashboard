@@ -7,6 +7,8 @@
   "templates": [
     "menuLi",
     "menuCard",
-    "card"
+    "card",
+    "note",
+    "notificacoesEmpty"
   ]
 }
