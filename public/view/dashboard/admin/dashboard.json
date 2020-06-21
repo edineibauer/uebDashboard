@@ -1,6 +1,6 @@
 {
   "title": "Dashboard",
-  "js": ["coreGrid", "coreForm", "coreReport"],
+  "js": ["coreGrid", "coreForm", "coreReport", "reportTable"],
   "css": ["w3"],
   "!setor": "0",
   "offline": true,
