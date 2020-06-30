@@ -191,7 +191,7 @@ async function dashboardPanel() {
     if (isEmpty(myNotifications)) {
         $(".dashboard-note").htmlTemplate('notificacoesEmpty', {message: "Você não tem nenhuma notificação"});
     } else {
-        $(".dashboard-note").htmlTemplate('note', {notificacoes: myNotifications});
+        $(".dashboard-note").htmlTemplate('note', myNotifications);
     }
 }
 
