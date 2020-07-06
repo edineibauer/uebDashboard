@@ -305,23 +305,24 @@ $(function () {
     dashboardPanel();
     menuDashboard();
     $("body").off("click", ".menu-li:not(.not-menu-li)").on("click", ".menu-li:not(.not-menu-li)", function () {
-        let action = $(this).attr("data-action");
+        if($(this).hasAttr("data-action")) {
+            let action = $(this).attr("data-action");
+            clearHeaderScrollPosition();
+            checkUpdate();
+            mainLoading();
 
-        clearHeaderScrollPosition();
-        checkUpdate();
-        mainLoading();
+            if (action === "table") {
+                pageTransition($(this).attr("data-entity"), 'grid', 'forward', "#dashboard");
 
-        if (action === "table") {
-            pageTransition($(this).attr("data-entity"), 'grid', 'forward', "#dashboard");
+            } else if (action === 'form') {
+                // let fields = (typeof $(this).attr("data-fields") !== "undefined" ? JSON.parse($(this).attr("data-fields")) : "undefined");
+                let id = !isNaN($(this).attr("data-atributo")) && $(this).attr("data-atributo") > 0 ? parseInt($(this).attr("data-atributo")) : null;
+                pageTransition($(this).attr("data-entity"), 'form', 'forward', "#dashboard", id);
 
-        } else if (action === 'form') {
-            // let fields = (typeof $(this).attr("data-fields") !== "undefined" ? JSON.parse($(this).attr("data-fields")) : "undefined");
-            let id = !isNaN($(this).attr("data-atributo")) && $(this).attr("data-atributo") > 0 ? parseInt($(this).attr("data-atributo")) : null;
-            pageTransition($(this).attr("data-entity"), 'form', 'forward', "#dashboard", id);
+            } else if (action === 'page') {
 
-        } else if (action === 'page') {
-
-            pageTransition($(this).attr("data-atributo"), 'route', 'forward', "#core-content");
+                pageTransition($(this).attr("data-atributo"), 'route', 'forward', "#core-content");
+            }
         }
     }).off("click", ".btn-edit-perfil").on("click", ".btn-edit-perfil", function () {
         if (history.state.route !== "usuarios" || history.state.type !== "form") {
