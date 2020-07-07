@@ -73,7 +73,7 @@ function dashboardSidebarInfo() {
         } else if (typeof USER.imagem === "object" && typeof USER.imagem.url === "string") {
             imagem = USER.imagem.urls[100];
         }
-        $("#dashboard-sidebar-imagem").html("<img src='" + imagem + "' title='" + USER.nome + "' alt='imagem do usuário " + USER.nome + "' width='60' height='60' style='width: 60px;height: 60px' />");
+        $("#dashboard-sidebar-imagem").html("<img onerror=\"this.src = '" + HOME + "assetsPublic/img/loading.png'\" src='" + imagem + "' title='" + USER.nome + "' alt='imagem do usuário " + USER.nome + "' width='60' height='60' style='width: 60px;height: 60px' />");
     }
 
     $("#dashboard-sidebar-nome").html(USER.nome);
