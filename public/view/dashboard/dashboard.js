@@ -67,11 +67,11 @@ function dashboardSidebarInfo() {
         let imagem = "";
         if (typeof USER.imagem === "string") {
             if (isJson(USER.imagem))
-                imagem = decodeURIComponent(JSON.parse(USER.imagem)[0]['urls'][100]);
+                imagem = decodeURIComponent(JSON.parse(USER.imagem)[0]['urls']['thumb']);
             else
                 imagem = USER.imagem;
         } else if (typeof USER.imagem === "object" && typeof USER.imagem.url === "string") {
-            imagem = USER.imagem.urls[100];
+            imagem = USER.imagem.urls['thumb'];
         }
         $("#dashboard-sidebar-imagem").html("<img onerror=\"this.src = '" + HOME + "assetsPublic/img/loading.png'\" src='" + imagem + "' title='" + USER.nome + "' alt='imagem do usuário " + USER.nome + "' width='60' height='60' style='width: 60px;height: 60px' />");
     }
