@@ -32,7 +32,7 @@ function menuDashboard(count) {
             let indice = 1;
 
             $.each(dicionarios, function (entity, meta) {
-                if (typeof allow !== "undefined" && typeof allow[entity] !== "undefined" && typeof allow[entity].menu !== "undefined" && allow[entity].menu) {
+                if (typeof info[entity] !== "undefined" && info[entity]['user'] !== 3 && typeof allow !== "undefined" && typeof allow[entity] !== "undefined" && typeof allow[entity].menu !== "undefined" && allow[entity].menu) {
                     nome = ucFirst(replaceAll(replaceAll(entity, "_", " "), "-", " "));
                     menu.push({
                         indice: indice,
@@ -129,7 +129,7 @@ async function dashboardPanelContent() {
                         })
                     }
                     $.each(d, function (entity, meta) {
-                        if (typeof allow !== "undefined" && typeof allow[entity] !== "undefined" && typeof allow[entity].menu !== "undefined" && allow[entity].menu) {
+                        if (typeof info[entity] !== "undefined" && info[entity]['user'] !== 3 && typeof allow !== "undefined" && typeof allow[entity] !== "undefined" && typeof allow[entity].menu !== "undefined" && allow[entity].menu) {
                             nome = ucFirst(replaceAll(replaceAll(entity, "_", " "), "-", " "));
                             menu.push({
                                 indice: indice,
