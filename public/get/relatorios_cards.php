@@ -18,7 +18,11 @@ if($read->getResult()) {
             $entidadeIcon = $item['entidade'];
             $dic = \Entity\Metadados::getDicionario($item['entidade']);
             $format = "";
-            $valor = $report->getResult()[0][$item['ordem']];
+
+            if($item['ordem'] === "total")
+                $valor = $report->getTotal();
+            else
+                $valor = !empty($report->getResult()) && isset($report->getResult()[0][$item['ordem']]) ? $report->getResult()[0][$item['ordem']] : "";
 
             foreach($dic as $d) {
                 if($d['column'] === $item['ordem']) {

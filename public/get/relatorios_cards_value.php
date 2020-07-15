@@ -15,7 +15,11 @@ if($read->getResult()) {
         if (empty($usuarios) || (is_array($usuarios) && in_array($setor, $usuarios))) {
 
             $report = new \Report\Report($item, 1, $variaveis[0] ?? 0);
-            $valor = !empty($report->getResult()) && isset($report->getResult()[0][$item['ordem']]) ? $report->getResult()[0][$item['ordem']] : "";
+            if($item['ordem'] === "total")
+                $valor = $report->getTotal();
+            else
+                $valor = !empty($report->getResult()) && isset($report->getResult()[0][$item['ordem']]) ? $report->getResult()[0][$item['ordem']] : "";
+
             $format = "";
 
             $dic = \Entity\Metadados::getDicionario($item['entidade']);
