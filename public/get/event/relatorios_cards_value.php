@@ -15,15 +15,10 @@ if($read->getResult()) {
         if (empty($usuarios) || (is_array($usuarios) && in_array($setor, $usuarios))) {
 
             $report = new \Report\Report($item, 1, $variaveis[0] ?? 0);
-            $entidadeIcon = $item['entidade'];
-            $dic = \Entity\Metadados::getDicionario($item['entidade']);
             $format = "";
+            $valor = ($item['ordem'] === "total" ? $report->getTotal() : (!empty($report->getResult()) && !empty($report->getResult()[0][$item['ordem']]) ? $report->getResult()[0][$item['ordem']] : ""));
 
-            if($item['ordem'] === "total")
-                $valor = $report->getTotal();
-            else
-                $valor = !empty($report->getResult()) && isset($report->getResult()[0][$item['ordem']]) ? $report->getResult()[0][$item['ordem']] : "";
-
+            $dic = \Entity\Metadados::getDicionario($item['entidade']);
             foreach($dic as $d) {
                 if($d['column'] === $item['ordem']) {
                     if($d['key'] === "relation") {
@@ -31,7 +26,6 @@ if($read->getResult()) {
                         /**
                          * Se for um campo relacional, então busca valor do campo relacional
                          */
-                        $entidadeIcon = $d['relation'];
                         $dic = new \Entity\Dicionario($d['relation']);
                         $relevant = $dic->getRelevant()->getColumn();
 
@@ -44,7 +38,8 @@ if($read->getResult()) {
                             $result = ($read->getResult() ? $read->getResult()[0] : []);
                         }
 
-                        $valor = $result[$relevant];
+                        if(!empty($result[$relevant]))
+                            $valor = $result[$relevant];
                     }
 
                     /**
@@ -54,8 +49,7 @@ if($read->getResult()) {
                     break;
                 }
             }
-
-            $data['data'][] = ['id' => $item['id'], 'data' => $valor, 'titulo' => $item['nome'], 'format' => $format, "icon" => $item['icone'], "cor_de_fundo" => $item['cor_de_fundo'], "cor_do_texto" => $item['cor_do_texto']];
+            $data['data'][] = ['id' => $item['id'], 'data' => $valor, 'format' => $format];
         }
     }
 }
