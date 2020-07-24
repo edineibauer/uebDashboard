@@ -12,7 +12,7 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
     $up = new \Conn\Update();
     $read = new Read();
 
-    $read->exeRead("notifications_report", "WHERE data_de_envio < NOW() AND (enviou = 0 || enviou IS NULL)");
+    $read->exeRead("notifications_report", "WHERE data_de_envio < NOW() AND (enviou = 0 || enviou IS NULL)", !0);
     if ($read->getResult()) {
         $pushs = [];
         $inscricao = [];
@@ -24,7 +24,7 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
              * Dispara os pushs para os usuários
              */
             if (!isset($pushs[$item['notificacao']])) {
-                $read->exeRead("notifications", "WHERE id = :id", "id={$item['notificacao']}");
+                $read->exeRead("notifications", "WHERE id = :id", "id={$item['notificacao']}", !0);
                 $pushs[$item['notificacao']] = $read->getResult()[0] ?? [];
             }
 
@@ -32,7 +32,7 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
              * Lê inscrições
              */
             if (!isset($inscricao[$item['usuario']])) {
-                $read->exeRead("push_notifications", "WHERE usuario = :au", "au={$item['usuario']}");
+                $read->exeRead("push_notifications", "WHERE usuario = :au", "au={$item['usuario']}", !0);
                 $inscricao[$item['usuario']] = $read->getResult() ?? [];
             }
 
