@@ -154,7 +154,8 @@ class Notification
                     $create->exeCreate("notifications_report", [
                         "usuario" => $usuarios,
                         "notificacao" => $note,
-                        "data_de_envio" => date("Y-m-d H:i:s")
+                        "data_de_envio" => date("Y-m-d H:i:s"),
+                        "ownerpub" => $usuarios
                     ]);
                 }
 
@@ -169,7 +170,8 @@ class Notification
                             $create->exeCreate("notifications_report", [
                                 "usuario" => $usuario,
                                 "notificacao" => $note,
-                                "data_de_envio" => date("Y-m-d H:i:s")
+                                "data_de_envio" => date("Y-m-d H:i:s"),
+                                "ownerpub" => $usuarios
                             ]);
                         }
                     }
@@ -216,7 +218,8 @@ class Notification
                             "usuario" => $this->usuarios,
                             "notificacao" => $note,
                             "enviar_mensagem_id" => $this->enviarMensagemAssociation,
-                            "data_de_envio" => date("Y-m-d H:i:s")
+                            "data_de_envio" => date("Y-m-d H:i:s"),
+                            "ownerpub" => $this->usuarios
                         ]);
                     }
 
@@ -232,7 +235,8 @@ class Notification
                                     "usuario" => $usuario,
                                     "notificacao" => $note,
                                     "enviar_mensagem_id" => $this->enviarMensagemAssociation,
-                                    "data_de_envio" => date("Y-m-d H:i:s")
+                                    "data_de_envio" => date("Y-m-d H:i:s"),
+                                    "ownerpub" => $usuario
                                 ]);
                             }
                         }
