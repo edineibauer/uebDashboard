@@ -1,4 +1,4 @@
-var updateRelatiosCard = null, graficoData = {}, relevant = {};
+var graficoData = {}, relevant = {};
 
 function hide_sidebar_small() {
     if (screen.width < 993) {
@@ -158,10 +158,6 @@ async function dashboardPanelContent() {
     }
 }
 
-function destruct() {
-    clearInterval(updateRelatiosCard);
-}
-
 /**
  * Obtem as notificações
  * @returns {Promise<[]>}
@@ -202,7 +198,9 @@ async function dashboardCardRelatorios() {
         for(let i in cards)
             cards[i].data = maskData($("<div><div class='cc td-" + cards[i].format + "'><div class='td-value'>" + cards[i].data + "</div></div></div>")).find(".td-value").html();
 
-        Mustache.render(tpl.relatorios_card, {cards: cards});
+        getTemplates().then(tpl => {
+            $("#relatorios_card_dashboard").html(Mustache.render(tpl.relatoriosCard, cards));
+        })
     });
 }
 
@@ -210,7 +208,8 @@ async function dashboardPanel() {
     if ($(".panel-name").length)
         $(".panel-name").html(USER.nome);
 
-    $(".dashboard-panel").append(await dashboardCardRelatorios() + await dashboardPanelContent());
+    dashboardCardRelatorios();
+    $(".dashboard-panel").append(await dashboardPanelContent());
 
     let myNotifications = await getNotifications();
     if (isEmpty(myNotifications)) {

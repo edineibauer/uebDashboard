@@ -33,7 +33,9 @@
                     </h2>
                 </div>
             </header>
-            <div class="col s12 m9 padding-small dashboard-panel"></div>
+            <div class="col s12 m9 padding-small dashboard-panel">
+                <div class="col s12" id="relatorios_card_dashboard"></div>
+            </div>
             <div class="col s12 m3 padding-small dashboard-note"></div>
         </div>
     </div>
