@@ -197,23 +197,13 @@ async function getNotifications() {
     return myNotifications.reverse();
 }
 
-async function updateRelatiosCardInfo() {
-    let cards = await AJAX.get("event/relatorios_cards_value");
-    for(let card of cards)
-        $(".relatorios_card[rel='" + card.id + "']").find(".relatorios_card_value").html(maskData($("<div><div class='cc td-" + card.format + "'><div class='td-value'>" + card.data + "</div></div></div>")).find(".td-value").html());
-}
-
 async function dashboardCardRelatorios() {
-    let tpl = await getTemplates();
-    let cards = await AJAX.get("event/relatorios_cards");
-    for(let i in cards)
-        cards[i].data = maskData($("<div><div class='cc td-" + cards[i].format + "'><div class='td-value'>" + cards[i].data + "</div></div></div>")).find(".td-value").html();
+    sseAdd("relatoriosCard", function (cards) {
+        for(let i in cards)
+            cards[i].data = maskData($("<div><div class='cc td-" + cards[i].format + "'><div class='td-value'>" + cards[i].data + "</div></div></div>")).find(".td-value").html();
 
-    updateRelatiosCard = setInterval(function () {
-        updateRelatiosCardInfo();
-    }, 3000);
-
-    return Mustache.render(tpl.relatorios_card, {cards: cards});
+        Mustache.render(tpl.relatorios_card, {cards: cards});
+    });
 }
 
 async function dashboardPanel() {
