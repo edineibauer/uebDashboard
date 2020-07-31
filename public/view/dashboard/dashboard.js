@@ -52,49 +52,14 @@ function menuDashboard(count) {
 
             menu.sort(dynamicSort('indice'));
             $("#dashboard-menu").html("");
+
+            console.log(menu);
             let tpl = (menu.length < 4 ? templates.menuCard : templates.menuLi);
             $.each(menu, function (i, m) {
                 $("#dashboard-menu").append(Mustache.render(tpl, m))
             });
         })
     }
-}
-
-function dashboardSidebarInfo() {
-    if (isEmpty(USER.imagem) || USER.imagem === "null") {
-        $("#dashboard-sidebar-imagem").html("<i class='material-icons font-jumbo'>people</i>");
-    } else {
-        let imagem = "";
-        if (typeof USER.imagem === "string") {
-            if (isJson(USER.imagem))
-                imagem = decodeURIComponent(JSON.parse(USER.imagem)[0]['urls']['thumb']);
-            else
-                imagem = USER.imagem;
-        } else if (typeof USER.imagem === "object" && typeof USER.imagem.url === "string") {
-            imagem = USER.imagem.urls['thumb'];
-        }
-        $("#dashboard-sidebar-imagem").html("<img onerror=\"this.src = '" + HOME + "assetsPublic/img/loading.png'\" src='" + imagem + "' title='" + USER.nome + "' alt='imagem do usuário " + USER.nome + "' width='60' height='60' style='width: 60px;height: 60px' />");
-    }
-
-    $("#dashboard-sidebar-nome").html(USER.nome);
-    let $sidebar = $("#core-sidebar-edit");
-    $sidebar.removeClass("hide").off("click").on("click", function () {
-        if (document.querySelector(".btn-edit-perfil") !== null) {
-            document.querySelector(".btn-edit-perfil").click()
-        } else {
-            mainLoading();
-            app.loadView(HOME + "dashboard");
-            toast("carregando perfil...", 1300, "toast-success");
-            let ee = setInterval(function () {
-                if (document.querySelector(".btn-edit-perfil") !== null) {
-                    setTimeout(function () {
-                        document.querySelector(".btn-edit-perfil").click()
-                    }, 1000);
-                    clearInterval(ee)
-                }
-            }, 100)
-        }
-    })
 }
 
 async function dashboardPanelContent() {
@@ -290,7 +255,6 @@ async function showGrafico(grafico) {
 }
 
 $(function () {
-    dashboardSidebarInfo();
     dashboardPanel();
     menuDashboard();
     $("body").off("click", ".menu-li:not(.not-menu-li)").on("click", ".menu-li:not(.not-menu-li)", function () {

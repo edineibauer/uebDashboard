@@ -1,5 +1,6 @@
 {
-    background: #eeeeee;
+    background: #eeeeee
+;
 }
 
 #dashboard {
@@ -9,10 +10,17 @@
     margin-right: auto;
 }
 
+#dashboard-sidebar-imagem {
+    height: 60px;
+    width: 60px;
+    margin-top: 2px;
+    background-position: center;
+}
+
 .dashboard-nav {
     z-index: 21;
     top: inherit;
-    padding-bottom:45px;
+    padding-bottom: 45px;
     border-top: solid 1px #dddddd;
     overflow: hidden;
 }
