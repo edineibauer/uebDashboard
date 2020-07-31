@@ -278,8 +278,9 @@ $(function () {
         }
     }).off("click", ".btn-edit-perfil").on("click", ".btn-edit-perfil", function () {
         if (history.state.route !== "usuarios" || history.state.type !== "form") {
-            let entity = USER.setorData === "" ? "usuarios" : USER.setorData;
-            pageTransition(entity, 'form', 'forward', "#dashboard", USER);
+            let entity = (USER.setor === "admin" ? "usuarios" : USER.setor);
+            let data = (USER.setor === "admin" ? USER : USER.setorData);
+            pageTransition(entity, 'form', 'forward', "#dashboard", data);
         }
     });
 
