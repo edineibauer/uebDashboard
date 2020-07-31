@@ -53,7 +53,6 @@ function menuDashboard(count) {
             menu.sort(dynamicSort('indice'));
             $("#dashboard-menu").html("");
 
-            console.log(menu);
             let tpl = (menu.length < 4 ? templates.menuCard : templates.menuLi);
             $.each(menu, function (i, m) {
                 $("#dashboard-menu").append(Mustache.render(tpl, m))
