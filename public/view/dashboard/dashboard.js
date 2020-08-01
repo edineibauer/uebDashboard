@@ -276,12 +276,6 @@ $(function () {
                 pageTransition($(this).attr("data-atributo"), 'route', 'forward', "#core-content");
             }
         }
-    }).off("click", ".btn-edit-perfil").on("click", ".btn-edit-perfil", function () {
-        if (history.state.route !== "usuarios" || history.state.type !== "form") {
-            let entity = (USER.setor === "admin" ? "usuarios" : USER.setor);
-            let data = (USER.setor === "admin" ? USER : USER.setorData);
-            pageTransition(entity, 'form', 'forward', "#dashboard", data);
-        }
     });
 
     $("#app, #core-applications").off("click", ".close-dashboard-note").on("click", ".close-dashboard-note", function () {
