@@ -2,7 +2,7 @@
     background: #eeeeee
 }
 
-#dashboard {
+.dashboard-main > section, .dashboard-main > div {
     min-height: calc(100vh - 120px);
     max-width: 1300px;
     margin-left: auto;
