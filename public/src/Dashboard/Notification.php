@@ -120,8 +120,9 @@ class Notification
      * @param string $titulo
      * @param string $descricao
      * @param int|array $usuarios
+     * @param bool $sendPush
      */
-    public static function create(string $titulo, string $descricao, $usuarios)
+    public static function create(string $titulo, string $descricao, $usuarios, $sendPush = true)
     {
         $notify = [
             "titulo" => $titulo,
@@ -155,7 +156,8 @@ class Notification
                         "usuario" => $usuarios,
                         "notificacao" => $note,
                         "data_de_envio" => date("Y-m-d H:i:s"),
-                        "ownerpub" => $usuarios
+                        "ownerpub" => $usuarios,
+                        "enviou" => $sendPush ? 1 : 0
                     ]);
                 }
 
@@ -171,7 +173,8 @@ class Notification
                                 "usuario" => $usuario,
                                 "notificacao" => $note,
                                 "data_de_envio" => date("Y-m-d H:i:s"),
-                                "ownerpub" => $usuarios
+                                "ownerpub" => $usuarios,
+                                "enviou" => $sendPush ? 1 : 0
                             ]);
                         }
                     }
