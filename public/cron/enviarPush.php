@@ -31,16 +31,16 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
             /**
              * Lê inscrições
              */
-            if (!isset($inscricao[$item['usuario']])) {
-                $read->exeRead("push_notifications", "WHERE usuario = :au", "au={$item['usuario']}", !0);
-                $inscricao[$item['usuario']] = $read->getResult() ?? [];
+            if (!isset($inscricao[$item['ownerpub']])) {
+                $read->exeRead("push_notifications", "WHERE ownerpub = :au", "au={$item['ownerpub']}", !0);
+                $inscricao[$item['ownerpub']] = $read->getResult() ?? [];
             }
 
             /**
              * Monta o array com as informações para o push
              */
-            if(!empty($inscricao[$item['usuario']]) && !empty($pushs[$item['notificacao']])) {
-                foreach ($inscricao[$item['usuario']] as $insc) {
+            if(!empty($inscricao[$item['ownerpub']]) && !empty($pushs[$item['notificacao']])) {
+                foreach ($inscricao[$item['ownerpub']] as $insc) {
                     $notifications[] = [
                         'subscription' => Subscription::create(json_decode($insc['subscription'], !0)),
                         'payload' => json_encode(

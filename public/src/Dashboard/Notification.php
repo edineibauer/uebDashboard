@@ -150,10 +150,9 @@ class Notification
              * Single send
              */
             if (is_numeric($usuarios)) {
-                $read->exeRead("notifications_report", "WHERE usuario = :u && notificacao = :n", "u={$usuarios}&n={$note}");
+                $read->exeRead("notifications_report", "WHERE ownerpub = :u && notificacao = :n", "u={$usuarios}&n={$note}", !0);
                 if (!$read->getResult()) {
                     $create->exeCreate("notifications_report", [
-                        "usuario" => $usuarios,
                         "notificacao" => $note,
                         "data_de_envio" => date("Y-m-d H:i:s"),
                         "ownerpub" => $usuarios,
@@ -167,10 +166,9 @@ class Notification
             } elseif (is_array($usuarios)) {
                 foreach ($usuarios as $usuario) {
                     if (is_numeric($usuario)) {
-                        $read->exeRead("notifications_report", "WHERE usuario = :u && notificacao = :n", "u={$usuario}&n={$note}");
+                        $read->exeRead("notifications_report", "WHERE ownerpub = :u && notificacao = :n", "u={$usuario}&n={$note}", !0);
                         if (!$read->getResult()) {
                             $create->exeCreate("notifications_report", [
-                                "usuario" => $usuario,
                                 "notificacao" => $note,
                                 "data_de_envio" => date("Y-m-d H:i:s"),
                                 "ownerpub" => $usuarios,
@@ -215,10 +213,9 @@ class Notification
                  * Single send
                  */
                 if (is_numeric($this->usuarios)) {
-                    $read->exeRead("notifications_report", "WHERE usuario = :u && notificacao = :n", "u={$this->usuarios}&n={$note}");
+                    $read->exeRead("notifications_report", "WHERE ownerpub = :u && notificacao = :n", "u={$this->usuarios}&n={$note}", !0);
                     if(!$read->getResult()) {
                         $create->exeCreate("notifications_report", [
-                            "usuario" => $this->usuarios,
                             "notificacao" => $note,
                             "enviar_mensagem_id" => $this->enviarMensagemAssociation,
                             "data_de_envio" => date("Y-m-d H:i:s"),
@@ -232,10 +229,9 @@ class Notification
                 } elseif (is_array($this->usuarios)) {
                     foreach ($this->usuarios as $usuario) {
                         if (is_numeric($usuario)) {
-                            $read->exeRead("notifications_report", "WHERE usuario = :u && notificacao = :n", "u={$usuario}&n={$note}");
+                            $read->exeRead("notifications_report", "WHERE ownerpub = :u && notificacao = :n", "u={$usuario}&n={$note}", !0);
                             if(!$read->getResult()) {
                                 $create->exeCreate("notifications_report", [
-                                    "usuario" => $usuario,
                                     "notificacao" => $note,
                                     "enviar_mensagem_id" => $this->enviarMensagemAssociation,
                                     "data_de_envio" => date("Y-m-d H:i:s"),
