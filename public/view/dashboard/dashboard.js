@@ -132,7 +132,7 @@ async function getNotifications() {
     let myNotifications = [];
     if (!isEmpty(notifications)) {
         for (let note of notifications) {
-            let notify = await db.exeRead("notifications", note.notificacao);
+            let notify = (await db.exeRead("notifications", note.notificacao))[0];
             let data = note.data_de_envio;
 
             if(/T/.test(note.data_de_envio))
@@ -202,7 +202,7 @@ async function getGraficoData(grafico) {
                             if (typeof graficoData[relation] === "undefined")
                                 graficoData[relation] = {};
 
-                            graficoData[relation][id] = rel;
+                            graficoData[relation][id] = !isEmpty(rel) ? rel[0] : null;
                             graficoData[grafico.entity][e][grafico.x] = getRelevant(relation, graficoData[relation][id]);
                             return getGraficoData(grafico);
                         });
@@ -221,7 +221,10 @@ async function getGraficoData(grafico) {
          * busca os dados, adiciona na 'graficoData' e retorna novamente para esta função.
          */
         return db.exeRead("relatorios", grafico.report).then($this => {
-            return reportRead($this.entidade, $this.search, $this.regras, $this.agrupamento, (!isEmpty($this.soma)? JSON.parse($this.soma) : []), (!isEmpty($this.media)? JSON.parse($this.media) : []), $this.ordem, $this.decrescente, 99999999, 0).then(dados => {
+            if(isEmpty($this))
+                return "";
+
+            return reportRead($this[0].entidade, $this[0].search, $this[0].regras, $this[0].agrupamento, (!isEmpty($this[0].soma)? JSON.parse($this[0].soma) : []), (!isEmpty($this[0].media)? JSON.parse($this[0].media) : []), $this[0].ordem, $this[0].decrescente, 99999999, 0).then(dados => {
                 graficoData[grafico.entity] = dados.data;
                 return getGraficoData(grafico);
             })
