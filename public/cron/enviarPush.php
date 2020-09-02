@@ -29,33 +29,18 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
             }
 
             /**
-             * Lê inscrições
-             */
-            if (!isset($inscricao[$item['ownerpub']])) {
-                $read->exeRead("push_notifications", "WHERE usuario = :au", "au={$item['ownerpub']}", !0);
-                $inscricao[$item['ownerpub']] = $read->getResult() ?? [];
-            }
-
-            /**
              * Monta o array com as informações para o push
              */
-            if(!empty($inscricao[$item['ownerpub']]) && !empty($pushs[$item['notificacao']])) {
-                foreach ($inscricao[$item['ownerpub']] as $insc) {
-                    $notifications[] = [
-                        'subscription' => Subscription::create(json_decode($insc['subscription'], !0)),
-                        'payload' => json_encode(
-                            [
-                                "id" => $item['id'],
-                                "title" => $pushs[$item['notificacao']]['titulo'],
-                                "body" => $pushs[$item['notificacao']]['descricao'] ?? "",
-                                "badge" => HOME . "assetsPublic/img/favicon.png?v=" . VERSION,
-                                "data" => $pushs[$item['notificacao']]['url'] ?? "",
-                                "icon" => $pushs[$item['notificacao']]['imagem'] ?? HOME . "assetsPublic/img/favicon.png?v=" . VERSION,
-                                "imagem" => $pushs[$item['notificacao']]['background'] ?? ""
-                            ]
-                        )
-                    ];
-                }
+            if (!empty($pushs[$item['notificacao']])) {
+                $notifications[] = [
+                    "id" => $item['id'],
+                    "title" => $pushs[$item['notificacao']]['titulo'],
+                    "body" => $pushs[$item['notificacao']]['descricao'] ?? "",
+                    "badge" => HOME . "assetsPublic/img/favicon.png?v=" . VERSION,
+                    "data" => $pushs[$item['notificacao']]['url'] ?? "",
+                    "icon" => $pushs[$item['notificacao']]['imagem'] ?? HOME . "assetsPublic/img/favicon.png?v=" . VERSION,
+                    "imagem" => $pushs[$item['notificacao']]['background'] ?? ""
+                ];
 
                 /**
                  * Atualia status informando que o push foi enviado
@@ -68,41 +53,40 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
         /**
          * Atualiza total de envios para as mensagem caso tenha
          */
-        if(!empty($totalEnvios)) {
+        if (!empty($totalEnvios)) {
             foreach ($totalEnvios as $idMensagem => $total)
                 $up->exeUpdate("enviar_mensagem", ["total_de_envios" => $total], "WHERE id = :ud", "ud={$idMensagem}");
         }
 
-        /**
-         * Faz o envio dos pushs
-         */
-        $auth = array(
-            'VAPID' => array(
-                'subject' => HOME,
-                'publicKey' => PUSH_PUBLIC_KEY, // don't forget that your public key also lives in app.js
-                'privateKey' => PUSH_PRIVATE_KEY, // in the real world, this would be in a secret file
-            ),
-        );
-        $webPush = new WebPush($auth);
-        foreach ($notifications as $notification) {
-            $webPush->queueNotification(
-                $notification['subscription'],
-                $notification['payload']
-            );
-        }
+        if (file_exists(PATH_HOME . "_config/firebase.json")) {
 
-        /**
-         * Check sent results
-         * @var MessageSentReport $report
-         */
-        foreach ($webPush->flush() as $report) {
-           /* $endpoint = $report->getRequest()->getUri()->__toString();
+            $client = new Google_Client();
+            $client->setAuthConfig(PATH_HOME . '_config/firebase.json');
+            $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+            $httpClient = $client->authorize();
+            $project = json_decode(file_get_contents(PATH_HOME . "_config/firebase.json"), !0)['project_id'];
 
-            if ($report->isSuccess()) {
-                echo "[v] Message sent successfully for subscription {$endpoint}.";
-            } else {
-                echo "[x] Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
-            }*/
+            // Creates a notification for subscribers to the debug topic
+            $message = [
+                "message" => [
+                    "topic" => "debug",
+                    "notification" => [
+                        "id" => $item['id'],
+                        "body" => $pushs[$item['notificacao']]['descricao'] ?? "",
+                        "title" => $pushs[$item['notificacao']]['titulo'],
+                        "badge" => HOME . "assetsPublic/img/favicon.png?v=" . VERSION,
+                        "data" => $pushs[$item['notificacao']]['url'] ?? "",
+                        "icon" => $pushs[$item['notificacao']]['imagem'] ?? HOME . "assetsPublic/img/favicon.png?v=" . VERSION,
+                        "imagem" => $pushs[$item['notificacao']]['background'] ?? ""
+                    ]
+                ]
+            ];
+
+            $response = $httpClient->post("https://fcm.googleapis.com/v1/projects/{$project}/messages:send", ['json' => $message]);
+
+            if($response->getStatusCode() !== 200) {
+                //error
+            }
         }
     }
 }

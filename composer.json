@@ -19,7 +19,7 @@
     "ueb/cep": "*",
     "ueb/report": "*",
     "smottt/wideimage": "^1.1",
-    "minishlink/web-push": "*",
+    "google/apiclient": "^2.7",
     "ext-json": "*"
   },
   "autoload": {
