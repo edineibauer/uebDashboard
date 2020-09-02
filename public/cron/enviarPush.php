@@ -32,7 +32,7 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
              * Lê inscrições
              */
             if (!isset($inscricao[$item['ownerpub']])) {
-                $read->exeRead("push_notifications", "WHERE ownerpub = :au", "au={$item['ownerpub']}", !0);
+                $read->exeRead("push_notifications", "WHERE usuario = :au", "au={$item['ownerpub']}", !0);
                 $inscricao[$item['ownerpub']] = $read->getResult() ?? [];
             }
 
@@ -85,7 +85,7 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
         );
         $webPush = new WebPush($auth);
         foreach ($notifications as $notification) {
-            $webPush->sendNotification(
+            $webPush->queueNotification(
                 $notification['subscription'],
                 $notification['payload']
             );
@@ -96,9 +96,9 @@ if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVA
          * @var MessageSentReport $report
          */
         foreach ($webPush->flush() as $report) {
-            $endpoint = $report->getRequest()->getUri()->__toString();
+           /* $endpoint = $report->getRequest()->getUri()->__toString();
 
-            /*if ($report->isSuccess()) {
+            if ($report->isSuccess()) {
                 echo "[v] Message sent successfully for subscription {$endpoint}.";
             } else {
                 echo "[x] Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
