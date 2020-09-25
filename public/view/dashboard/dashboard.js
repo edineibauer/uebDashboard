@@ -142,6 +142,7 @@ async function getNotifications() {
             else
                 data = [data, "00:00:00"];
 
+            let hora = "";
             if(typeof data[1] !== "undefined" && typeof data[0] !== "undefined") {
                 let hora = data[1].split(":");
                 hora = hora[0] + ":" + hora[1];
@@ -149,7 +150,6 @@ async function getNotifications() {
                 data = data[2] + "/" + data[1] + "/" + data[0];
             } else {
                 data = "";
-                hora = "";
             }
             notify.data = hora + "\n" + data;
 

@@ -2,6 +2,17 @@
     background: #eeeeee
 }
 
+#dashboard {
+    min-height: calc(100vh - 120px);
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: .01em 16px;
+    display: block;
+    position: relative;
+    float: initial;
+}
+
 .dashboard-main > section, .dashboard-main > div {
     min-height: calc(100vh - 120px);
     max-width: 1300px;
