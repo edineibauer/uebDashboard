@@ -7,18 +7,10 @@
     max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
-    padding: .01em 16px;
+    padding: .01em 24px;
     display: block;
     position: relative;
     float: initial;
-}
-
-.dashboard-main > section, .dashboard-main > div {
-    min-height: calc(100vh - 120px);
-    max-width: 1300px;
-    margin-left: auto;
-    margin-right: auto;
-    float: initial
 }
 
 #dashboard-sidebar-imagem {
@@ -122,9 +114,5 @@
     .btn-panel-sync {
         width: 200px;
         min-height: 110px;
-    }
-
-    .dashboard-main > section, .dashboard-main > div {
-        padding: 0 30px;
     }
 }
