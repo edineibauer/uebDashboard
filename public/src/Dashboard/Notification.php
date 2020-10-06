@@ -156,7 +156,9 @@ class Notification
                         "notificacao" => $note,
                         "data_de_envio" => date("Y-m-d H:i:s"),
                         "ownerpub" => $usuarios,
-                        "enviou" => $sendPush ? 1 : 0
+                        "enviou" => $sendPush ? 1 : 0,
+                        "recebeu" => 0,
+                        "abriu" => 0
                     ]);
                 }
 
@@ -172,7 +174,9 @@ class Notification
                                 "notificacao" => $note,
                                 "data_de_envio" => date("Y-m-d H:i:s"),
                                 "ownerpub" => $usuarios,
-                                "enviou" => $sendPush ? 1 : 0
+                                "enviou" => $sendPush ? 1 : 0,
+                                "recebeu" => 0,
+                                "abriu" => 0
                             ]);
                         }
                     }
