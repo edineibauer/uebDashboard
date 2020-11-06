@@ -150,17 +150,14 @@ class Notification
              * Single send
              */
             if (is_numeric($usuarios)) {
-                $read->exeRead("notifications_report", "WHERE ownerpub = :u && notificacao = :n", "u={$usuarios}&n={$note}", !0);
-                if (!$read->getResult()) {
-                    $create->exeCreate("notifications_report", [
-                        "notificacao" => $note,
-                        "data_de_envio" => date("Y-m-d H:i:s"),
-                        "ownerpub" => $usuarios,
-                        "enviou" => $sendPush ? 1 : 0,
-                        "recebeu" => 0,
-                        "abriu" => 0
-                    ]);
-                }
+                $create->exeCreate("notifications_report", [
+                    "notificacao" => $note,
+                    "data_de_envio" => date("Y-m-d H:i:s"),
+                    "ownerpub" => $usuarios,
+                    "enviou" => $sendPush ? 1 : 0,
+                    "recebeu" => 0,
+                    "abriu" => 0
+                ]);
 
                 /**
                  * Mult send
@@ -168,17 +165,14 @@ class Notification
             } elseif (is_array($usuarios)) {
                 foreach ($usuarios as $usuario) {
                     if (is_numeric($usuario)) {
-                        $read->exeRead("notifications_report", "WHERE ownerpub = :u && notificacao = :n", "u={$usuario}&n={$note}", !0);
-                        if (!$read->getResult()) {
-                            $create->exeCreate("notifications_report", [
-                                "notificacao" => $note,
-                                "data_de_envio" => date("Y-m-d H:i:s"),
-                                "ownerpub" => $usuarios,
-                                "enviou" => $sendPush ? 1 : 0,
-                                "recebeu" => 0,
-                                "abriu" => 0
-                            ]);
-                        }
+                        $create->exeCreate("notifications_report", [
+                            "notificacao" => $note,
+                            "data_de_envio" => date("Y-m-d H:i:s"),
+                            "ownerpub" => $usuarios,
+                            "enviou" => $sendPush ? 1 : 0,
+                            "recebeu" => 0,
+                            "abriu" => 0
+                        ]);
                     }
                 }
             }
