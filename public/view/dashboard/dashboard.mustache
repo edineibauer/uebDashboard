@@ -39,6 +39,22 @@
                 </div>
             </header>
             <div class="col s12 m9 padding-small dashboard-panel">
+                <div class="col s12" data-get="read/dashboard_relatorios_card" data-realtime-get>
+                    <div data-realtime-html>
+                        {{#.}}
+                            <div class="card radius no-select left relatorios_card" rel="{{id}}"
+                                 style="background: {{cor_de_fundo}}; color: {{cor_do_texto}};">
+                                <div class='col radius padding-left relative rcard'>
+                                    <div class='col s-font-small rtitle'>{{titulo}}</div>
+                                    <div class='right overflow-hidden font-xxlarge s-font-large align-right padding-right relatorios_card_value' style="{{style}}">{{data}}</div>
+                                    <div class="left ricon">
+                                        <i class="material-icons">{{icon}}</i>
+                                    </div>
+                                </div>
+                            </div>
+                        {{/.}}
+                    </div>
+                </div>
                 <div class="col s12" id="relatorios_card_dashboard"></div>
             </div>
             <div class="col s12 m3 padding-small dashboard-note"></div>

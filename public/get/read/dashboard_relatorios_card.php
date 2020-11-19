@@ -53,7 +53,10 @@ if($read->getResult()) {
                 }
             }
 
-            $data['data'][] = ['id' => $item['id'], 'data' => $valor, 'titulo' => $item['nome'], 'format' => $format, "icon" => $item['icone'], "cor_de_fundo" => $item['cor_de_fundo'], "cor_do_texto" => $item['cor_do_texto']];
+            if(is_numeric($valor) && !is_int($valor))
+                $valor = number_format($valor, 2,',', '.');
+
+            $data['data'][] = ['id' => $item['id'], 'style' => $item['classes'], 'data' => $valor, 'titulo' => $item['nome'], 'format' => $format, "icon" => $item['icone'], "cor_de_fundo" => $item['cor_de_fundo'], "cor_do_texto" => $item['cor_do_texto']];
         }
     }
 }

@@ -162,22 +162,10 @@ async function getNotifications() {
     return myNotifications.reverse();
 }
 
-async function dashboardCardRelatorios() {
-    sseAdd("relatoriosCard", function (cards) {
-        for(let i in cards)
-            cards[i].data = maskData($("<div><div class='cc td-" + cards[i].format + "'><div class='td-value'>" + cards[i].data + "</div></div></div>")).find(".td-value").html();
-
-        getTemplates().then(tpl => {
-            $("#relatorios_card_dashboard").html(Mustache.render(tpl.relatoriosCard, cards));
-        })
-    });
-}
-
 async function dashboardPanel() {
     if ($(".panel-name").length)
         $(".panel-name").html(USER.nome);
 
-    dashboardCardRelatorios();
     $(".dashboard-panel").append(await dashboardPanelContent());
 
     let myNotifications = await getNotifications();
