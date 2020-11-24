@@ -1,7 +1,5 @@
 <?php
 
-use \Config\Config;
-
 $data['data'] = [];
 $read = new \Conn\Read();
 $read->exeRead("relatorios_card");
