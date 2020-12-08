@@ -10,12 +10,13 @@ class Notification
      * @param $usuarios (ownerpub de 1 usuário (int), ou vários usuários (array)
      * @param string $titulo
      * @param string $descricao
-     * @param string $imagem
+     * @param string|null $imagem
+     * @return mixed|void|null
      */
-    public static function push($usuarios, string $titulo, string $descricao, string $imagem)
+    public static function push($usuarios, string $titulo, string $descricao, string $imagem = null)
     {
-        if (!defined('FB_SERVER_KEY') || empty(FB_SERVER_KEY) || (!is_array($usuarios) && !is_string($usuarios)))
-            return;
+        if (!defined('FB_SERVER_KEY') || empty(FB_SERVER_KEY) || (!is_array($usuarios) && !is_numeric($usuarios)))
+            return null;
 
         /**
          * Obter endereço push FCM para enviar push
@@ -24,19 +25,20 @@ class Notification
         $sql->exeCommand("SELECT subscription FROM " . PRE . "push_notifications WHERE usuario " . is_array($usuarios) ? "IN (" . implode(", ", $usuarios) . ")" : "= {$usuarios}");
         if ($sql->getResult()) {
             $token = is_array($usuarios) ? array_map(fn($item) => $item['subscription'], $sql->getResult()) : $sql->getResult()[0]['subscription'];
-            self::_privatePushSend($token, $titulo, $descricao, $imagem);
-            //d_FkYJNxT1-Bw4YO1CTeYX:APA91bFT4dJvGMWKIpFR1sVFQFvliK3dv-hl06zm22HJT9TUWX1d5cOghkBFRWicY4yPD3x-bkz8JOtvBy31tdp16RDouG6LgvhHw6aOnmR5vi7XzCkLt-PaUEBy98SRKoqbEJdnDDgw
+            return self::_privatePushSend($token, $titulo, $descricao, $imagem);
         }
+
+        return null;
     }
 
     /**
      * @param $target
      * @param string $title
      * @param string $body
-     * @param string $image
+     * @param string|null $image
      * @return mixed|void
      */
-    private static function _privatePushSend($target, string $title, string $body, string $image)
+    private static function _privatePushSend($target, string $title, string $body, string $image = null)
     {
         if (!defined('FB_SERVER_KEY') || empty(FB_SERVER_KEY))
             return;
@@ -45,7 +47,6 @@ class Notification
             "notification" => [
                 "title" => $title,
                 "body" => $body,
-                "badge" => defined("PUSH_ICON") && !empty(PUSH_ICON) ? PUSH_ICON : HOME . "assetsPublic/img/favicon.png",
                 "icon" => $image ?? "",
                 "click_action" => "FCM_PLUGIN_ACTIVITY"
             ],
