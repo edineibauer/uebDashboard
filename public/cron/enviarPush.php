@@ -1,12 +1,12 @@
 <?php
 
 use Conn\Read;
-use Minishlink\WebPush\WebPush;
-use Minishlink\WebPush\Subscription;
 
-if (defined("PUSH_PUBLIC_KEY") && !empty(PUSH_PUBLIC_KEY) && defined("PUSH_PRIVATE_KEY") && !empty(PUSH_PRIVATE_KEY)) {
+if (defined("FB_SERVER_KEY") && !empty(FB_SERVER_KEY)) {
 
-    /**
+
+
+        /**
      * Lê as notificações pendêntes
      */
     $up = new \Conn\Update();

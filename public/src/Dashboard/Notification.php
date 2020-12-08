@@ -2,244 +2,72 @@
 
 namespace Dashboard;
 
-use Conn\Create;
-use Conn\Read;
+use Conn\SqlCommand;
 
 class Notification
 {
-    private $titulo = "";
-    private $descricao = "";
-    private $url = "";
-    private $imagem = HOME . "assetsPublic/img/favicon.png?v=" . VERSION;
-    private $usuarios = 0;
-    private $enviarMensagemAssociation = null;
-
     /**
+     * @param $usuarios (ownerpub de 1 usuário (int), ou vários usuários (array)
      * @param string $titulo
-     */
-    public function setTitulo(string $titulo)
-    {
-        $this->titulo = $titulo;
-    }
-
-    /**
      * @param string $descricao
-     */
-    public function setDescricao(string $descricao)
-    {
-        $this->descricao = $descricao;
-    }
-
-    /**
-     * @param string $url
-     */
-    public function setUrl(string $url)
-    {
-        $this->url = $url;
-    }
-
-    /**
      * @param string $imagem
      */
-    public function setImagem(string $imagem)
+    public static function push($usuarios, string $titulo, string $descricao, string $imagem)
     {
-        $this->imagem = $imagem;
+        if (!defined('FB_SERVER_KEY') || empty(FB_SERVER_KEY) || (!is_array($usuarios) && !is_string($usuarios)))
+            return;
+
+        /**
+         * Obter endereço push FCM para enviar push
+         */
+        $sql = new SqlCommand();
+        $sql->exeCommand("SELECT subscription FROM " . PRE . "push_notifications WHERE usuario " . is_array($usuarios) ? "IN (" . implode(", ", $usuarios) . ")" : "= {$usuarios}");
+        if ($sql->getResult()) {
+            $token = is_array($usuarios) ? array_map(fn($item) => $item['subscription'], $sql->getResult()) : $sql->getResult()[0]['subscription'];
+            self::_privatePushSend($token, $titulo, $descricao, $imagem);
+            //d_FkYJNxT1-Bw4YO1CTeYX:APA91bFT4dJvGMWKIpFR1sVFQFvliK3dv-hl06zm22HJT9TUWX1d5cOghkBFRWicY4yPD3x-bkz8JOtvBy31tdp16RDouG6LgvhHw6aOnmR5vi7XzCkLt-PaUEBy98SRKoqbEJdnDDgw
+        }
     }
 
     /**
-     * @param int|array $usuarios
+     * @param $target
+     * @param string $title
+     * @param string $body
+     * @param string $image
+     * @return mixed|void
      */
-    public function setUsuarios($usuarios)
+    private static function _privatePushSend($target, string $title, string $body, string $image)
     {
-        $this->usuarios = $usuarios;
-    }
+        if (!defined('FB_SERVER_KEY') || empty(FB_SERVER_KEY))
+            return;
 
-    /**
-     * @param int $enviarMensagemAssociation
-     */
-    public function setEnviarMensagemAssociation(int $enviarMensagemAssociation)
-    {
-        $this->enviarMensagemAssociation = $enviarMensagemAssociation;
-    }
+        $message = [
+            "notification" => [
+                "title" => $title,
+                "body" => $body,
+                "badge" => defined("PUSH_ICON") && !empty(PUSH_ICON) ? PUSH_ICON : HOME . "assetsPublic/img/favicon.png",
+                "icon" => $image ?? "",
+                "click_action" => "FCM_PLUGIN_ACTIVITY"
+            ],
+            "priority" => "high"
+        ];
+        $message[is_string($target) ? 'to' : 'registration_ids'] = $target;
 
-    /**
-     * @return string
-     */
-    public function getTitulo(): string
-    {
-        return $this->titulo;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescricao(): string
-    {
-        return $this->descricao;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUrl(): string
-    {
-        return $this->url;
-    }
-
-    /**
-     * @return string
-     */
-    public function getImagem(): string
-    {
-        return $this->imagem;
-    }
-
-    /**
-     * @return int|array
-     */
-    public function getUsuarios()
-    {
-        return $this->usuarios;
-    }
-
-    /**
-     * @return int
-     */
-    public function getEnviarMensagemAssociation(): int
-    {
-        return $this->enviarMensagemAssociation;
-    }
-
-    public function enviar()
-    {
-        $this->createNotification();
-    }
-
-    /**
-     * Função statica e rápida para criar notificações para a Dashboard
-     * @param string $titulo
-     * @param string $descricao
-     * @param int|array $usuarios
-     * @param bool $sendPush
-     */
-    public static function create(string $titulo, string $descricao, $usuarios, $sendPush = true)
-    {
-        $notify = [
-            "titulo" => $titulo,
-            "descricao" => $descricao,
-            "data" => date("Y-m-d H:i:s"),
-            "status" => 1
+        $headers = [
+            "Authorization:key=" . FB_SERVER_KEY,
+            'Content-Type:application/json'
         ];
 
-        $create = new Create();
-        $read = new Read();
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($message));
+        $result = curl_exec($ch);
+        curl_close($ch);
 
-        $note = 0;
-        $read->exeRead("notifications", "WHERE titulo = '{$titulo}' AND descricao = :d", "d={$descricao}");
-        if (!$read->getResult()) {
-            $create->exeCreate("notifications", $notify);
-            if ($create->getResult())
-                $note = $create->getResult();
-        } else {
-            $note = $read->getResult()[0]['id'];
-        }
-
-        if (is_numeric($note) && $note > 0) {
-
-            /**
-             * Single send
-             */
-            if (is_numeric($usuarios)) {
-                $create->exeCreate("notifications_report", [
-                    "notificacao" => $note,
-                    "data_de_envio" => date("Y-m-d H:i:s"),
-                    "ownerpub" => $usuarios,
-                    "enviou" => $sendPush ? 1 : 0,
-                    "recebeu" => 0,
-                    "abriu" => 0
-                ]);
-
-                /**
-                 * Mult send
-                 */
-            } elseif (is_array($usuarios)) {
-                foreach ($usuarios as $usuario) {
-                    if (is_numeric($usuario)) {
-                        $create->exeCreate("notifications_report", [
-                            "notificacao" => $note,
-                            "data_de_envio" => date("Y-m-d H:i:s"),
-                            "ownerpub" => $usuarios,
-                            "enviou" => $sendPush ? 1 : 0,
-                            "recebeu" => 0,
-                            "abriu" => 0
-                        ]);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Cria a notificação
-     */
-    private function createNotification()
-    {
-        $read = new Read();
-        $create = new Create();
-        $note = 0;
-        $notify = [
-            "titulo" => $this->titulo,
-            "descricao" => $this->descricao,
-            "data" => date("Y-m-d H:i:s"),
-            "status" => 1,
-            "url" => $this->url,
-            "imagem" => $this->imagem
-        ];
-
-        $read->exeRead("notifications", "WHERE titulo = '{$this->titulo}' AND descricao = :d", "d={$this->descricao}");
-        if (!$read->getResult()) {
-            $create->exeCreate("notifications", $notify);
-            if ($create->getResult())
-                $note = $create->getResult();
-        } else {
-            $note = $read->getResult()[0]['id'];
-        }
-
-        if (is_numeric($note) && $note > 0) {
-            if ($this->usuarios !== 0) {
-                /**
-                 * Single send
-                 */
-                if (is_numeric($this->usuarios)) {
-                    $read->exeRead("notifications_report", "WHERE ownerpub = :u && notificacao = :n", "u={$this->usuarios}&n={$note}", !0);
-                    if(!$read->getResult()) {
-                        $create->exeCreate("notifications_report", [
-                            "notificacao" => $note,
-                            "enviar_mensagem_id" => $this->enviarMensagemAssociation,
-                            "data_de_envio" => date("Y-m-d H:i:s"),
-                            "ownerpub" => $this->usuarios
-                        ]);
-                    }
-
-                    /**
-                     * Mult send
-                     */
-                } elseif (is_array($this->usuarios)) {
-                    foreach ($this->usuarios as $usuario) {
-                        if (is_numeric($usuario)) {
-                            $read->exeRead("notifications_report", "WHERE ownerpub = :u && notificacao = :n", "u={$usuario}&n={$note}", !0);
-                            if(!$read->getResult()) {
-                                $create->exeCreate("notifications_report", [
-                                    "notificacao" => $note,
-                                    "enviar_mensagem_id" => $this->enviarMensagemAssociation,
-                                    "data_de_envio" => date("Y-m-d H:i:s"),
-                                    "ownerpub" => $usuario
-                                ]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        return json_decode($result, !0);
     }
 }
