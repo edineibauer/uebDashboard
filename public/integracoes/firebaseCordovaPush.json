@@ -5,10 +5,6 @@
     "FB_SERVER_KEY": {
       "input": "text",
       "column": "FB_SERVER_KEY"
-    },
-    "PUSH_ICON": {
-      "input": "text",
-      "column": "PUSH_ICON"
     }
   }
 }
