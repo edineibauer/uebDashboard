@@ -1,63 +1,79 @@
-<nav class="sidebar z-depth-2 collapse color-gray-light no-select dashboard-nav space-header"
-     id="mySidebar">
-    <div class="row padding-4 padding-left-8" style="background-color: #e9e9e9">
-        {{#USER.imagem}}
-            <div id="dashboard-sidebar-imagem" class="col radius-circle" style="background-image: url('{{urls.thumb}}');"></div>
-        {{/USER.imagem}}
-        {{^USER.imagem}}
-            <i class='material-icons font-jumbo left'>people</i>
-        {{/USER.imagem}}
-        <div class="rest padding-left padding-bottom">
-            <strong class="col padding-4 no-select" id="dashboard-sidebar-nome">{{USER.nome}}</strong>
-
-            <div class="col">
-                <span class="btn-edit-perfil left pointer padding-small font-small color-gray-light opacity hover-opacity-off hover-shadow radius">
-                    <i class="material-icons left font-medium" style="margin: 1px 5px 0 0">edit</i>editar
-                </span>
-            </div>
+<div class="wrapper">
+    <div class="sidebar" data-color="black">
+        <div class="logo">
+            <a data-preventDefault="true" href="#" class="simple-text logo-mini" onclick="pageTransitionOnIframe('dashboardContent', 'dashboard')">
+                <div class="logo-image-small">
+                    <img src="assetsPublic/img/favicon.png">
+                </div>
+            </a>
+            <a data-preventDefault="true" href="#" onclick="pageTransitionOnIframe('dashboardContent', 'dashboard')" class="simple-text logo-normal">
+                {{sitename}}
+            </a>
+        </div>
+        <div class="sidebar-wrapper">
+            <ul class="nav" data-get="entidades-table">
+                <li class="active" rel="dashboardContent">
+                    <a data-preventDefault="true" href="#" onclick="pageTransitionOnIframe('dashboardContent', 'dashboard')">
+                        <i class="material-icons">dashboard</i>
+                        <p>Dashboard</p>
+                    </a>
+                </li>
+                {{#.}}
+                    <li rel="table-maestru/{{entidade}}">
+                        <a data-preventDefault="true" href="#" onclick="pageTransitionOnIframe('table-maestru/{{entidade}}', '{{entidade}}')">
+                            <i class="material-icons">{{#info.icon}}{{info.icon}}{{/info.icon}}{{^info.icon}}folder{{/info.icon}}</i>
+                            <p>{{entidade}}</p>
+                        </a>
+                    </li>
+                {{/.}}
+            </ul>
         </div>
     </div>
-    <hr style="margin:0 0 10px 0;border-top: solid 1px #ddd;">
-    <div class="bar-block" id="dashboard-menu"></div>
-</nav>
-
-<div class="main dashboard-main animate-left">
-    <div id="dashboard" class="dashboard-tab container row">
-        <div class="col relative">
-            <header class="container s-padding-small">
-                <h5 class="left padding-32 s-padding-12 s-padding-tiny">
-                    <b>
-                        <i class="material-icons left padding-right">dashboard</i>
-                        <span class="left">Meu Painel</span>
-                    </b>
-                </h5>
-                <div class="right s-hide" style="padding-top: 30px;margin-right: calc(12% - 95px);">
-                    <h2 class="col color-text-gray padding-0">
-                        <i class="material-icons left padding-small">notification_important</i>
-                        <div class="left font-large padding-small" >Suas notificações</div>
-                    </h2>
-                </div>
-            </header>
-            <div class="col s12 m9 padding-small dashboard-panel">
-                <div class="col s12" data-get="read/dashboard_relatorios_card" data-realtime-get>
-                    <div data-realtime-html>
-                        {{#.}}
-                            <div class="card radius no-select left relatorios_card" rel="{{id}}"
-                                 style="background: {{cor_de_fundo}}; color: {{cor_do_texto}};">
-                                <div class='col radius padding-left relative rcard'>
-                                    <div class='col s-font-small rtitle'>{{titulo}}</div>
-                                    <div class='right overflow-hidden font-xxlarge s-font-large align-right padding-right relatorios_card_value' style="{{style}}">{{data}}</div>
-                                    <div class="left ricon">
-                                        <i class="material-icons">{{icon}}</i>
-                                    </div>
-                                </div>
-                            </div>
-                        {{/.}}
+    <div class="main-panel">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
+            <div class="container-fluid pr-0">
+                <div class="navbar-wrapper">
+                    <div class="navbar-toggle">
+                        <button type="button" class="navbar-toggler">
+                            <span class="navbar-toggler-bar bar1"></span>
+                            <span class="navbar-toggler-bar bar2"></span>
+                            <span class="navbar-toggler-bar bar3"></span>
+                        </button>
                     </div>
+                    <a class="navbar-brand" href="#back" onclick="setTitleDashboard()">
+                        <i class="material-icons keybackTitle">keyboard_arrow_left</i>
+                        <div class="float-left" id="navbar-brand-title">Dashboard</div>
+                    </a>
                 </div>
-                <div class="col s12" id="relatorios_card_dashboard"></div>
+
+                <div class="collapse navbar-collapse justify-content-end no-select" id="navigation">
+
+                    <ul class="core-class-container mode-text-colorText navbar-nav" data-get="menu">
+                        {{#.}}
+                            <li class="nav-item p-2" style="cursor: pointer" onclick="pageTransitionOnIframe('{{view}}', '{{title}}')">
+                                {{#icon}}<i class="material-icons pr-2">{{icon}}</i><div class="nav-item-sister">{{title}}</div>{{/icon}}
+                                {{^icon}}{{title}}{{/icon}}
+                            </li>
+                        {{/.}}
+                    </ul>
+
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link btn-rotate mr-0" href="javascript:;">
+                                <i class="material-icons">notifications</i>
+                            </a>
+                        </li>
+                        <li class="nav-item mode-text-colorText p-2" style="cursor: pointer" onclick="toggleSidebar()">
+                            <i class="material-icons">more_vert</i>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="col s12 m3 padding-small dashboard-note"></div>
+        </nav>
+        <!-- End Navbar -->
+        <div class="content p-0">
+            <iframe src="{{home}}dashboardContent" name="dashboardContent"></iframe>
         </div>
     </div>
 </div>
