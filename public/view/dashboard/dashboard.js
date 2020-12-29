@@ -1,8 +1,14 @@
 function pageTransitionOnIframe(view, title) {
-    $(".sidebar-wrapper > .nav > li").removeClass("active");
-    $(".sidebar-wrapper > .nav > li[rel='" + view + "']").addClass("active");
-    setTitleDashboard(title);
-    iframeDashboard.pageTransition(view);
+    if(typeof iframeDashboard.pageTransition !== "undefined") {
+        $(".sidebar-wrapper > .nav > li").removeClass("active");
+        $(".sidebar-wrapper > .nav > li[rel='" + view + "']").addClass("active");
+        setTitleDashboard(title);
+        iframeDashboard.pageTransition(view);
+    } else {
+        toast("Aguarde carregar...", 1000);
+        $("iframe").attr("src", HOME + "dashboardContent");
+        iframeDashboard = $("iframe")[0].contentWindow;
+    }
 }
 
 function setTitleDashboard(title) {
@@ -25,5 +31,6 @@ function setTitleDashboard(title) {
 
 var iframeDashboard = null;
 $(function () {
+    $("iframe").attr("src", HOME + "dashboardContent");
     iframeDashboard = $("iframe")[0].contentWindow;
 });
