@@ -32,6 +32,7 @@ iframe {
 
 #navigation > .navbar-nav > .nav-item > .material-icons:hover + .nav-item-sister {
     width: auto;
+    display: block;
 }
 
 .nav-item-sister {
@@ -42,6 +43,7 @@ iframe {
     background: var(--colorBackground);
     padding: 0;
     z-index: 11;
+    display: none;
 }
 
 .main {

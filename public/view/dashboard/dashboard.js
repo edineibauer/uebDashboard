@@ -31,6 +31,9 @@ function setTitleDashboard(title) {
 
 var iframeDashboard = null;
 $(function () {
+    if(!inIframe())
+        $(".wrapper").removeClass('hide');
+
     $("iframe").attr("src", HOME + "dashboardContent");
     iframeDashboard = $("iframe")[0].contentWindow;
 });

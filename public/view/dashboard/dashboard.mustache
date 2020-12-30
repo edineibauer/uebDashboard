@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div class="wrapper hide">
     <div class="sidebar" data-color="black">
         <div class="logo">
             <a data-preventDefault="true" href="#" class="simple-text logo-mini" onclick="pageTransitionOnIframe('dashboardContent', 'dashboard')">
@@ -10,8 +10,8 @@
                 {{sitename}}
             </a>
         </div>
-        <div class="sidebar-wrapper">
-            <ul class="nav" data-get="entidades-table">
+        <div class="sidebar-wrapper" data-get="entidades-table" data-realtime-get>
+            <ul class="nav" data-realtime-html>
                 <li class="active" rel="dashboardContent">
                     <a data-preventDefault="true" href="#" onclick="pageTransitionOnIframe('dashboardContent', 'dashboard')">
                         <i class="material-icons">dashboard</i>
@@ -47,12 +47,12 @@
                     </a>
                 </div>
 
-                <div class="collapse navbar-collapse justify-content-end no-select" id="navigation">
+                <div class="collapse navbar-collapse justify-content-end no-select" id="navigation" data-get="menu" data-realtime-get>
 
-                    <ul class="core-class-container mode-text-colorText navbar-nav" data-get="menu">
+                    <ul class="core-class-container mode-text-colorText navbar-nav" data-realtime-html>
                         {{#.}}
-                            <li class="nav-item p-2" style="cursor: pointer" onclick="pageTransitionOnIframe('{{view}}', '{{title}}')">
-                                {{#icon}}<i class="material-icons pr-2">{{icon}}</i><div class="nav-item-sister">{{title}}</div>{{/icon}}
+                            <li class="nav-item" style="cursor: pointer" onclick="pageTransitionOnIframe('{{view}}', '{{title}}')">
+                                {{#icon}}<i class="material-icons p-2">{{icon}}</i><div class="nav-item-sister py-2 pl-2">{{title}}</div>{{/icon}}
                                 {{^icon}}{{title}}{{/icon}}
                             </li>
                         {{/.}}
