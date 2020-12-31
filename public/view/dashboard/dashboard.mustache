@@ -53,7 +53,7 @@
                         {{#.}}
                             <li class="nav-item" style="cursor: pointer" onclick="pageTransitionOnIframe('{{view}}', '{{title}}')">
                                 {{#icon}}<i class="material-icons p-2">{{icon}}</i><div class="nav-item-sister py-2 pl-2">{{title}}</div>{{/icon}}
-                                {{^icon}}{{title}}{{/icon}}
+                                {{^icon}}<div class="p-2">{{title}}</div>{{/icon}}
                             </li>
                         {{/.}}
                     </ul>
