@@ -19,7 +19,6 @@ iframe {
 
 #navigation > .navbar-nav {
     height: 38px;
-    overflow: hidden;
     padding-right: 10px;
     padding-left: 20px;
     flex-direction: row-reverse;
@@ -31,15 +30,18 @@ iframe {
 }
 
 #navigation > .navbar-nav > .nav-item > .material-icons:hover + .nav-item-sister {
-    width: auto;
     display: block;
 }
 
 .nav-item-sister {
-    width: 0;
+    width: 200px;
     overflow: hidden;
     position: absolute;
-    right: 50px;
+    border-bottom-right-radius: 7px;
+    border-bottom-left-radius: 7px;
+    text-align: center;
+    top: 51px;
+    left: -80px;
     background: var(--colorBackground);
     padding: 0;
     z-index: 11;
@@ -3268,7 +3270,7 @@ License - nucleoapp.com/license/
         content: "";
         display: inline-block;
         position: absolute;
-        right: -16px;
+        right: 0;
         opacity: 1;
         top: 7px;
         transition: opacity 150ms ease-in;
@@ -3282,7 +3284,7 @@ License - nucleoapp.com/license/
         content: "";
         display: inline-block;
         position: absolute;
-        right: -17px;
+        right: -1px;
         opacity: 1;
         top: 7px;
         transition: opacity 150ms ease-in;
